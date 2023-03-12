@@ -18,6 +18,6 @@ This script shows the top 5 pictures from google for the given search string.
 ![image](https://user-images.githubusercontent.com/50422430/224538373-4311d13c-c650-4cb7-917b-18b4148a5efd.png)
 
 ## Installation
-install `npm` and run `npm install` inside the gd-pictures folder.\
-Add the gd-picures script to your PATH and edit the script to point to the main.js file.
-Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html and Command Line `gd-pictures %GDWORD%`. Enjoy.
+Place the script `gd-pics` in your PATH and edit the script to point to the `gd-pic.py` file. You might have to need to install beautifulsoup, which can be done with
+`pip install beautifulsoup4` for example.\
+Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html and Command Line `gd-pics %GDWORD%`.
