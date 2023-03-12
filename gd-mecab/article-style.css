@@ -1,0 +1,64 @@
+ruby > rt {
+  display: none;
+}
+
+ruby:hover > rt {
+  display: block;
+  position: absolute;
+  ruby-position: above;
+  background-color: #fff;
+  padding: 5px;
+  z-index: 1000;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
+
+.mdict {
+    border-top: 0.15em solid #c4c4c4;
+    margin-bottom: 0.1em;
+    padding-top: 0.5em;
+}
+
+.gddictname {
+    position: relative;
+    z-index: 9;
+    margin-bottom: -0.16em;
+}
+
+.epwing_article h3 {
+    display: none;
+}
+
+.epwing_text:first-line {
+    text-indent: -1em;
+}
+
+.epwing_text {
+    padding-top: 0.5em;
+    padding-left: 1em;
+    border-top: 0.15em solid #c4c4c4;
+    margin-bottom: 0.5em;
+}
+
+.gdarticle {
+  margin-bottom: -5px;
+}
+
+h1 {
+  border: none;
+  padding: 0;
+  font-size: 35px;
+  margin-bottom: -0.2em;
+  margin-top: -0.2em;
+}
+h1 span {
+  background-color: lightblue
+}
+h1 a:link {
+  color: blue;
+  text-decoration: dashed underline;
+  text-underline-offset: 4px;
+}
