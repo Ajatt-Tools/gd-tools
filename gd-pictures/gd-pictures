@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-node <insert path>/main.js --input "$1" --images 5 --lang ja 2>/dev/null
