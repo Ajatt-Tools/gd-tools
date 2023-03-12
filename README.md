@@ -13,7 +13,7 @@ optionally create a folder under ~/.goldendict/styles (name of your choosing) an
 optionally compile and add furigana_link_split (https://github.com/GenjiFujimoto/mecab-tools) to your path and comment out the mecab implementation in `mecabgoldendict` to have furigana (though not working well yet). The provided CSS shows the furigana only on hover.
 
 # gd-pictures
-This script shows the top 5 pictures from google for the given search string.
+This script shows the top 5 pictures from Brave Images for the given search string.
 
 ![image](https://user-images.githubusercontent.com/50422430/224538373-4311d13c-c650-4cb7-917b-18b4148a5efd.png)
 
