@@ -11,9 +11,10 @@ ruby:hover > rt {
   z-index: 1000;
 }
 
+/* remove scrollbar */
 ::-webkit-scrollbar {
     width: 0px;
-    background: transparent; /* make scrollbar transparent */
+    background: transparent;
 }
 
 .mdict {
@@ -48,17 +49,20 @@ ruby:hover > rt {
 }
 
 h1 {
-  border: none;
-  padding: 0;
   font-size: 35px;
-  margin-bottom: -0.2em;
+  margin-bottom: 0.05em;
   margin-top: -0.2em;
+  color: #1268c3;
+  font-weight: normal;
 }
-h1 span {
-  background-color: lightblue
-}
+
 h1 a:link {
-  color: blue;
+  font-weight: normal;
+  color: #1268c3;
   text-decoration: dashed underline;
-  text-underline-offset: 4px;
+  text-underline-offset: 8px;
+}
+
+h1 a b{
+  background-color: #ddeeff;
 }

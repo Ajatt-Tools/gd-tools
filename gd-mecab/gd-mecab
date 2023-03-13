@@ -8,24 +8,17 @@ sanitize_input() {
 }
 
 select_word(){
-  sed "s|\(<a href=\"bword:$1\">$1</a>\)|<span style=\"background-color: lightblue\">\1</span>|"
-  # [[ $clipboard != $1 ]] && sed "s|\($1\)|<span>\1</span>|" || echo "$1"
+  sed "s|$1\">\($1\)|$1\"><b>\1</b>|"
 }
 
 mecab_implementation(){
-  # Comment out exactly one of the implementations
-  # 1
-  printf "<h1>
-  $(echo "$1" | mecab \
-		--node-format='<a href="bword:%m">%m</a> ' \
-		--eos-format='<br> ' \
-		--unk-format=' ')
-  </h1>"
-  # 2 has to be installed first
-  # furigana_link_split
+  printf "<h1>$(mecab \
+		  --node-format='<a href="bword:%m">%m</a> ' \
+      		  --eos-format='<br> ' \
+      		  --unk-format='%m' \
+		  -u ~/.local/share/Anki2/addons21/1225470483/mecab_controller/support/user_dic.dic) </h1>"
 }
 
 clipboard=$(xclip -o | sanitize_input)
 [[ "$clipboard" != *"$1"* ]] && xclip -i <<< "$1" && clipboard=$1
-mecab_implementation $clipboard | select_word "$1"
-# select_word "$1" <<< "$clipboard" | mecab_implementation
+mecab_implementation <<< "$clipboard" | select_word "$1"
