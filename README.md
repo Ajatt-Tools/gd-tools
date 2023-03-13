@@ -29,6 +29,8 @@ This script shows the search string in the `KanjiStrokeOrders` font.
 
 ![screenshot](https://user-images.githubusercontent.com/69171671/224840590-b740a1b6-8526-49ed-b4cd-efe03689a132.png)
 
+Download font: https://www.nihilist.org.uk/
+
 **Arguments**
 
 * `--max-len` `5` maximum size of the input string.
