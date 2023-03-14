@@ -22,7 +22,7 @@ This script shows the top 5 pictures from Brave Images for the given search stri
 This script requires the python package beautifulsoup, which can be installed with `pip install beautifulsoup4`.
 
 ### Installation
-Edit the script to point to the `gd-pic.py` file.
+Edit the script to point to the `gd-pic.py` file.\
 Proceed with the [general installation instructions](#general-installation-instructions)
 
 
