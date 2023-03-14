@@ -19,6 +19,6 @@ mecab_implementation(){
 		  -u ~/.local/share/Anki2/addons21/1225470483/mecab_controller/support/user_dic.dic) </h1>"
 }
 
-clipboard=$(xclip -o | sanitize_input)
-[[ "$clipboard" != *"$1"* ]] && xclip -i <<< "$1" && clipboard=$1
+clipboard=$(xclip -o -sel primary | sanitize_input)
+[[ "$clipboard" != *"$1"* ]] && xclip -i primary <<< "$1" && clipboard=$1
 mecab_implementation <<< "$clipboard" | select_word "$1"
