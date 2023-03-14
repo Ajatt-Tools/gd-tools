@@ -20,14 +20,6 @@ This script shows the top 5 pictures from Bing images for the given search strin
 
 ![image](https://user-images.githubusercontent.com/50422430/224940994-eb3e1be6-9cd8-4776-88cf-850c78648e81.png)
 
-### Dependencies
-This script requires the python package beautifulsoup, which can be installed with `pip install beautifulsoup4`.
-
-### Installation
-Edit the script to point to the `gd-pic.py` file.\
-Proceed with the [general installation instructions](#general-installation-instructions)
-
-
 ## gd-strokeorder
 
 This script shows the search string in the `KanjiStrokeOrders` font.
