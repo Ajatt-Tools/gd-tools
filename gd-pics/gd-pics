@@ -1,3 +1,0 @@
-#!/bin/bash
-
-python <insert path>/gd-pic.py $1
