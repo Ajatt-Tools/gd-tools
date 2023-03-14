@@ -6,7 +6,7 @@ This script passes a sentence through mecab in order to make every part of the s
 
 ### Dependencies
 
-This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dictionary installed. Both can be found on the AUR if you are on an Arch linux system.
+This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dictionary installed. Both can be found on the AUR if you are on an Arch Linux system.
 
 ## Installation
 Create a folder under ~/.goldendict/styles (name of your choosing) and place the provided css file there. Then enable the style under "Edit" > "Settings" > "Interface" > "Add-on style".\
@@ -18,8 +18,11 @@ This script shows the top 5 pictures from Brave Images for the given search stri
 
 ![image](https://user-images.githubusercontent.com/50422430/224538373-4311d13c-c650-4cb7-917b-18b4148a5efd.png)
 
+### Dependencies
+This script requires the python package beautifulsoup, which can be installed with `pip install beautifulsoup4`.
+
 ### Installation
-Edit the script to point to the `gd-pic.py` file. You might need to install beautifulsoup, which can be done with `pip install beautifulsoup4`.\
+Edit the script to point to the `gd-pic.py` file.
 Proceed with the [general installation instructions](#general-installation-instructions)
 
 
