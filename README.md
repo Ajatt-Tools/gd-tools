@@ -10,7 +10,7 @@ This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dicti
 
 ## Installation
 Create a folder under ~/.goldendict/styles (name of your choosing) and place the provided css file there. Then enable the style under "Edit" > "Settings" > "Interface" > "Add-on style".\
-Proceed with
+Proceed with the [general installation instructions](#general-installation-instructions)
 
 
 ## gd-pictures
