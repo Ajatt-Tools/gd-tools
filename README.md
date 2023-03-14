@@ -8,10 +8,12 @@ This script passes a sentence through mecab in order to make every part of the s
 
 This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dictionary installed. Both can be found on the AUR if you are on an Arch Linux system.
 
-## Installation
+### Installation
 Create a folder under ~/.goldendict/styles (name of your choosing) and place the provided css file there. Then enable the style under "Edit" > "Settings" > "Interface" > "Add-on style".\
 Proceed with the [general installation instructions](#general-installation-instructions)
 
+### Tipps
+- The sentece is stored in the primary clipboard. So if you don't like the suggestions, you can search for some different substring. After that you can restore the sentence with a middle click.
 
 ## gd-pictures
 This script shows the top 5 pictures from Brave Images for the given search string.
