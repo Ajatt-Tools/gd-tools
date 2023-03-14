@@ -16,9 +16,9 @@ Proceed with the [general installation instructions](#general-installation-instr
 - The sentece is stored in the primary clipboard. So if you don't like the suggestions, you can search for some different substring. After that you can restore the sentence with a middle click.
 
 ## gd-pictures
-This script shows the top 5 pictures from Brave Images for the given search string.
+This script shows the top 5 pictures from Bing images for the given search string.
 
-![image](https://user-images.githubusercontent.com/50422430/224538373-4311d13c-c650-4cb7-917b-18b4148a5efd.png)
+![image](https://user-images.githubusercontent.com/50422430/224940880-0dd9e2f3-dcc1-43be-8cf5-08b780c51035.png)
 
 ### Dependencies
 This script requires the python package beautifulsoup, which can be installed with `pip install beautifulsoup4`.
