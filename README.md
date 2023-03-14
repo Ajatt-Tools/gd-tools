@@ -18,7 +18,7 @@ Proceed with the [general installation instructions](#general-installation-instr
 ## gd-pictures
 This script shows the top 5 pictures from Bing images for the given search string.
 
-![image](https://user-images.githubusercontent.com/50422430/224940880-0dd9e2f3-dcc1-43be-8cf5-08b780c51035.png)
+![image](https://user-images.githubusercontent.com/50422430/224940994-eb3e1be6-9cd8-4776-88cf-850c78648e81.png)
 
 ### Dependencies
 This script requires the python package beautifulsoup, which can be installed with `pip install beautifulsoup4`.
