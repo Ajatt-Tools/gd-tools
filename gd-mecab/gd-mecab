@@ -12,8 +12,23 @@ sanitize_input() {
       sed -E 's,[a-z]+, ,Ig'
 }
 
-highlight_word(){
-      sed "s|$1\">\($1\)|$1\"><b>\1</b>|"
+# highlight_word(){
+#       sed "s|$1\">\($1\)|$1\"><b>\1</b>|"
+# }
+
+usage() {
+	local -r bn=$(basename -- "$0")
+	cat <<-EOF
+		usage: $bn [OPTIONS] WORD
+
+		echo input back to GoldenDict as HTML with sentece split into parts
+
+		OPTIONS
+	EOF
+	column -t -s'|' <<-EOF
+		  --user-dict PATH|path to the user dictionary.
+		  --font-size SIZE|font size. The default value is 30px
+	EOF
 }
 
 mecab_command(){
@@ -52,21 +67,6 @@ embed_style(){
       </style>"
 }
 
-usage() {
-	local -r bn=$(basename -- "$0")
-	cat <<-EOF
-		usage: $bn [OPTIONS] WORD
-
-		echo input back to GoldenDict as HTML with sentece split into parts
-
-		OPTIONS
-	EOF
-	column -t -s'|' <<-EOF
-		  --user-dict PATH|path to the user dictionary.
-		  --font-size SIZE|font size. The default value is 30px
-	EOF
-}
-
 main() {
       if (($# == 0)); then
 	      usage
@@ -89,14 +89,16 @@ main() {
 	      shift
       done
 
-      clip_sentence=$(xclip -o -sel primary | sanitize_input)
+      clip_sentence=$(xclip -o -sel primary) #| sanitize_input
       if [[ "$clip_sentence" != *"$GDWORD"* ]]; then
 	  xclip -i -sel primary <<< "$GDWORD"
 	  clip_sentence=$GDWORD
       fi
 
       embed_style
-      mecab_command <<< "$clip_sentence" | highlight_word "$GDWORD"
+      output=$(mecab_command <<< "$clip_sentence")
+      #highlight word
+      echo "${output//">${GDWORD}"/"><b>${GDWORD}</b>"}"
 }
 
 main "$@"
