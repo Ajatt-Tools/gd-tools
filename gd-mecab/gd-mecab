@@ -89,7 +89,7 @@ main() {
 	      shift
       done
 
-      clip_sentence=$(xclip -o -sel primary) #| sanitize_input
+      clip_sentence=$(xclip -o -sel primary | sanitize_input)
       if [[ "$clip_sentence" != *"$GDWORD"* ]]; then
 	  xclip -i -sel primary <<< "$GDWORD"
 	  clip_sentence=$GDWORD
