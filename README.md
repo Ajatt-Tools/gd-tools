@@ -36,7 +36,7 @@ Download font: https://www.nihilist.org.uk/
 * `--font-size` `10rem` font size. It has to be large in order to see the stroke numbers.
 
 ## Installation
-Place the main script in your PATH .\
+Run `sudo make install`.\
 Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html and Command Line `<name of script> %GDWORD%`.\
 Optionally add arguments, such as: `gd-mecab %GDWORD% --user-dict <path> --font-size 20px`.\
 Now this program is treated as a dictionary and you can add it under Dictionaries or Groups.
