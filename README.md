@@ -4,15 +4,17 @@
 
 This script passes a sentence through mecab in order to make every part of the sentence clickable
 
-### Dependencies
+**Dependencies**
 
 This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dictionary installed. Both can be found on the AUR if you are on an Arch Linux system.
 
-### Installation
-Follow the [general installation instructions](#general-installation-instructions), but add `mecabgoldendict %GDWORD% </path/to/user_dic.dic>` for Command Line instead.
+**Arguments**
 
-### Tipps
-- You can change the font size to your liking if you edit the script and look for `font-size: `
+* `--user-dict FILE` full path to the user_dic.dic file
+* `--font-size SIZE` the font size to be used
+
+**Tipps**
+
 - The sentece is stored in the primary clipboard. So if you don't like the suggestions, you can search for some different substring. After that you can restore the sentence with a middle click.
 
 ## gd-pictures
@@ -33,7 +35,8 @@ Download font: https://www.nihilist.org.uk/
 * `--max-len` `5` maximum size of the input string.
 * `--font-size` `10rem` font size. It has to be large in order to see the stroke numbers.
 
-## General installation instructions
-Place the main script (file with same name no ending) in your PATH .\
-Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html and Command Line `<insert name of script> %GDWORD%`.\
+## Installation
+Place the main script in your PATH .\
+Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html and Command Line `<name of script> %GDWORD%`.\
+Optionally add arguments, such as: `gd-mecab %GDWORD% --user-dict <path> --font-size 20px`.\
 Now this program is treated as a dictionary and you can add it under Dictionaries or Groups.

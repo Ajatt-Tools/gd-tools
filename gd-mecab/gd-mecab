@@ -3,46 +3,100 @@
 # Requires installing mecab
 
 # Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html.
+
+FONT_SIZE=30px
+GDWORD=""
+USER_DICT=""
+
 sanitize_input() {
-    sed -E 's,[a-z]+, ,Ig'
+      sed -E 's,[a-z]+, ,Ig'
 }
 
-select_word(){
-  sed "s|$1\">\($1\)|$1\"><b>\1</b>|"
+highlight_word(){
+      sed "s|$1\">\($1\)|$1\"><b>\1</b>|"
 }
 
-mecab_implementation(){
-  printf "<h1>$(mecab \
-		  --node-format='<a href="bword:%m">%m</a> ' \
-      		  --eos-format='<br> ' \
-      		  --unk-format='%m' \
-		  -u "$1") </h1>"
+mecab_command(){
+      if ! command -v mecab &> /dev/null; then
+	echo "Error: MeCab is not installed. Please install MeCab and try again."
+	exit 1
+      fi
+
+      printf "<h1>$(mecab \
+		      --node-format='<a href="bword:%m">%m</a> ' \
+		      --eos-format='' \
+		      --unk-format='%m' \
+		      -u "${USER_DICT}") </h1>"
 }
 
-clipboard=$(xclip -o -sel primary | sanitize_input)
-[[ "$clipboard" != *"$1"* ]] && xclip -i -sel primary <<< "$1" && clipboard=$1
+embed_style(){
+      printf "<style>
+      h1 {
+	font-size: ${FONT_SIZE};
+	margin-bottom: 0.05em;
+	margin-top: -0.2em;
+	color: #1268c3;
+	font-weight: normal;
+      }
 
-printf "
-<style>
-h1 {
-  font-size: 35px;
-  margin-bottom: 0.05em;
-  margin-top: -0.2em;
-  color: #1268c3;
-  font-weight: normal;
+      h1 a:link {
+	font-weight: normal;
+	color: #1268c3;
+	text-decoration: dashed underline;
+	text-underline-offset: 8px;
+      }
+
+      h1 a b{
+	background-color: #ddeeff;
+      }
+      </style>"
 }
 
-h1 a:link {
-  font-weight: normal;
-  color: #1268c3;
-  text-decoration: dashed underline;
-  text-underline-offset: 8px;
+usage() {
+	local -r bn=$(basename -- "$0")
+	cat <<-EOF
+		usage: $bn [OPTIONS] WORD
+
+		echo input back to GoldenDict as HTML with sentece split into parts
+
+		OPTIONS
+	EOF
+	column -t -s'|' <<-EOF
+		  --user-dict PATH|path to the user dictionary.
+		  --font-size SIZE|font size. The default value is 30px
+	EOF
 }
 
-h1 a b{
-  background-color: #ddeeff;
-}
-</style>
-"
+main() {
+      if (($# == 0)); then
+	      usage
+	      exit
+      fi
+      while (($# > 0)); do
+	      case $1 in
+	      --font-size)
+		      shift
+		      FONT_SIZE=$1
+		      ;;
+	      --user-dict)
+		      shift
+		      USER_DICT=$1
+		      ;;
+	      *)
+		      GDWORD="${GDWORD}$1"
+		      ;;
+	      esac
+	      shift
+      done
 
-mecab_implementation "$2" <<< "$clipboard" | select_word "$1"
+      clip_sentence=$(xclip -o -sel primary | sanitize_input)
+      if [[ "$clip_sentence" != *"$GDWORD"* ]]; then
+	  xclip -i -sel primary <<< "$GDWORD"
+	  clip_sentence=$GDWORD
+      fi
+
+      embed_style
+      mecab_command <<< "$clip_sentence" | highlight_word "$GDWORD"
+}
+
+main "$@"
