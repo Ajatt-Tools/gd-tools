@@ -16,9 +16,9 @@ mecab_implementation(){
 		  --node-format='<a href="bword:%m">%m</a> ' \
       		  --eos-format='<br> ' \
       		  --unk-format='%m' \
-		  -u ~/.local/share/Anki2/addons21/1225470483/mecab_controller/support/user_dic.dic) </h1>"
+		  -u "$2") </h1>"
 }
 
 clipboard=$(xclip -o -sel primary | sanitize_input)
-[[ "$clipboard" != *"$1"* ]] && xclip -i primary <<< "$1" && clipboard=$1
+[[ "$clipboard" != *"$1"* ]] && xclip -i -sel primary <<< "$1" && clipboard=$1
 mecab_implementation <<< "$clipboard" | select_word "$1"
