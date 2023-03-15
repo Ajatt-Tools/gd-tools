@@ -12,6 +12,7 @@ This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dicti
 Follow the [general installation instructions](#general-installation-instructions), but add `mecabgoldendict %GDWORD% </path/to/user_dic.dic>` for Command Line instead.
 
 ### Tipps
+- You can change the font size to your liking if you edit the script and look for `font-size: `
 - The sentece is stored in the primary clipboard. So if you don't like the suggestions, you can search for some different substring. After that you can restore the sentence with a middle click.
 
 ## gd-pictures
