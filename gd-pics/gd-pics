@@ -1,9 +1,9 @@
 #!/bin/bash
 
 response=$(curl -s -L -H "User-Agent: Mozilla/5.0" \
-	    -G --data-urlencode "q=$1" \
-	    --data-urlencode "mkt=ja-JP" \
-	    "https://www.bing.com/images/search" | \
-	    LC_ALL=C grep -m 5 -oa '<img[^>]*class="mimg[^>]*>')
+	-G --data-urlencode "q=$1" \
+	--data-urlencode "mkt=ja-JP" \
+	"https://www.bing.com/images/search" |
+	LC_ALL=C grep -m 5 -oa '<img[^>]*class="mimg[^>]*>')
 
 printf "<section id='image-grid'><div class='image-list'>$response</div></section>"

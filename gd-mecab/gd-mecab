@@ -10,12 +10,8 @@ GDWORD=""
 USER_DICT=/usr/share/gd-tools/user_dic.dic
 
 sanitize_input() {
-      sed -E 's,[a-z]+, ,Ig'
+	sed -E 's,[a-z]+, ,Ig'
 }
-
-# highlight_word(){
-#       sed "s|$1\">\($1\)|$1\"><b>\1</b>|"
-# }
 
 usage() {
 	local -r bn=$(basename -- "$0")
@@ -32,21 +28,21 @@ usage() {
 	EOF
 }
 
-mecab_command(){
-      if ! command -v mecab &> /dev/null; then
-	echo "Error: MeCab is not installed. Please install MeCab and try again."
-	exit 1
-      fi
+mecab_command() {
+	if ! command -v mecab &>/dev/null; then
+		echo "Error: MeCab is not installed. Please install MeCab and try again."
+		exit 1
+	fi
 
-      printf "<h1>$(mecab \
-		      --node-format='<a href="bword:%m">%m</a> ' \
-		      --eos-format='' \
-		      --unk-format='%m' \
-		      -u "${USER_DICT}")</h1>"
+	printf "<h1>$(mecab \
+		--node-format='<a href="bword:%m">%m</a> ' \
+		--eos-format='' \
+		--unk-format='%m' \
+		-u "${USER_DICT}")</h1>"
 }
 
-embed_style(){
-      printf "<style>
+embed_style() {
+	printf "<style>
       h1 {
 	font-size: ${FONT_SIZE};
 	margin-bottom: 0.05em;
@@ -69,37 +65,36 @@ embed_style(){
 }
 
 main() {
-      if (($# == 0)); then
-	      usage
-	      exit
-      fi
-      while (($# > 0)); do
-	      case $1 in
-	      --font-size)
-		      shift
-		      FONT_SIZE=$1
-		      ;;
-	      --user-dict)
-		      shift
-		      USER_DICT=$1
-		      ;;
-	      *)
-		      GDWORD="${GDWORD}$1"
-		      ;;
-	      esac
-	      shift
-      done
+	if (($# == 0)); then
+		usage
+		exit
+	fi
+	while (($# > 0)); do
+		case $1 in
+		--font-size)
+			shift
+			FONT_SIZE=$1
+			;;
+		--user-dict)
+			shift
+			USER_DICT=$1
+			;;
+		*)
+			GDWORD="${GDWORD}$1"
+			;;
+		esac
+		shift
+	done
 
-      clip_sentence=$(xclip -o -sel primary | sanitize_input)
-      if [[ "$clip_sentence" != *"$GDWORD"* ]]; then
-	  xclip -i -sel primary <<< "$GDWORD"
-	  clip_sentence=$GDWORD
-      fi
+	clip_sentence=$(xclip -o -sel primary | sanitize_input)
+	if [[ "$clip_sentence" != *"$GDWORD"* ]]; then
+		xclip -i -sel primary <<<"$GDWORD"
+		clip_sentence=$GDWORD
+	fi
 
-      embed_style
-      output=$(mecab_command <<< "$clip_sentence")
-      #highlight word
-      echo "${output//">${GDWORD}"/"><b>${GDWORD}</b>"}"
+	embed_style
+	output=$(mecab_command <<<"$clip_sentence")
+	echo "${output//">${GDWORD}"/"><b>${GDWORD}</b>"}" #highlight word
 }
 
 main "$@"
