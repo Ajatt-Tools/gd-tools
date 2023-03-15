@@ -18,7 +18,7 @@ usage() {
 	cat <<-EOF
 		usage: $bn [OPTIONS] WORD
 
-		echo input back to GoldenDict as HTML with sentece split into parts
+		echo input back to GoldenDict as HTML with sentence split into parts
 
 		OPTIONS
 	EOF
