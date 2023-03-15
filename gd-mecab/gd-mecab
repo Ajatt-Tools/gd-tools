@@ -6,7 +6,8 @@
 
 FONT_SIZE=30px
 GDWORD=""
-USER_DICT=""
+# Default path to user_dic.dic, assuming that the user ran `make install`.
+USER_DICT=/usr/share/gd-tools/user_dic.dic
 
 sanitize_input() {
       sed -E 's,[a-z]+, ,Ig'
