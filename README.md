@@ -11,8 +11,8 @@ If you are on an Arch Linux system you can simply install the AUR package `mecab
 
 **Arguments**
 
-* `--user-dict FILE` full path to the user_dic.dic file
 * `--font-size SIZE` the font size to be used, e.g. `30px`.
+* `--user-dict FILE` full path to the user_dic.dic file. This is done automatically if you install via make.
 
 **Tipps**
 
