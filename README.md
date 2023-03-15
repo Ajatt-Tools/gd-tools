@@ -11,7 +11,7 @@ This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dicti
 **Arguments**
 
 * `--user-dict FILE` full path to the user_dic.dic file
-* `--font-size SIZE` the font size to be used
+* `--font-size SIZE` the font size to be used, e.g. `30px`.
 
 **Tipps**
 
