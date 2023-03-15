@@ -26,7 +26,7 @@ mecab_command(){
 		      --node-format='<a href="bword:%m">%m</a> ' \
 		      --eos-format='' \
 		      --unk-format='%m' \
-		      -u "${USER_DICT}") </h1>"
+		      -u "${USER_DICT}")</h1>"
 }
 
 embed_style(){

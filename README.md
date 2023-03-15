@@ -15,7 +15,7 @@ This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dicti
 
 **Tipps**
 
-- The sentece is stored in the primary clipboard. So if you don't like the suggestions, you can search for some different substring. After that you can restore the sentence with a middle click.
+- The sentence is stored in the primary clipboard. So if you don't like the suggestions, you can search for some different substring. After that you can restore the sentence with a middle click.
 
 ## gd-pictures
 This script shows the top 5 pictures from Bing images for the given search string.
