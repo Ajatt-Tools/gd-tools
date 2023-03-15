@@ -6,7 +6,8 @@ This script passes a sentence through mecab in order to make every part of the s
 
 **Dependencies**
 
-This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dictionary installed. Both can be found on the AUR if you are on an Arch Linux system.
+This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dictionary installed. \
+If you are on an Arch Linux system you can simply install the AUR package `mecab-ipa` to obtain both.
 
 **Arguments**
 
