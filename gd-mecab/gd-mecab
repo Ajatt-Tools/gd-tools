@@ -16,9 +16,33 @@ mecab_implementation(){
 		  --node-format='<a href="bword:%m">%m</a> ' \
       		  --eos-format='<br> ' \
       		  --unk-format='%m' \
-		  -u "$2") </h1>"
+		  -u "$1") </h1>"
 }
 
 clipboard=$(xclip -o -sel primary | sanitize_input)
 [[ "$clipboard" != *"$1"* ]] && xclip -i -sel primary <<< "$1" && clipboard=$1
-mecab_implementation <<< "$clipboard" | select_word "$1"
+
+printf "
+<style>
+h1 {
+  font-size: 35px;
+  margin-bottom: 0.05em;
+  margin-top: -0.2em;
+  color: #1268c3;
+  font-weight: normal;
+}
+
+h1 a:link {
+  font-weight: normal;
+  color: #1268c3;
+  text-decoration: dashed underline;
+  text-underline-offset: 8px;
+}
+
+h1 a b{
+  background-color: #ddeeff;
+}
+</style>
+"
+
+mecab_implementation "$2" <<< "$clipboard" | select_word "$1"
