@@ -19,11 +19,11 @@ print_css() {
 			display: grid;
 			gap: 10px;
 			margin: 0;
-		    justify-items: center;
-		    align-items: start;
-		    align-content: start;
-		    justify-content: space-between;
-		    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			justify-items: center;
+			align-items: start;
+			align-content: start;
+			justify-content: space-between;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 		}
 		.gallery img {
 			margin: 0 auto;
@@ -31,8 +31,8 @@ print_css() {
 			width: 100%;
 			border-radius: 5px;
 			display: block;
-		    max-height: 95vh;
-		    object-fit: contain;
+			max-height: 95vh;
+			object-fit: contain;
 		}
 		</style>
 	EOF
