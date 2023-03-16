@@ -45,7 +45,7 @@ usage() {
 }
 
 main() {
-	if (($# == 0)); then
+	if (($# == 0)) || [[ $* == --help ]] || [[ $* == -h ]]; then
 		usage
 		exit
 	fi
