@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -euo pipefail
+
+GDWORD=$*
+
+fetch_sentences() {
+	curl -s "https://massif.la/ja/search?q=$GDWORD" |
+		grep -F '<li class="text-japanese">' -A 3 --no-group-separator
+}
+
+print_css() {
+	cat <<-EOF
+		<style>
+		li {
+			font-size: 1.5rem;
+			list-style: none;
+		}
+		.result-meta {
+			font-size: 12px;
+		}
+		a {
+			color: royalblue;
+		}
+		em {
+			background-color: #ddeeff;
+			border-radius: 0.2rem;
+		}
+		</style>
+	EOF
+}
+
+main() {
+	echo '<ul>'
+	fetch_sentences || true
+	echo '</ul>'
+	print_css
+}
+
+main
