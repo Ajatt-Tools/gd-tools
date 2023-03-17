@@ -37,8 +37,8 @@ Download font: https://www.nihilist.org.uk/
 * `--font-size` `10rem` font size. It has to be large in order to see the stroke numbers.
 
 ## gd-massif
-
 This script shows 5 example sentences from https://massif.la/
+
 ![image](https://user-images.githubusercontent.com/50422430/226018360-e46605f0-2fb4-481c-801e-73aca84fae70.png)
 
 ## Installation
