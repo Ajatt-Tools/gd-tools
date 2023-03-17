@@ -66,6 +66,7 @@ print_css() {
 			.gd-mecab a b {
 				background-color: #ddeeff;
 				border-radius: 0.2rem;
+				font-weight: 500;
 			}
 		</style>
 	EOF
