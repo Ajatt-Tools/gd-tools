@@ -1,9 +1,44 @@
 #!/bin/bash
 
-response=$(curl -s -L -H "User-Agent: Mozilla/5.0" \
-	-G --data-urlencode "q=$1" \
-	--data-urlencode "mkt=ja-JP" \
-	"https://www.bing.com/images/search" |
-	LC_ALL=C grep -m 5 -oa '<img[^>]*class="mimg[^>]*>')
+set -euo pipefail
 
-printf "<section id='image-grid'><div class='image-list'>$response</div></section>"
+GDWORD=$*
+
+query_bing() {
+	curl -s -L -H "User-Agent: Mozilla/5.0" \
+		-G --data-urlencode "q=$GDWORD" \
+		--data-urlencode "mkt=ja-JP" \
+		"https://www.bing.com/images/search" |
+		LC_ALL=C grep -m 5 -oa '<img[^>]*class="mimg[^>]*>'
+}
+
+print_css() {
+	cat <<-EOF
+		<style>
+		.gallery {
+			display: grid;
+			gap: 10px;
+			margin: 0;
+			justify-items: center;
+			align-items: start;
+			align-content: start;
+			justify-content: space-between;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		}
+		.gallery img {
+			margin: 0 auto;
+			max-width: 100%;
+			width: 100%;
+			border-radius: 5px;
+			display: block;
+			max-height: 95vh;
+			object-fit: contain;
+		}
+		</style>
+	EOF
+}
+
+echo '<div class="gallery">'
+query_bing || true
+echo '</div>'
+print_css
