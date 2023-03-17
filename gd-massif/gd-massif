@@ -23,6 +23,7 @@ print_css() {
 			color: royalblue;
 		}
 		em {
+			font-style: normal;
 			background-color: #ddeeff;
 			border-radius: 0.2rem;
 		}
