@@ -6,7 +6,7 @@ GDWORD=$*
 
 fetch_sentences() {
 	curl -s "https://massif.la/ja/search?q=$GDWORD" |
-		grep -F '<li class="text-japanese">' -A 3 --no-group-separator
+		grep -F -m 5 '<li class="text-japanese">' -A 3 --no-group-separator
 }
 
 print_css() {
