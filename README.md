@@ -4,6 +4,9 @@
 
 This script passes a sentence through mecab in order to make every part of the sentence clickable
 
+https://user-images.githubusercontent.com/50422430/226139459-0c8bcf0e-e68f-491e-8171-bae3f50a7ae1.mp4
+
+
 **Dependencies**
 
 This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dictionary installed. \
