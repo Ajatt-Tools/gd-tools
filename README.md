@@ -44,6 +44,21 @@ This script shows example sentences from https://massif.la/
 
 ![image](https://user-images.githubusercontent.com/50422430/226018360-e46605f0-2fb4-481c-801e-73aca84fae70.png)
 
+## gd-ankisearch
+
+This script searches Anki cards in your collection that contain %GDWORD%.
+
+**Arguments:**
+
+* `--field-name` `NAME` optional field to limit search to.
+* `--deck-name` `NAME` optional deck to limit search to.
+
+**Example invocation:**
+
+```
+gd-ankisearch --field-name VocabKanji %GDWORD%
+```
+
 ## Installation
 Run `sudo make install`.\
 Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html and Command Line `<name of script> %GDWORD%`.\
