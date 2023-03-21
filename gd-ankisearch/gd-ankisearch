@@ -8,6 +8,12 @@ ankiconnect_request() {
 	curl -fsS '127.0.0.1:8765' -X POST -d "$*"
 }
 
+escape_quotes() {
+	local text=$*
+	text=${text//'"'/'\"'}
+	echo "$text"
+}
+
 find_notes() {
 	local query=$GDWORD
 	local request='{
@@ -18,12 +24,12 @@ find_notes() {
 	    }
 	}'
 	if [[ -n $FIELD_NAME ]]; then
-		query="$FIELD_NAME:*$query*"
+		query="\"$FIELD_NAME:*$query*\""
 	fi
 	if [[ -n $DECK_NAME ]]; then
-		query="deck:$DECK_NAME $query"
+		query="\"deck:$DECK_NAME $query\""
 	fi
-	ankiconnect_request "${request//<query>/$query}"
+	ankiconnect_request "${request//<query>/$(escape_quotes "$query")}"
 }
 
 filter_nids() {
