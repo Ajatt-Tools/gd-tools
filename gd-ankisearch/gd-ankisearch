@@ -27,7 +27,7 @@ find_notes() {
 		query="\"$FIELD_NAME:*$query*\""
 	fi
 	if [[ -n $DECK_NAME ]]; then
-		query="\"deck:$DECK_NAME $query\""
+		query="\"deck:$DECK_NAME\" $query"
 	fi
 	ankiconnect_request "${request//<query>/$(escape_quotes "$query")}"
 }
