@@ -1,0 +1,32 @@
+#!/bin/bash
+
+GDWORD=$*
+
+ankiconnect_request() {
+	curl -fsS '127.0.0.1:8765' -X POST -d "$*"
+}
+
+find_notes() {
+	local request='{
+	    "action": "findNotes",
+	    "version": 6,
+	    "params": {
+		"query": "<query>"
+	    }
+	}'
+	ankiconnect_request "${request//<query>/$GDWORD}"
+}
+
+filter_nids() {
+	grep -Po '[0-9]+'
+}
+
+main() {
+	echo "<ol>"
+	find_notes | filter_nids | while read -r nid; do
+		printf -- '<li><a href="ankisearch:nid:%s">%s</a></li>\n' "$nid" "$nid"
+	done
+	echo "</ol>"
+}
+
+main
