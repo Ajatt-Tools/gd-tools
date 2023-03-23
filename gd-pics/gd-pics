@@ -2,10 +2,19 @@
 
 set -euo pipefail
 
-GDWORD=$*
+readonly CONNECT_TIMEOUT=2
+readonly MAX_TIME=5
+readonly GDWORD=$*
+
+curl_do() {
+	curl \
+		--connect-timeout "$CONNECT_TIMEOUT" \
+		--max-time "$MAX_TIME" \
+		"$@"
+}
 
 query_bing() {
-	curl -s -L -H "User-Agent: Mozilla/5.0" \
+	curl_do -s -L -H "User-Agent: Mozilla/5.0" \
 		-G --data-urlencode "q=$GDWORD" \
 		--data-urlencode "mkt=ja-JP" \
 		"https://www.bing.com/images/search" |

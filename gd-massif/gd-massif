@@ -2,10 +2,20 @@
 
 set -euo pipefail
 
-GDWORD=$*
+readonly CONNECT_TIMEOUT=2
+readonly MAX_TIME=5
+readonly GDWORD=$*
+
+curl_do() {
+	curl \
+		--connect-timeout "$CONNECT_TIMEOUT" \
+		--max-time "$MAX_TIME" \
+		"$@"
+}
 
 fetch_sentences() {
-	curl -s "https://massif.la/ja/search?q=$GDWORD" |
+	curl_do \
+		-s "https://massif.la/ja/search?q=$GDWORD" |
 		grep -F '<li class="text-japanese">' -A 3 --no-group-separator
 }
 
