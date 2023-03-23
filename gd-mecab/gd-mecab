@@ -3,13 +3,14 @@
 set -euo pipefail
 
 # Requires installing mecab
-
 # Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html.
+
+# Default path to user_dic.dic, assuming that the user ran `make install`.
+USER_DICT=/usr/share/gd-tools/user_dic.dic
 
 FONT_SIZE=2rem
 GDWORD=""
-# Default path to user_dic.dic, assuming that the user ran `make install`.
-USER_DICT=/usr/share/gd-tools/user_dic.dic
+GDSEARCH=""
 
 sanitize_input() {
 	sed -E 's,[a-z]+, ,Ig'
@@ -79,6 +80,12 @@ highlight_word() {
 	echo "$search"
 }
 
+die() {
+	echo "$*" >&2
+	notify-send "$(basename -- $0)" "$*" &
+	exit 1
+}
+
 main() {
 	if (($# == 0)) || [[ $* == --help ]] || [[ $* == -h ]]; then
 		usage
@@ -94,21 +101,27 @@ main() {
 			shift
 			USER_DICT=$1
 			;;
+		--word)
+			shift
+			GDWORD=$1
+			;;
+		--sentence)
+			shift
+			GDSEARCH=$1
+			;;
 		*)
-			GDWORD="${GDWORD}$1"
+			die "Invalid argument passed."
 			;;
 		esac
 		shift
 	done
 
-	clip_sentence=$(xclip -o -sel primary | sanitize_input)
-	if [[ "$clip_sentence" != *"$GDWORD"* ]]; then
-		xclip -i -sel primary <<<"$GDWORD"
-		clip_sentence=$GDWORD
+	if [[ -z $GDSEARCH ]] || [[ -z $GDWORD ]]; then
+		die "Not enough parameters."
 	fi
 
 	echo '<div class="gd-mecab">'
-	echo "$clip_sentence" | mecab_split | highlight_word "$GDWORD"
+	echo "$GDSEARCH" | sanitize_input | mecab_split | highlight_word "$GDWORD"
 	echo '</div>'
 	print_css
 }
