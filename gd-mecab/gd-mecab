@@ -5,6 +5,8 @@ set -euo pipefail
 # Requires installing mecab
 # Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html.
 
+TEMP_FILE=/tmp/mecab-cache
+
 # Default path to user_dic.dic, assuming that the user ran `make install`.
 USER_DICT=/usr/share/gd-tools/user_dic.dic
 
@@ -13,7 +15,7 @@ GDWORD=""
 GDSEARCH=""
 
 sanitize_input() {
-	sed -E 's,[a-z]+, ,Ig'
+	sed -E 's,[a-z]+, ,Ig; s,\n, ,g'
 }
 
 usage() {
@@ -82,7 +84,7 @@ highlight_word() {
 
 die() {
 	echo "$*" >&2
-	notify-send "$(basename -- $0)" "$*" &
+	notify-send "$(basename -- "$0")" "$*" &
 	exit 1
 }
 
@@ -120,9 +122,24 @@ main() {
 		die "Not enough parameters."
 	fi
 
+	local -r input=$(echo "$GDSEARCH" | sanitize_input)
+	local -r output=$(grep -Fxs -A1 "$input" -- "$TEMP_FILE")
+
 	echo '<div class="gd-mecab">'
-	echo "$GDSEARCH" | sanitize_input | mecab_split | highlight_word "$GDWORD"
+	if [[ -n $output ]]; then
+		echo "$output" |
+			tail -1 |
+			highlight_word "$GDWORD"
+	else
+		echo "$input" |
+			tee -a "$TEMP_FILE" |
+			mecab_split |
+			tee -a "$TEMP_FILE" |
+			highlight_word "$GDWORD"
+		printf -- '\n\n' >> "$TEMP_FILE"
+	fi
 	echo '</div>'
+
 	print_css
 }
 
