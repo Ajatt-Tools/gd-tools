@@ -1,0 +1,121 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Requires installing mecab
+
+# Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html.
+
+FONT_SIZE=2rem
+GDWORD=""
+# Default path to user_dic.dic, assuming that the user ran `make install`.
+USER_DICT=/usr/share/gd-tools/user_dic.dic
+
+if ! command -v mecab &>/dev/null; then
+	echo "Error: MeCab is not installed. Please install MeCab and try again."
+	exit 1
+fi
+
+sanitize_input() {
+	sed -E 's,[a-z]+, ,Ig'
+}
+
+usage() {
+	local -r bn=$(basename -- "$0")
+	cat <<-EOF
+		usage: $bn [OPTIONS] WORD
+
+		echo input back to GoldenDict as HTML with sentence split into parts
+
+		OPTIONS
+	EOF
+	column -t -s'|' <<-EOF
+		  --user-dict PATH|path to the user dictionary.
+		  --font-size SIZE|font size. The default value is 30px
+	EOF
+}
+
+print_css() {
+	cat <<-EOF
+		<style>
+			.gd-mecab {
+				font-size: ${FONT_SIZE:-2rem};
+				margin-bottom: 0.05em;
+				margin-top: -0.2em;
+				color: #1268c3;
+				font-weight: normal;
+			}
+
+			.gd-mecab a {
+				display: inline-block;
+				font-weight: normal;
+				color: royalblue;
+				text-decoration: none;
+				border-bottom: dashed 2px currentColor;
+			}
+
+			.gd-mecab a b {
+				background-color: #ddeeff;
+				border-radius: 0.2rem;
+				font-weight: 500;
+			}
+		</style>
+	EOF
+}
+
+highlight_word() {
+	local target_word=$* search=""
+	search=$(cat -- -)
+	# Highlights first occurence at the moment, which is obviously bad
+	for ((i=0; i<${#target_word}; i++)); do
+	  search=$(echo "$search" | sed "s|>${target_word:$i:1}</a>|><b>${target_word:$i:1}</b></a>|")
+	done
+	echo "$search"
+}
+
+analyze() {
+	sentence=$1
+	for ((index=0; index<${#1}; index++)); do
+	  longest=1
+	  for ((i=2; i<${#sentence}-$index+1; i++)); do
+	    grep -q -F -x "${sentence:$index:$i}" < ./words.txt && longest=$i
+	  done
+	  printf "<a href=\"bword:${1:$index:$longest}\">${1:$index:1}</a>"
+	done
+}
+
+main() {
+	if (($# == 0)) || [[ $* == --help ]] || [[ $* == -h ]]; then
+		usage
+		exit
+	fi
+	while (($# > 0)); do
+		case $1 in
+		--font-size)
+			shift
+			FONT_SIZE=$1
+			;;
+		--user-dict)
+			shift
+			USER_DICT=$1
+			;;
+		*)
+			GDWORD="${GDWORD}$1"
+			;;
+		esac
+		shift
+	done
+
+	clip_sentence=$(xclip -o -sel secondary || true)
+	if [[ "$clip_sentence" == *"$GDWORD"* ]]; then
+	    output=$(echo "$clip_sentence" | highlight_word "$GDWORD")
+	else
+	    output=$(analyze "$GDWORD")
+	    xclip -i -sel secondary <<<"$output"
+	fi
+
+	printf "<div class=\"gd-mecab\"> %s </div>" "$output"
+	print_css
+}
+
+main "$@"
