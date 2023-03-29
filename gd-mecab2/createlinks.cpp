@@ -2,6 +2,8 @@
 #include <iostream>
 #include <sstream>
 
+//TODO: Highlight word
+//TODO: Highlight whole thing only if first gdword is everything
 std::string search(std::string searchString, marisa::Agent *agent, marisa::Trie *trie){
   std::size_t longestlen = 3;
 
@@ -45,7 +47,7 @@ void print_css() {
 
 int main(int argc, char* argv[]) {
   if (argc < 3) {
-    std::cout << "You need to provide 2 arguments." << std::endl;
+    std::cout << "Usage: " << argv[0] << " WORD SENTENCE" << std::endl;
     return 1;
   }
   std::string gdword = argv[1];
@@ -55,9 +57,24 @@ int main(int argc, char* argv[]) {
   trie.load("words.dic");
   marisa::Agent agent;
 
+  int byte;
   std::cout << "<div class=\"gd-mecab\">" << std::endl;
-  for (size_t i = 0; i < gdsearch.length(); i+=3)
-    std::cout << "<a href=\"bword:" << search(gdsearch.substr(i), &agent, &trie) << "\">" << gdsearch.substr(i,3) << "</a>";
+  for (size_t i = 0; i < gdsearch.length(); i++)
+  {
+    // See `man charsets` -> Unicode for explanation of below
+    if ((gdsearch[i] & 0xC0) == 0x80) // intermediate unicode char
+      continue;
+    else if ((gdsearch[i]) & 0xF0 == 0xE0) // Start of 3 byte sequence
+      byte = 3;
+    else if ((gdsearch[i]) & 0x80 == 0x00) // Start of ASCII character
+      byte = 1;
+    else if ((gdsearch[i]) & 0xE0 == 0xC0)
+      byte = 2;
+    else if ((gdsearch[i]) & 0xF8 == 0xF0)
+      byte = 4;
+
+    std::cout << "<a href=\"bword:" << search(gdsearch.substr(i), &agent, &trie) << "\">" << gdsearch.substr(i,byte) << "</a>";
+  }
   std::cout << "</div>" << std::endl;
   print_css();
 
