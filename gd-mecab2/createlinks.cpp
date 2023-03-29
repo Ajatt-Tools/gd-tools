@@ -64,13 +64,13 @@ int main(int argc, char* argv[]) {
     // See `man charsets` -> Unicode for explanation of below
     if ((gdsearch[i] & 0xC0) == 0x80) // intermediate unicode char
       continue;
-    else if ((gdsearch[i]) & 0xF0 == 0xE0) // Start of 3 byte sequence
+    else if ((gdsearch[i] & 0xF0) == 0xE0) // Start of 3 byte sequence
       byte = 3;
-    else if ((gdsearch[i]) & 0x80 == 0x00) // Start of ASCII character
+    else if ((gdsearch[i] & 0x80) == 0x00) // Start of ASCII character
       byte = 1;
-    else if ((gdsearch[i]) & 0xE0 == 0xC0)
+    else if ((gdsearch[i] & 0xE0) == 0xC0)
       byte = 2;
-    else if ((gdsearch[i]) & 0xF8 == 0xF0)
+    else if ((gdsearch[i] & 0xF8) == 0xF0)
       byte = 4;
 
     std::cout << "<a href=\"bword:" << search(gdsearch.substr(i), &agent, &trie) << "\">" << gdsearch.substr(i,byte) << "</a>";
