@@ -4,8 +4,8 @@
 
 //TODO: Highlight word
 //TODO: Highlight whole thing only if first gdword is everything
-std::string search(std::string searchString, marisa::Agent *agent, marisa::Trie *trie){
-  std::size_t longestlen = 3;
+std::string search(std::string searchString, marisa::Agent *agent, marisa::Trie *trie, int byte){
+  std::size_t longestlen = byte;
 
   agent->set_query(searchString);
   while (trie->common_prefix_search(*agent))
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
     else if ((gdsearch[i] & 0xF8) == 0xF0)
       byte = 4;
 
-    std::cout << "<a href=\"bword:" << search(gdsearch.substr(i), &agent, &trie) << "\">" << gdsearch.substr(i,byte) << "</a>";
+    std::cout << "<a href=\"bword:" << search(gdsearch.substr(i), &agent, &trie, byte) << "\">" << gdsearch.substr(i,byte) << "</a>";
   }
   std::cout << "</div>" << std::endl;
   print_css();
