@@ -8,8 +8,7 @@
 `g++ -o createlinks createlinks.cpp -lmarisa`
 
 ### Usage
-`createlinks %GDWORD% %GDSEARCH%`. No highlighting yet, just a quick preview.\
-The path to `words.dic` in the source code has to be configured though probably.
+`createlinks %GDWORD% %GDSEARCH% PATH_TO_DIC_FILE`.
 
 ### Building index
 `marisa-build < keyset.txt > keyset.dic` where keyset is a newline seperated list of words. More information at https://www.s-yata.jp/marisa-trie/docs/readme.en.html
