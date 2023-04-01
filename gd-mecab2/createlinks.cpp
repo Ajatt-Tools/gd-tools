@@ -2,8 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-//TODO: Highlight word
-//TODO: Highlight whole thing only if first gdword is everything
+//TODO: Autosearch first bword
 std::string search(std::string searchString, marisa::Agent *agent, marisa::Trie *trie, int byte){
   std::size_t longestlen = byte;
 
@@ -46,18 +45,20 @@ void print_css() {
 }
 
 int main(int argc, char* argv[]) {
-  if (argc < 3) {
-    std::cout << "Usage: " << argv[0] << " WORD SENTENCE" << std::endl;
+  if (argc < 4) {
+    std::cout << "Usage: " << argv[0] << " WORD SENTENCE PATH_TO_DIC" << std::endl;
     return 1;
   }
   std::string gdword = argv[1];
   std::string gdsearch = argv[2];
+  const char* path = argv[3];
 
   marisa::Trie trie;
-  trie.load("words.dic");
+  /* trie.load("words.dic"); */
+  trie.load(path);
   marisa::Agent agent;
 
-  int byte;
+  int byte, j = 0;
   std::cout << "<div class=\"gd-mecab\">" << std::endl;
   for (size_t i = 0; i < gdsearch.length(); i++)
   {
@@ -73,8 +74,30 @@ int main(int argc, char* argv[]) {
     else if ((gdsearch[i] & 0xF8) == 0xF0)
       byte = 4;
 
-    std::cout << "<a href=\"bword:" << search(gdsearch.substr(i), &agent, &trie, byte) << "\">" << gdsearch.substr(i,byte) << "</a>";
+    std::string bword = search(gdsearch.substr(i), &agent, &trie, byte);
+    std::cout << "<a href=\"bword:" << bword << "\">";
+
+    if (bword.compare(gdword) == 0)
+      j = bword.length();
+    if (j > 0)
+    {
+      std::cout << "<b>" << gdsearch.substr(i,byte) << "</b></a>";
+      j-=byte;
+    }
+    else
+      std::cout << gdsearch.substr(i,byte) << "</a>";
   }
+  std::cout << "<br>";
+
+  // Show available entries for smaller substrings
+  std::string word;
+  agent.set_query(gdword);
+  while (trie.common_prefix_search(agent) && agent.key().length() != gdword.length())
+  {
+    word = std::string(agent.key().ptr(), agent.key().length());
+    std::cout << "<a href=\"bword:" << word << "\">" << word << "</a><br>";
+  }
+
   std::cout << "</div>" << std::endl;
   print_css();
 
