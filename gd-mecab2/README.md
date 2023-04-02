@@ -2,7 +2,7 @@
 
 
 ### Dependencies
-[marisa-trie](https://github.com/s-yata/marisa-trie) if you are lucky, the AUR package `mingw-w64-marisa` works too
+[marisa-trie](https://github.com/s-yata/marisa-trie)
 
 ### Compilation
 `g++ -o createlinks createlinks.cpp -lmarisa`
