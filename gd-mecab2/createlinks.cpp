@@ -1,6 +1,7 @@
-#include <marisa/trie.h>
 #include <iostream>
 #include <sstream>
+#include <fstream>
+#include <marisa/trie.h>
 
 //TODO: Autosearch first bword
 std::string search(std::string searchString, marisa::Agent *agent, marisa::Trie *trie, int byte){
@@ -45,17 +46,24 @@ void print_css() {
 }
 
 int main(int argc, char* argv[]) {
-  if (argc < 4) {
-    std::cout << "Usage: " << argv[0] << " WORD SENTENCE PATH_TO_DIC" << std::endl;
+  if (argc < 3) {
+    std::cout << "Usage: " << argv[0] << " WORD SENTENCE [PATH_TO_DIC]" << std::endl;
     return 1;
   }
   std::string gdword = argv[1];
   std::string gdsearch = argv[2];
-  const char* path = argv[3];
+  const char* dict_path = argc > 3 ? argv[3] : "/usr/share/gd-tools/words.dic";
 
   marisa::Trie trie;
-  /* trie.load("words.dic"); */
-  trie.load(path);
+
+  std::ifstream file(dict_path);
+  if (file.good())
+    trie.load(dict_path);
+  else
+  {
+    std::cout << "Error. The dictionary file: \"" << dict_path << "\" does not exist." << std::endl;
+    return 1;
+  }
   marisa::Agent agent;
 
   int byte, j = 0;
