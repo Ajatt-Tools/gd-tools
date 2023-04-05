@@ -6,7 +6,7 @@
 `gd-marisa %GDWORD% %GDSEARCH% [PATH_TO_DIC_FILE]`. The path to the .dic file defaults to `/usr/share/gd-tools/words.dic`
 
 ### Dependencies
-[marisa-trie](https://github.com/s-yata/marisa-trie). The official Arch Linux package is called (marisa)[https://archlinux.org/packages/community/x86_64/marisa/].
+[marisa-trie](https://github.com/s-yata/marisa-trie). The official Arch Linux package is called [marisa](https://archlinux.org/packages/community/x86_64/marisa/).
 
 ### Compilation
 `g++ -o createlinks createlinks.cpp -lmarisa`
