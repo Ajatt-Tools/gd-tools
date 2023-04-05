@@ -1,6 +1,6 @@
 # GoldenDitct tools
 
-A set of helpful programs to enchance goldendict for immersion learning.
+A set of helpful programs to enhance goldendict for immersion learning.
 
 ## Table of Contents
 - [Installation](#installation)
