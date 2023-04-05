@@ -1,6 +1,49 @@
-## GoldenDict tools
+# GoldenDitct tools
 
 A set of helpful programs to enchance goldendict for immersion learning.
+
+## Table of Contents
+- [Installation](#installation)
+- [gd-marisa](#gd-marisa)
+- [gd-mecab](#gd-mecab)
+- [gd-pics](#gd-pics)
+- [gd-strokeorder](#gd-strokeorder)
+- [gd-massif](#gd-massif)
+- [gd-ankisearch](#gd-ankisearch)
+
+## Installation
+Run `sudo make install`.\
+Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html and Command Line `<name of script> %GDWORD% %GDSEARCH%`.\
+Optionally add arguments, such as: `gd-mecab %GDWORD% --user-dict <path> --font-size 20px`.\
+Now this program is treated as a dictionary and you can add it under Dictionaries or Groups.
+
+## gd-marisa
+
+This script outputs the sentence with clickable characters and searches for the longest available dictionary entry (from a predefined list) beginning at that character.
+For deinflection it currently relies on the hunspell dictionary by epistularum, available [here](https://github.com/epistularum/hunspell-ja-deinflection).
+It also provides links of available entries of smaller substrings.
+
+![demo](https://user-images.githubusercontent.com/50422430/229341045-96283fc9-8ecb-49bb-a011-abd2d3e4e43e.gif)
+
+**Usage**
+
+`gd-marisa %GDWORD% %GDSEARCH% [PATH_TO_DIC_FILE]`. The path to the .dic file defaults to `/usr/share/gd-tools/words.dic`
+
+**Dependencies**
+
+[marisa-trie](https://github.com/s-yata/marisa-trie). The official Arch Linux package is called [marisa](https://archlinux.org/packages/community/x86_64/marisa/), but it's already a dependency of goldendict.
+
+**Compilation**
+
+If you don't want to use the provided binary, you can also compile the program yourself with: 
+```g++ -o createlinks createlinks.cpp -lmarisa```
+
+**Building an own index from a set of words**
+
+If you would like to make changes to found words, you can also create an own index from a newline seperated list of words (here called `keyset.txt`):
+```marisa-build < keyset.txt > keyset.dic```
+
+More information at https://www.s-yata.jp/marisa-trie/docs/readme.en.html
 
 ## gd-mecab
 
@@ -26,7 +69,7 @@ gd-mecab --word %GDWORD% --sentence %GDSEARCH%
 * `--font-size SIZE` the font size to be used, e.g. `30px`.
 * `--user-dict FILE` full path to the user_dic.dic file. This is done automatically if you install via make.
 
-## gd-pictures
+## gd-pics
 
 This script shows the top 5 pictures from Bing images for the given search string.
 
@@ -64,9 +107,3 @@ This script searches Anki cards in your collection that contain %GDWORD%.
 ```
 gd-ankisearch --field-name VocabKanji %GDWORD%
 ```
-
-## Installation
-Run `sudo make install`.\
-Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script as type html and Command Line `<name of script> %GDWORD%`.\
-Optionally add arguments, such as: `gd-mecab %GDWORD% --user-dict <path> --font-size 20px`.\
-Now this program is treated as a dictionary and you can add it under Dictionaries or Groups.
