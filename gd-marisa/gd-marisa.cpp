@@ -18,7 +18,7 @@ void print_css() {
   std::stringstream ss;
   ss << R"(
     <style>
-      .gd-mecab {
+      .gd-marisa {
         font-size: 2rem;
         margin-bottom: 0.05em;
         margin-top: -0.2em;
@@ -26,7 +26,7 @@ void print_css() {
         font-weight: normal;
       }
 
-      .gd-mecab a {
+      .gd-marisa a {
         display: inline-block;
         font-weight: normal;
         color: royalblue;
@@ -34,7 +34,7 @@ void print_css() {
         border-bottom: dashed 2px currentColor;
       }
 
-      .gd-mecab a b {
+      .gd-marisa a b {
         background-color: #ddeeff;
         border-radius: 0.2rem;
         font-weight: 500;
@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
   marisa::Agent agent;
 
   int byte, j = 0;
-  std::cout << "<div class=\"gd-mecab\">" << std::endl;
+  std::cout << "<div class=\"gd-marisa\">" << std::endl;
   for (size_t i = 0; i < gdsearch.length(); i++)
   {
     // See `man charsets` -> Unicode for explanation of below
