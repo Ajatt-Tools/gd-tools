@@ -77,6 +77,8 @@ print_css() {
 				height: 3px;
 				border-radius: 100vmax;
 				vertical-align: middle;
+				cursor: text;
+				user-select: text;
 			}
 			.gd-mecab a b {
 				background-color: #ddeeff;
