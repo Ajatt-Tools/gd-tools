@@ -7,7 +7,7 @@
 std::string search(std::string searchString, marisa::Agent *agent, marisa::Trie *trie, int byte){
   std::size_t longestlen = byte;
 
-  agent->set_query(searchString);
+  agent->set_query(searchString.c_str());
   while (trie->common_prefix_search(*agent))
     longestlen = agent->key().length();
 
@@ -99,7 +99,7 @@ int main(int argc, char* argv[]) {
 
   // Show available entries for smaller substrings
   std::string word;
-  agent.set_query(gdword);
+  agent.set_query(gdword.c_str());
   while (trie.common_prefix_search(agent) && agent.key().length() != gdword.length())
   {
     word = std::string(agent.key().ptr(), agent.key().length());

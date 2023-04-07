@@ -1,19 +1,31 @@
 PROG = gd-tools
 PREFIX ?= /usr
 
-EXEC_FILES := $(wildcard **/gd-*)
+SHELL_FILES := $(wildcard **/gd-*.sh)
+CPP_FILES := $(wildcard **/gd-*.cpp)
 FONT_FILES := $(wildcard **/*.ttf)
 EXTRA_FILES := $(wildcard **/*.dic)
 
-EXEC_DEST := $(patsubst %, $(PREFIX)/bin/%, $(notdir $(EXEC_FILES)))
-FONT_DEST := $(patsubst %, $(PREFIX)/share/fonts/$(PROG)/%, $(notdir $(FONT_FILES)))
-EXTRA_DEST := $(patsubst %, $(PREFIX)/share/$(PROG)/%, $(notdir $(EXTRA_FILES)))
+BUILD_FILES := $(patsubst %, build/%, $(notdir $(basename $(CPP_FILES))))
+
+EXEC_INSTALL_DEST := $(patsubst %, $(PREFIX)/bin/%, $(notdir $(basename $(SHELL_FILES) $(CPP_FILES))))
+FONT_INSTALL_DEST := $(patsubst %, $(PREFIX)/share/fonts/$(PROG)/%, $(notdir $(FONT_FILES)))
+DICT_INSTALL_DEST := $(patsubst %, $(PREFIX)/share/$(PROG)/%, $(notdir $(EXTRA_FILES)))
 
 .PHONY: all
-all:
-	@echo -e "\033[1;32mThis program doesn't need to be built. Run \"make install\".\033[0m"
+all: build $(BUILD_FILES)
 
-$(PREFIX)/bin/gd-%: **/gd-%
+build:
+	@echo -e '\033[1;32mBuilding the program...\033[0m'
+	mkdir -p build
+
+build/gd-%: **/gd-%.cpp
+	g++ $< -lmarisa -o $@
+
+$(PREFIX)/bin/gd-%: build/gd-%
+	install -Dm755 $< $@
+
+$(PREFIX)/bin/gd-%: **/gd-%.sh
 	install -Dm755 $< $@
 
 $(PREFIX)/share/fonts/$(PROG)/%.ttf: **/%.ttf
@@ -23,17 +35,17 @@ $(PREFIX)/share/$(PROG)/%.dic: **/%.dic
 	install -Dm644 $< $@
 
 .PHONY: install
-install: $(EXEC_DEST) $(FONT_DEST) $(EXTRA_DEST)
+install: build $(EXEC_INSTALL_DEST) $(FONT_INSTALL_DEST) $(DICT_INSTALL_DEST)
 	@echo -e '\033[1;32mInstalling the program...\033[0m'
 
 .PHONY: uninstall
 uninstall:
 	@echo -e '\033[1;32mUninstalling the program...\033[0m'
-	rm -- $(EXEC_DEST)
+	rm -- $(EXEC_INSTALL_DEST)
 	rm -rf -- $(PREFIX)/share/$(PROG)
 	rm -rf -- $(PREFIX)/share/fonts/$(PROG)
 
 .PHONY: clean
 clean:
 	@echo -e '\033[1;32mCleaning up...\033[0m'
-	rm -rf -- out
+	rm -rf -- out build
