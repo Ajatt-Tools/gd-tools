@@ -15,7 +15,10 @@ GDWORD=""
 GDSEARCH=""
 
 sanitize_input() {
-	sed -E 's,[a-z]+, ,Ig; s,\n, ,g'
+	sed -E \
+		-e 's, +,,g' \
+		-e 's,[a-z]+, ,Ig' \
+		-e 's,\n, ,g'
 }
 
 usage() {
@@ -40,9 +43,9 @@ mecab_split() {
 	fi
 
 	mecab \
-		--node-format='<a href="bword:%m">%m</a> ' \
-		--unk-format='<a href="bword:%m">%m</a> ' \
-		--eos-format='<br> ' \
+		--node-format='<a href="bword:%m">%m</a>' \
+		--unk-format='<a href="bword:%m">%m</a>' \
+		--eos-format='<br>' \
 		--userdic="${USER_DICT}"
 
 }
@@ -50,22 +53,31 @@ mecab_split() {
 print_css() {
 	cat <<-EOF
 		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
 			.gd-mecab {
 				font-size: ${FONT_SIZE:-2rem};
-				margin-bottom: 0.05em;
-				margin-top: -0.2em;
 				color: #1268c3;
 				font-weight: normal;
 			}
-
 			.gd-mecab a {
 				display: inline-block;
 				font-weight: normal;
 				color: royalblue;
 				text-decoration: none;
-				border-bottom: dashed 2px currentColor;
 			}
-
+			.gd-mecab a:not(:last-of-type)::after {
+				content: "";
+				display: inline-block;
+				background-color: #333;
+				margin: 4px;
+				width: 3px;
+				height: 3px;
+				border-radius: 100vmax;
+				vertical-align: middle;
+			}
 			.gd-mecab a b {
 				background-color: #ddeeff;
 				border-radius: 0.2rem;
@@ -136,7 +148,7 @@ main() {
 			mecab_split |
 			tee -a "$TEMP_FILE" |
 			highlight_word "$GDWORD"
-		printf -- '\n\n' >> "$TEMP_FILE"
+		printf -- '\n\n' >>"$TEMP_FILE"
 	fi
 	echo '</div>'
 
