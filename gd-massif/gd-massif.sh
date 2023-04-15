@@ -22,17 +22,21 @@ fetch_sentences() {
 print_css() {
 	cat <<-EOF
 		<style>
-		li {
+		.gd-massif {
+			padding-inline-start: 0;
+			margin-inline-start: 0;
+		}
+		.gd-massif li {
 			font-size: 1.5rem;
 			list-style: none;
 		}
-		.result-meta {
+		.gd-massif .result-meta {
 			font-size: 12px;
 		}
-		a {
+		.gd-massif a {
 			color: royalblue;
 		}
-		em {
+		.gd-massif em {
 			font-style: normal;
 			background-color: #ddeeff;
 			border-radius: 0.2rem;
@@ -42,7 +46,7 @@ print_css() {
 }
 
 main() {
-	echo '<ul>'
+	echo '<ul class="gd-massif">'
 	fetch_sentences || true
 	echo '</ul>'
 	print_css
