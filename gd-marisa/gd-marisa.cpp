@@ -45,7 +45,7 @@ void print_css() {
   std::cout << ss.str() << std::endl;
 }
 
-bool is_space(char c) {
+bool is_space(unsigned char c) {
   return std::isspace(c);
 }
 
@@ -76,7 +76,7 @@ int main(int argc, char* argv[]) {
   }
   marisa::Agent agent;
 
-  int byte, j = 0;
+  int byte{0}, j{0};
   std::cout << "<div class=\"gd-marisa\">" << std::endl;
   for (size_t i = 0; i < gdsearch.length(); i++)
   {
