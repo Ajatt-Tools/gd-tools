@@ -20,7 +20,7 @@ build:
 	mkdir -p build
 
 build/gd-%: **/gd-%.cpp
-	g++ $< -lmarisa -o $@
+	g++ -std=c++23 $< -lmarisa -o $@
 
 $(PREFIX)/bin/gd-%: build/gd-%
 	install -Dm755 $< $@

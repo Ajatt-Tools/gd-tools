@@ -45,6 +45,10 @@ void print_css() {
   std::cout << ss.str() << std::endl;
 }
 
+bool is_space(char c) {
+  return std::isspace(c);
+}
+
 int main(int argc, char* argv[]) {
   if (argc < 3) {
     std::cout << "Usage: " << argv[0] << " WORD SENTENCE [PATH_TO_DIC]" << std::endl;
@@ -52,6 +56,12 @@ int main(int argc, char* argv[]) {
   }
   std::string gdword = argv[1];
   std::string gdsearch = argv[2];
+
+  // remove spaces
+  // TODO sanitize input
+  std::erase_if(gdword, is_space);
+  std::erase_if(gdsearch, is_space);
+
   const char* dict_path = argc > 3 ? argv[3] : "/usr/share/gd-tools/words.dic";
 
   marisa::Trie trie;
