@@ -1,4 +1,4 @@
-# GoldenDitct tools
+# GoldenDict tools
 
 A set of helpful programs to enhance goldendict for immersion learning.
 
