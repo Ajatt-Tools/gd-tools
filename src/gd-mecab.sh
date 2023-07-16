@@ -40,7 +40,7 @@ sanitize_input() {
 usage() {
 	local -r bn=$(basename -- "$0")
 	cat <<-EOF
-		usage: $bn [OPTIONS] WORD
+		usage: $bn [OPTIONS] --word %GDWORD% --sentence %GDSEARCH%
 
 		echo input back to GoldenDict as HTML with sentence split into parts
 
@@ -158,6 +158,10 @@ main() {
 		esac
 		shift
 	done
+
+	if ! [[ -f $USER_DICT ]]; then
+		die "Provided user dictionary doesn't exist or isn't a file."
+	fi
 
 	if [[ -z $GDSEARCH ]] || [[ -z $GDWORD ]]; then
 		die "Not enough parameters."
