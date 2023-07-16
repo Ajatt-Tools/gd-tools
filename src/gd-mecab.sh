@@ -52,6 +52,16 @@ usage() {
 	EOF
 }
 
+find_dicdir() {
+	dirname -- "$(
+		find \
+			/usr/lib/mecab/dic/mecab-ipadic-neologd \
+			/usr/lib/mecab/dic \
+			~/.local/share/Anki2/addons21 \
+			-type f -name dicrc -print -quit
+	)"
+}
+
 mecab_split() {
 	if ! command -v mecab &>/dev/null; then
 		echo "Error: MeCab is not installed. Please install MeCab and try again."
@@ -59,9 +69,10 @@ mecab_split() {
 	fi
 
 	mecab \
-		--node-format='<a href="bword:%m">%m</a>' \
+		--node-format='<a href="bword:%f[6]">%m</a>' \
 		--unk-format='<a href="bword:%m">%m</a>' \
 		--eos-format='<br>' \
+		--dicdir="$(find_dicdir)" \
 		--userdic="${USER_DICT}"
 
 }
