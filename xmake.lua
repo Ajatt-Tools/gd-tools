@@ -31,6 +31,11 @@ end
 
 -- Run clang-format before build
 before_build(function(target)
+    import("lib.detect.find_program")
+    local clang_format = find_program("clang-format")
+    if not clang_format then
+        return print("Skipped clang-format run.")
+    end
     local paramlist = {"--sort-includes", "-i"}
     for _, file in pairs(target:headerfiles()) do
         table.insert(paramlist, file)
@@ -38,7 +43,8 @@ before_build(function(target)
     for _, file in pairs(target:sourcefiles()) do
         table.insert(paramlist, file)
     end
-    os.execv("clang-format", paramlist)
+    os.execv(clang_format, paramlist)
+    print("Finished clang-format.")
 end)
 
 -- Default global install dir.
