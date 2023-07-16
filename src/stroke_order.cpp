@@ -16,6 +16,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "kana_conv.h"
 #include "precompiled.h"
 #include "util.h"
 
