@@ -112,6 +112,8 @@ This script shows example sentences from https://massif.la/
 
 This script searches Anki cards in your collection that contain %GDWORD%.
 
+![screenshot](https://github.com/Ajatt-Tools/gd-tools/assets/69171671/45a6b3a1-97de-439c-8f17-bd6f81d81d73)
+
 **Arguments:**
 
 * `--field-name` `NAME` optional field to limit search to.
@@ -121,5 +123,5 @@ This script searches Anki cards in your collection that contain %GDWORD%.
 **Example invocation:**
 
 ```
-gd-ankisearch --field-name VocabKanji %GDWORD%
+gd-ankisearch --field-name VocabKanji --show-fields VocabKanji,SentKanji,Image,SentAudio --word %GDWORD%
 ```
