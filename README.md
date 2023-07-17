@@ -6,7 +6,7 @@ A set of helpful programs to enhance goldendict for immersion learning.
 - [Installation](#installation)
 - [gd-marisa](#gd-marisa)
 - [gd-mecab](#gd-mecab)
-- [gd-pics](#gd-pics)
+- [gd-images](#gd-images)
 - [gd-strokeorder](#gd-strokeorder)
 - [gd-massif](#gd-massif)
 - [gd-ankisearch](#gd-ankisearch)
