@@ -2,7 +2,7 @@
 
 # This script can be used instead of `make install`.
 
-set -euo pipefail
+set -xeuo pipefail
 
 xmake f -m release
 xmake build -vwy
