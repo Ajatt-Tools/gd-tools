@@ -91,6 +91,12 @@ static constexpr std::string_view css_style = R"EOF(<style>
   max-height: 200px;
   max-width: 200px;
 }
+.gd-ankisearch-table a {
+  color: RoyalBlue;
+}
+.gd-ankisearch-table a:hover {
+  filter: hue-rotate(-20deg) brightness(120%);
+}
 </style>
 )EOF";
 
