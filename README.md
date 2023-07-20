@@ -15,8 +15,23 @@ A set of helpful programs to enhance goldendict for immersion learning.
 
 First, [install goldendict-ng](https://tatsumoto-ren.github.io/blog/setting-up-goldendict.html).
 
-Run `./quickinstall.sh`.
-To build the `gd-tools` you need to install `xmake` and `gcc` (13.1 and newer).
+### Pacman-based distros
+
+Install [gd-tools-git](https://aur.archlinux.org/packages/gd-tools-git) from the AUR.
+
+### Other distros
+
+If you want to package `gd-tools` for your distro and know how to do it,
+please create a pull request.
+
+<details>
+
+<summary>Manual installation</summary>
+
+1) To build the `gd-tools` you need to install `xmake` and `gcc` (13.1 and newer).
+2) Run `./quickinstall.sh`.
+
+</details>
 
 Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add the installed executables.
 Set type to `html`.
