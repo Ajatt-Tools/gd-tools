@@ -6,4 +6,4 @@ set -xeuo pipefail
 
 xmake f -m release
 xmake build -vwy
-xmake install -v --all --installdir=~/.local/bin/ 
+xmake install -v --all --installdir=~/.local/
