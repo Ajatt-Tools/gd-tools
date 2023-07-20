@@ -242,17 +242,18 @@ void print_table_header(search_params const& params)
 auto card_json_to_obj(nlohmann::json const& card_json) -> card_info
 {
   return {
-    card_json["cardId"],
-    card_json["queue"],
-    card_json["type"],
-    card_json["deckName"], //
-    [&card_json]() {
-      std::map<std::string, std::string> result;
-      for (auto const& element: card_json["fields"].items()) {
-        result.emplace(element.key(), element.value()["value"]);
-      }
-      return result;
-    }(), //
+    .id = card_json["cardId"],
+    .queue = card_json["queue"],
+    .type = card_json["type"],
+    .deck_name = card_json["deckName"], //
+    .fields =
+      [&card_json]() {
+        std::map<std::string, std::string> result;
+        for (auto const& element: card_json["fields"].items()) {
+          result.emplace(element.key(), element.value()["value"]);
+        }
+        return result;
+      }(), //
   };
 }
 
