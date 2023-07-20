@@ -88,11 +88,6 @@ struct marisa_params
   }
 };
 
-auto is_space(char const ch) -> bool
-{
-  return static_cast<bool>(std::isspace(static_cast<unsigned char>(ch)));
-}
-
 auto longest_result(
   marisa::Agent& agent,
   marisa::Trie const& trie,

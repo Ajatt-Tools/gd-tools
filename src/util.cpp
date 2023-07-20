@@ -52,3 +52,18 @@ auto determine_card_class(int64_t const card_queue, int64_t const card_type) -> 
   }
   return "unknown";
 }
+
+auto is_space(char const ch) -> bool
+{
+  return static_cast<bool>(std::isspace(static_cast<unsigned char>(ch)));
+}
+
+auto strtrim(std::string_view str) -> std::string
+{
+  auto v = std::views::all(str) //
+           | std::views::reverse //
+           | std::views::drop_while(is_space) //
+           | std::views::reverse //
+           | std::views::drop_while(is_space);
+  return std::string{ v.begin(), v.end() };
+}

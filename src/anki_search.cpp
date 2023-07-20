@@ -92,7 +92,8 @@ static constexpr std::string_view css_style = R"EOF(<style>
   max-width: 200px;
 }
 .gd-ankisearch-table a {
-  color: RoyalBlue;
+  color: #1b2c5d;
+  text-decoration: none;
 }
 .gd-ankisearch-table a:hover {
   filter: hue-rotate(-20deg) brightness(120%);
@@ -241,6 +242,7 @@ void print_table_header(search_params const& params)
 
 auto card_json_to_obj(nlohmann::json const& card_json) -> card_info
 {
+  // https://github.com/FooSoft/anki-connect#cardsinfo
   return {
     .id = card_json["cardId"],
     .queue = card_json["queue"],
@@ -260,8 +262,11 @@ auto card_json_to_obj(nlohmann::json const& card_json) -> card_info
 auto gd_format(std::string const& field, std::string const& media_dir) -> std::string
 {
   // Make sure GoldenDict displays images correctly by specifying the full path.
-  static std::regex const img_re("(<img[^<>]*src=\")");
-  return std::regex_replace(field, img_re, fmt::format("$1file://{}/", media_dir));
+  static std::regex const img_re{ "(<img[^<>]*src=\")" };
+  static std::regex const any_undesirables{ R"EOF(\[sound:|\]|<[^<>]+>|["'.,!?]+|…|。|、|！|？|　|・|～|\(|\))EOF" };
+  auto const link_content = strtrim(std::regex_replace(field, any_undesirables, " "));
+  auto const link_text = std::regex_replace(field, img_re, fmt::format("$1file://{}/", media_dir));
+  return link_content.empty() ? link_text : fmt::format("<a href=\"ankisearch:{}\">{}</a>", link_content, link_text);
 }
 
 void print_cards_info(search_params const& params)
@@ -280,7 +285,9 @@ void print_cards_info(search_params const& params)
     for (auto const& field: params.show_fields) {
       fmt::print(
         "<td>{}</td>",
-        card.fields.contains(field) ? gd_format(card.fields.at(field), media_dir_path) : "Not present"
+        (card.fields.contains(field) and not card.fields.at(field).empty()
+           ? gd_format(card.fields.at(field), media_dir_path)
+           : "Not present")
       );
     }
     fmt::print("</tr>\n");

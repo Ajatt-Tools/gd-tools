@@ -65,3 +65,7 @@ auto parse_number(std::string_view const s) -> std::optional<Integral>
   else
     return std::nullopt;
 };
+
+auto is_space(char const ch) -> bool;
+
+auto strtrim(std::string_view str) -> std::string;
