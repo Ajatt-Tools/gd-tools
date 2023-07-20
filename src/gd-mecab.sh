@@ -1,4 +1,20 @@
 #!/bin/bash
+#
+# gd-tools - a set of programs to enhance goldendict for immersion learning.
+# Copyright (C) 2023 Ajatt-Tools
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 set -euo pipefail
 
@@ -24,7 +40,7 @@ sanitize_input() {
 usage() {
 	local -r bn=$(basename -- "$0")
 	cat <<-EOF
-		usage: $bn [OPTIONS] WORD
+		usage: $bn [OPTIONS] --word %GDWORD% --sentence %GDSEARCH%
 
 		echo input back to GoldenDict as HTML with sentence split into parts
 
@@ -36,6 +52,16 @@ usage() {
 	EOF
 }
 
+find_dicdir() {
+	dirname -- "$(
+		find \
+			/usr/lib/mecab/dic/mecab-ipadic-neologd \
+			/usr/lib/mecab/dic \
+			~/.local/share/Anki2/addons21 \
+			-type f -name dicrc -print -quit
+	)"
+}
+
 mecab_split() {
 	if ! command -v mecab &>/dev/null; then
 		echo "Error: MeCab is not installed. Please install MeCab and try again."
@@ -43,9 +69,10 @@ mecab_split() {
 	fi
 
 	mecab \
-		--node-format='<a href="bword:%m">%m</a>' \
+		--node-format='<a href="bword:%f[6]">%m</a>' \
 		--unk-format='<a href="bword:%m">%m</a>' \
 		--eos-format='<br>' \
+		--dicdir="$(find_dicdir)" \
 		--userdic="${USER_DICT}"
 
 }
@@ -131,6 +158,10 @@ main() {
 		esac
 		shift
 	done
+
+	if ! [[ -f $USER_DICT ]]; then
+		die "Provided user dictionary doesn't exist or isn't a file."
+	fi
 
 	if [[ -z $GDSEARCH ]] || [[ -z $GDWORD ]]; then
 		die "Not enough parameters."
