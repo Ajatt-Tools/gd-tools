@@ -125,6 +125,7 @@ This script displays the handwriten form of each character
 
 ![image](https://github.com/KonstantinDjairo/gd-tools/assets/53496273/4aa7d72d-2d58-4bd3-8b3a-c2f6f3186834)
 
+You need to install the [ArmedLemon](https://github.com/KonstantinDjairo/gd-tools/blob/main/res/ArmedLemon.TTF) fonts
 
 
 ## gd-massif
