@@ -115,6 +115,15 @@ auto longest_variant(
   );
 }
 
+auto keywords_starting_with(marisa::Agent& agent, marisa::Trie const& trie, std::string const& search_str)
+  -> std::vector<std::string>
+{
+  std::vector<std::string> results{};
+  agent.set_query(search_str.c_str());
+  while (trie.common_prefix_search(agent)) { results.emplace_back(agent.key().ptr(), agent.key().length()); }
+  return results;
+}
+
 void lookup_words(marisa_params params)
 {
   std::erase_if(params.gd_word, is_space);
@@ -146,14 +155,17 @@ void lookup_words(marisa_params params)
     fmt::print("<a{} href=\"bword:{}\">{}</a>", (pos_in_gd_word > 0 ? " class=\"gd-headword\"" : ""), bword, uni_char);
   }
 
-  // Show available entries for smaller substrings
-  agent.set_query(params.gd_word.c_str());
-  fmt::print("<ul>\n");
-  while (trie.common_prefix_search(agent) and agent.key().length() != params.gd_word.length()) {
-    auto const word = std::string(agent.key().ptr(), agent.key().length());
-    fmt::print("<li><a href=\"bword:{}\">{}</a></li>\n", word, word);
+  // Show available entries for substrings starting with gdword
+  if (not params.gd_word.empty()) {
+    fmt::print("<ul>\n");
+    for (auto const& sub_word: keywords_starting_with(agent, trie, params.gd_word)) {
+      if (sub_word != params.gd_word) {
+        fmt::print("<li><a href=\"bword:{}\">{}</a></li>\n", sub_word, sub_word);
+      }
+    }
+    fmt::print("</ul>\n"); // close ul
   }
-  fmt::print("</ul>\n"); // close ul
+
   fmt::print("</div>\n"); // close div.gd-marisa
   fmt::print("{}\n", css_style);
 }
