@@ -134,9 +134,14 @@ void lookup_words(marisa_params params)
   fmt::print("<div class=\"gd-marisa\">\n");
   std::ptrdiff_t pos_in_gd_word{ 0 };
 
+  // Link longest words starting with each position in sentence.
   for (auto const [idx, uni_char]: iter_unicode_chars(params.gd_sentence)) {
-    std::string const bword =
-      longest_variant(agent, trie, params.gd_sentence.substr(idx, max_forward_search_len_bytes), uni_char.length());
+    std::string const bword = longest_variant(
+      agent, //
+      trie,
+      params.gd_sentence.substr(idx, max_forward_search_len_bytes),
+      uni_char.length()
+    );
     pos_in_gd_word = params.gd_word == bword ? bword.length() : pos_in_gd_word - uni_char.length();
     fmt::print("<a{} href=\"bword:{}\">{}</a>", (pos_in_gd_word > 0 ? " class=\"gd-headword\"" : ""), bword, uni_char);
   }
