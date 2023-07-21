@@ -25,6 +25,7 @@
 // TODO inflections; fix things like グラついた
 // 首をなでられた
 // 護り手たちがボヤいてたんだよ
+// フハハッむつまじくかかってくるがよい
 
 using namespace std::string_literals;
 static constexpr std::string_view help_text = R"EOF(usage: gd-marisa [OPTIONS]
@@ -88,6 +89,16 @@ struct marisa_params
   }
 };
 
+struct KanaInsensitiveCompare
+{
+  bool operator()(const std::string& lhs, const std::string& rhs) const
+  {
+    return hiragana_to_katakana(lhs) < hiragana_to_katakana(rhs);
+  }
+};
+
+using JpSet = std::set<std::string, KanaInsensitiveCompare>;
+
 auto longest_result(
   marisa::Agent& agent,
   marisa::Trie const& trie,
@@ -105,7 +116,7 @@ auto longest_variant(
   marisa::Trie const& trie,
   std::string const& search_str,
   std::size_t const longestlen
-)
+) -> std::string
 {
   return std::max(
     { longest_result(agent, trie, search_str, longestlen),
@@ -115,12 +126,13 @@ auto longest_variant(
   );
 }
 
-auto keywords_starting_with(marisa::Agent& agent, marisa::Trie const& trie, std::string const& search_str)
-  -> std::vector<std::string>
+auto keywords_starting_with(marisa::Agent& agent, marisa::Trie const& trie, std::string const& search_str) -> JpSet
 {
-  std::vector<std::string> results{};
-  agent.set_query(search_str.c_str());
-  while (trie.common_prefix_search(agent)) { results.emplace_back(agent.key().ptr(), agent.key().length()); }
+  JpSet results{};
+  for (auto const& variant: { search_str, hiragana_to_katakana(search_str), katakana_to_hiragana(search_str) }) {
+    agent.set_query(variant.c_str());
+    while (trie.common_prefix_search(agent)) { results.emplace(agent.key().ptr(), agent.key().length()); }
+  }
   return results;
 }
 
