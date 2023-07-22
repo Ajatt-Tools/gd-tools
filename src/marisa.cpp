@@ -171,7 +171,7 @@ void lookup_words(marisa_params params)
   if (not params.gd_word.empty()) {
     fmt::print("<ul>\n");
     for (auto const& sub_word: keywords_starting_with(agent, trie, params.gd_word)) {
-      if (sub_word != params.gd_word) {
+      if (hiragana_to_katakana(sub_word) != hiragana_to_katakana(params.gd_word)) {
         fmt::print("<li><a href=\"bword:{}\">{}</a></li>\n", sub_word, sub_word);
       }
     }
