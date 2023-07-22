@@ -2,6 +2,7 @@
 
 #include "precompiled.h"
 
+namespace gd {
 class help_requested : public std::invalid_argument
 {
 public:
@@ -13,11 +14,12 @@ class runtime_error : public std::runtime_error
 public:
   runtime_error(std::string_view const what) : std::runtime_error(std::string{ what }) {}
 };
+} // namespace gd
 
 inline void raise_if(bool expr, std::string_view const message = "Invalid argument.")
 {
   if (expr) {
-    throw runtime_error(message);
+    throw gd::runtime_error(message);
   }
 }
 
@@ -35,7 +37,7 @@ auto fill_args(std::span<std::string_view const> const args) -> T
   auto params = T{};
   for (auto it = std::begin(args); it != std::end(args);) {
     if (*it == "--help" or *it == "-h") {
-      throw help_requested();
+      throw gd::help_requested();
     }
     std::ptrdiff_t advance = 1;
     std::string_view value = (std::next(it) != std::end(args)) ? *std::next(it) : "";
@@ -50,7 +52,7 @@ auto fill_args(std::span<std::string_view const> const args) -> T
     it += advance;
   }
   if (params.gd_word.empty()) {
-    throw help_requested();
+    throw gd::help_requested();
   }
   return params;
 }

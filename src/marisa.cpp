@@ -82,7 +82,7 @@ auto find_dic_file() -> std::filesystem::path
       return location;
     }
   }
-  throw runtime_error("Couldn't find the word list.");
+  throw gd::runtime_error("Couldn't find the word list.");
 }
 
 struct marisa_params
@@ -200,9 +200,9 @@ void marisa_split(std::span<std::string_view const> const args)
 {
   try {
     lookup_words(fill_args<marisa_params>(args));
-  } catch (help_requested const& ex) {
+  } catch (gd::help_requested const& ex) {
     fmt::print(help_text);
-  } catch (runtime_error const& ex) {
+  } catch (gd::runtime_error const& ex) {
     fmt::print("{}\n", ex.what());
   }
 }

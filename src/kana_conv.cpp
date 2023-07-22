@@ -39,7 +39,7 @@ auto unicode_char_byte_len(auto const& ch) -> CharByteLen
     // Other Unicode
     return CharByteLen::FOUR;
   }
-  throw runtime_error{ fmt::format("Can't recognize byte: '{:x}'.", ch) };
+  throw gd::runtime_error{ fmt::format("Can't recognize byte: '{:x}'.", ch) };
 }
 
 auto create_map(std::string_view from, std::string_view to) -> std::map<std::string_view, std::string_view>

@@ -96,9 +96,9 @@ void images(std::span<std::string_view const> const args)
 {
   try {
     fetch_images(fill_args<images_params>(args));
-  } catch (help_requested const& ex) {
+  } catch (gd::help_requested const& ex) {
     fmt::print(help_text);
-  } catch (runtime_error const& ex) {
+  } catch (gd::runtime_error const& ex) {
     fmt::print("{}\n", ex.what());
   }
 }
