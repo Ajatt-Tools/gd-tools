@@ -6,4 +6,12 @@ set -xeuo pipefail
 
 xmake f -m release
 xmake build -vwy
-xmake install -v --all --installdir=/usr --admin
+
+case ${1-} in
+--local | --user)
+    xmake install -v --all --installdir=~/.local/
+    ;;
+*)
+    xmake install -v --all --installdir=/usr --admin
+    ;;
+esac
