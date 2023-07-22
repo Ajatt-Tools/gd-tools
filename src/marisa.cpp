@@ -20,7 +20,6 @@
 #include "precompiled.h"
 #include "util.h"
 
-// TODO search dict.dic in more locations
 // TODO convert half width chars to full width chars
 // TODO inflections; fix things like グラついた
 // 首をなでられた
@@ -70,11 +69,26 @@ static constexpr std::string_view css_style = R"EOF(
 )EOF";
 static constexpr std::size_t max_forward_search_len_bytes{ CharByteLen::THREE * 10UL };
 
+auto find_dic_file() -> std::filesystem::path
+{
+  static const auto locations = {
+    // possible .dic locations
+    std::filesystem::path("/usr/share/gd-tools/marisa_words.dic"),
+    std::filesystem::path(std::getenv("HOME")) / ".local/share/gd-tools/marisa_words.dic"
+  };
+  for (auto const& location: locations) {
+    if (std::filesystem::exists(location) and std::filesystem::is_regular_file(location)) {
+      return location;
+    }
+  }
+  throw runtime_error("Couldn't find the word list.");
+}
+
 struct marisa_params
 {
   std::string gd_word{};
   std::string gd_sentence{};
-  std::string path_to_dic{ "/usr/share/gd-tools/marisa_words.dic" };
+  std::string path_to_dic{ find_dic_file() };
 
   auto assign(std::string_view const key, std::string_view const value) -> void
   {
