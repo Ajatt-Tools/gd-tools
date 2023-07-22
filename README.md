@@ -31,7 +31,12 @@ please create a pull request.
 1) To build the `gd-tools` you need to install `xmake` and `gcc` (13.1 and newer).
 2) Run `./quickinstall.sh`.
 
+   **Note:** You can run `./quickinstall.sh --local`
+   to install the program locally (to `~/.local/` ).
+
 </details>
+
+## Setup
 
 Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add the installed executables.
 Set type to `html`.
