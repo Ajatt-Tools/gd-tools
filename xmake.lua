@@ -2,7 +2,7 @@ local main_bin_name = "gd-tools"
 
 add_rules("mode.debug", "mode.release")
 add_rules("mode.ubsan", "mode.check")
-add_requires("cpr >= 1.10.3", "fmt", "nlohmann_json", "marisa", "catch2")
+add_requires("cpr >= 1.10.3", "fmt", "nlohmann_json", "marisa")
 
 -- Main target
 target(main_bin_name)
@@ -87,6 +87,11 @@ after_install(function(target)
     print("Installed shell scripts.")
 end)
 target_end()
+
+option("tests", {default = false, description = "Enable tests"})
+if has_config("tests") then
+    add_requires("catch2")
+end
 
 -- Tests target
 target("tests")
