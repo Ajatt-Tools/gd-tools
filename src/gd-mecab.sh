@@ -23,7 +23,7 @@ set -euo pipefail
 
 TEMP_FILE=/tmp/mecab-cache
 
-# Default path to user_dic.dic, assuming that the user ran `make install`.
+# Default path to user_dic.dic, assuming that the user ran `xmake install`.
 USER_DICT=/usr/share/gd-tools/user_dic.dic
 
 FONT_SIZE=2rem

@@ -20,11 +20,11 @@
 #include "precompiled.h"
 #include "util.h"
 
-// TODO search dict.dic in more locations
 // TODO convert half width chars to full width chars
 // TODO inflections; fix things like グラついた
 // 首をなでられた
 // 護り手たちがボヤいてたんだよ
+// フハハッむつまじくかかってくるがよい
 
 using namespace std::string_literals;
 static constexpr std::string_view help_text = R"EOF(usage: gd-marisa [OPTIONS]
@@ -70,11 +70,26 @@ static constexpr std::string_view css_style = R"EOF(
 )EOF";
 static constexpr std::size_t max_forward_search_len_bytes{ CharByteLen::THREE * 10UL };
 
+auto find_dic_file() -> std::filesystem::path
+{
+  static const auto locations = {
+    // possible .dic locations
+    std::filesystem::path("/usr/share/gd-tools/marisa_words.dic"),
+    std::filesystem::path(std::getenv("HOME")) / ".local/share/gd-tools/marisa_words.dic"
+  };
+  for (auto const& location: locations) {
+    if (std::filesystem::exists(location) and std::filesystem::is_regular_file(location)) {
+      return location;
+    }
+  }
+  throw gd::runtime_error("Couldn't find the word list.");
+}
+
 struct marisa_params
 {
   std::string gd_word{};
   std::string gd_sentence{};
-  std::string path_to_dic{ "/usr/share/gd-tools/marisa_words.dic" };
+  std::string path_to_dic{ find_dic_file() };
 
   auto assign(std::string_view const key, std::string_view const value) -> void
   {
@@ -87,6 +102,16 @@ struct marisa_params
     }
   }
 };
+
+struct KanaInsensitiveCompare
+{
+  bool operator()(const std::string& lhs, const std::string& rhs) const
+  {
+    return hiragana_to_katakana(lhs) < hiragana_to_katakana(rhs);
+  }
+};
+
+using JpSet = std::set<std::string, KanaInsensitiveCompare>;
 
 auto longest_result(
   marisa::Agent& agent,
@@ -105,7 +130,7 @@ auto longest_variant(
   marisa::Trie const& trie,
   std::string const& search_str,
   std::size_t const longestlen
-)
+) -> std::string
 {
   return std::max(
     { longest_result(agent, trie, search_str, longestlen),
@@ -113,6 +138,16 @@ auto longest_variant(
       longest_result(agent, trie, hiragana_to_katakana(search_str), longestlen) },
     [](auto const& a, auto const& b) { return a.length() < b.length(); }
   );
+}
+
+auto keywords_starting_with(marisa::Agent& agent, marisa::Trie const& trie, std::string const& search_str) -> JpSet
+{
+  JpSet results{};
+  for (auto const& variant: { search_str, hiragana_to_katakana(search_str), katakana_to_hiragana(search_str) }) {
+    agent.set_query(variant.c_str());
+    while (trie.common_prefix_search(agent)) { results.emplace(agent.key().ptr(), agent.key().length()); }
+  }
+  return results;
 }
 
 void lookup_words(marisa_params params)
@@ -134,21 +169,29 @@ void lookup_words(marisa_params params)
   fmt::print("<div class=\"gd-marisa\">\n");
   std::ptrdiff_t pos_in_gd_word{ 0 };
 
+  // Link longest words starting with each position in sentence.
   for (auto const [idx, uni_char]: iter_unicode_chars(params.gd_sentence)) {
-    std::string const bword =
-      longest_variant(agent, trie, params.gd_sentence.substr(idx, max_forward_search_len_bytes), uni_char.length());
+    std::string const bword = longest_variant(
+      agent, //
+      trie,
+      params.gd_sentence.substr(idx, max_forward_search_len_bytes),
+      uni_char.length()
+    );
     pos_in_gd_word = params.gd_word == bword ? bword.length() : pos_in_gd_word - uni_char.length();
     fmt::print("<a{} href=\"bword:{}\">{}</a>", (pos_in_gd_word > 0 ? " class=\"gd-headword\"" : ""), bword, uni_char);
   }
 
-  // Show available entries for smaller substrings
-  agent.set_query(params.gd_word.c_str());
-  fmt::print("<ul>\n");
-  while (trie.common_prefix_search(agent) and agent.key().length() != params.gd_word.length()) {
-    auto const word = std::string(agent.key().ptr(), agent.key().length());
-    fmt::print("<li><a href=\"bword:{}\">{}</a></li>\n", word, word);
+  // Show available entries for substrings starting with gdword
+  if (not params.gd_word.empty()) {
+    fmt::print("<ul>\n");
+    for (auto const& sub_word: keywords_starting_with(agent, trie, params.gd_word)) {
+      if (hiragana_to_katakana(sub_word) != hiragana_to_katakana(params.gd_word)) {
+        fmt::print("<li><a href=\"bword:{}\">{}</a></li>\n", sub_word, sub_word);
+      }
+    }
+    fmt::print("</ul>\n"); // close ul
   }
-  fmt::print("</ul>\n"); // close ul
+
   fmt::print("</div>\n"); // close div.gd-marisa
   fmt::print("{}\n", css_style);
 }
@@ -157,9 +200,9 @@ void marisa_split(std::span<std::string_view const> const args)
 {
   try {
     lookup_words(fill_args<marisa_params>(args));
-  } catch (help_requested const& ex) {
+  } catch (gd::help_requested const& ex) {
     fmt::print(help_text);
-  } catch (runtime_error const& ex) {
+  } catch (gd::runtime_error const& ex) {
     fmt::print("{}\n", ex.what());
   }
 }
