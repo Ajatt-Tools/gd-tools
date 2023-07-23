@@ -2,8 +2,9 @@ local main_bin_name = "gd-tools"
 
 add_rules("mode.debug", "mode.release")
 add_rules("mode.ubsan", "mode.check")
-add_requires("cpr >= 1.10.3", "fmt", "nlohmann_json", "marisa")
+add_requires("cpr >= 1.10.3", "fmt", "nlohmann_json", "marisa", "catch2")
 
+-- Main target
 target(main_bin_name)
 set_kind("binary")
 set_languages("c++23")
@@ -12,9 +13,8 @@ set_optimize("faster")
 add_packages("cpr", "fmt", "nlohmann_json", "marisa")
 add_files("src/*.cpp")
 add_cxflags("-D_GLIBCXX_ASSERTIONS")
-
 set_pcxxheader("src/precompiled.h")
-add_headerfiles("src/**.h")
+add_headerfiles("src/*.h")
 
 if is_host("linux") then
     -- flags that should work on clang and gcc.
@@ -86,4 +86,17 @@ after_install(function(target)
     end
     print("Installed shell scripts.")
 end)
+target_end()
+
+-- Tests target
+target("tests")
+set_kind("binary")
+set_languages("c++23")
+set_warnings("allextra", "error")
+set_optimize("faster")
+add_packages("cpr", "fmt", "nlohmann_json", "marisa", "catch2")
+add_files("src/*.cpp", "tests/*.cpp")
+remove_files("src/main.cpp")
+set_pcxxheader("src/precompiled.h")
+add_headerfiles("src/*.h")
 target_end()
