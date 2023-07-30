@@ -119,10 +119,16 @@ This script shows the search string in the `KanjiStrokeOrders` font.
 
 Download font: https://www.nihilist.org.uk/
 
-**Arguments**
+**Arguments**:
 
 * `--max-len` `5` maximum size of the input string.
 * `--font-size` `10rem` font size. It has to be large in order to see the stroke numbers.
+
+**How to call**:
+
+```
+gd-strokeorder --word %GDWORD%
+```
 
 ## gd-handwritten
 
@@ -131,6 +137,12 @@ This script displays the handwritten form of each character
 ![screenshot](https://user-images.githubusercontent.com/53496273/254959907-4aa7d72d-2d58-4bd3-8b3a-c2f6f3186834.png)
 
 You need to install the [ArmedLemon](https://github.com/KonstantinDjairo/gd-tools/blob/main/res/ArmedLemon.TTF) fonts.
+
+**How to call**:
+
+```
+gd-handwritten --word %GDWORD%
+```
 
 ## gd-massif
 
