@@ -26,7 +26,7 @@ print_handwritten() {
 usage() {
 	local -r bn=$(basename -- "$0")
 	cat <<-EOF
-		usage: $bn [OPTIONS] WORD
+		usage: $bn [OPTIONS] --word WORD
 
 		echo input back to GoldenDict as HTML with the KanjiStrokeOrders font applied.
 
@@ -59,7 +59,8 @@ main() {
 			shift
 			FONT_SIZE=$1
 			;;
-		*)
+		--word)
+			shift
 			GDWORD="$GDWORD $1"
 			;;
 		esac
