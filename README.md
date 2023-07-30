@@ -8,6 +8,7 @@ A set of helpful programs to enhance goldendict for immersion learning.
 - [gd-mecab](#gd-mecab)
 - [gd-images](#gd-images)
 - [gd-strokeorder](#gd-strokeorder)
+- [gd-handwritten](#gd-handwritten)
 - [gd-massif](#gd-massif)
 - [gd-ankisearch](#gd-ankisearch)
 
@@ -122,6 +123,14 @@ Download font: https://www.nihilist.org.uk/
 
 * `--max-len` `5` maximum size of the input string.
 * `--font-size` `10rem` font size. It has to be large in order to see the stroke numbers.
+
+## gd-handwritten
+
+This script displays the handwritten form of each character
+
+![screenshot](https://user-images.githubusercontent.com/53496273/254959907-4aa7d72d-2d58-4bd3-8b3a-c2f6f3186834.png)
+
+You need to install the [ArmedLemon](https://github.com/KonstantinDjairo/gd-tools/blob/main/res/ArmedLemon.TTF) fonts.
 
 ## gd-massif
 

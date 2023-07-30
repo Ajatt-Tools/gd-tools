@@ -51,18 +51,22 @@ end)
 set_installdir("/usr/")
 
 after_install(function(target)
+    local function maybe_rm(file)
+        if os.isfile(file) or os.islink(file) then os.rm(file) end
+    end
+
     local bin_dir = path.join(target:installdir(), "/bin/")
     local variants = {
-        "gd-ankisearch", "gd-strokeorder", "gd-massif", "gd-images", "gd-marisa"
+        "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa"
         -- "gd-mecab",
     }
 
     -- Link alternative names
     -- to enable calling `gd-ankisearch` instead of more verbose `gd-tools ankisearch`, etc.
     local link
-    for _, exe in pairs(variants) do
-        link = path.join(bin_dir, exe)
-        if os.isfile(link) then os.rm(link) end
+    for _, link in pairs(variants) do
+        link = path.join(bin_dir, link)
+        maybe_rm(link)
         os.ln(main_bin_name, link)
     end
     print("Created symlinks.")
@@ -81,8 +85,10 @@ after_install(function(target)
     print("Installed dictionary files.")
 
     -- Copy sh files
-    for _, file in pairs(os.files("src/*.sh")) do
-        os.cp(file, path.join(target:installdir(), "bin", path.basename(file)))
+    for _, shell_file in pairs(os.files("src/*.sh")) do
+        local destination = path.join(target:installdir(), "bin", path.basename(shell_file))
+        maybe_rm(destination)
+        os.cp(shell_file, destination)
     end
     print("Installed shell scripts.")
 end)

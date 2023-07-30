@@ -19,7 +19,7 @@
 #include "util.h"
 #include "precompiled.h"
 
-auto determine_card_class(int64_t const card_queue, int64_t const card_type) -> std::string_view
+auto determine_card_class(int64_t const card_queue, int64_t const card_type) noexcept -> std::string_view
 {
   // determine card class to be used in CSS when printing
   // https://github.com/ankidroid/Anki-Android/wiki/Database-Structure
@@ -53,12 +53,12 @@ auto determine_card_class(int64_t const card_queue, int64_t const card_type) -> 
   return "unknown";
 }
 
-auto is_space(char const ch) -> bool
+auto is_space(char const ch) noexcept -> bool
 {
   return static_cast<bool>(std::isspace(static_cast<unsigned char>(ch)));
 }
 
-auto strtrim(std::string_view str) -> std::string
+auto strtrim(std::string_view str) noexcept -> std::string
 {
   auto v = std::views::all(str) //
            | std::views::reverse //
@@ -66,4 +66,11 @@ auto strtrim(std::string_view str) -> std::string
            | std::views::reverse //
            | std::views::drop_while(is_space);
   return std::string{ v.begin(), v.end() };
+}
+
+void str_replace(std::string& str, std::string_view from, std::string_view to) noexcept
+{
+  if (auto idx = str.find(from); idx != std::string::npos) {
+    str.replace(idx, from.length(), to);
+  }
 }
