@@ -17,11 +17,11 @@
  */
 
 #include "anki_search.h"
+#include "echo.h"
 #include "images.h"
 #include "marisa.h"
 #include "massif.h"
 #include "precompiled.h"
-#include "stroke_order.h"
 
 static constexpr std::string_view help_text = R"EOF(usage: {} ACTION [OPTIONS]
 A set of helpful programs to enhance GoldenDict for immersion learning.
