@@ -57,7 +57,7 @@ auto fill_args(std::span<std::string_view const> const args) -> T
   return params;
 }
 
-auto determine_card_class(int64_t const card_queue, int64_t const card_type) -> std::string_view;
+auto determine_card_class(int64_t const card_queue, int64_t const card_type) noexcept -> std::string_view;
 
 template<std::integral Integral>
 auto parse_number(std::string_view const s) -> std::optional<Integral>
@@ -68,6 +68,8 @@ auto parse_number(std::string_view const s) -> std::optional<Integral>
     return std::nullopt;
 };
 
-auto is_space(char const ch) -> bool;
+auto is_space(char const ch) noexcept -> bool;
 
-auto strtrim(std::string_view str) -> std::string;
+auto strtrim(std::string_view str) noexcept -> std::string;
+
+void str_replace(std::string& str, std::string_view from, std::string_view to) noexcept;

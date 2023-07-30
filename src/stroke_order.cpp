@@ -30,24 +30,19 @@ Echo input back to GoldenDict as HTML with the KanjiStrokeOrders font applied.
 OPTIONS
   --max-len NUMBER  maximum length of the input string (bytes).
   --font-size SIZE  font size (with unit).
+  --font-family     font family (name).
   --word WORD       text to print.
 
 EXAMPLES
   gd-strokeorder --max-len 5 --font-size 10rem --word "書"
   gd-strokeorder --max-len 3 --font-size 120px --word "薔薇"
 )EOF";
-static constexpr std::string_view css_style = R"EOF(<style>
-    .kanji_stroke_order {
-        font-size: <FONTSIZE>;
-        font-family: KanjiStrokeOrders;
-    }
-</style>)EOF";
-static constexpr std::string_view to_replace{ "<FONTSIZE>" };
 
 struct stroke_order_params
 {
   std::string_view gd_word{};
   std::string_view font_size{ "10rem" };
+  std::string_view font_family{ "KanjiStrokeOrders" };
   std::size_t max_len{ default_len };
 
   void assign(std::string_view const key, std::string_view const value)
@@ -56,6 +51,8 @@ struct stroke_order_params
       max_len = parse_number<std::size_t>(value).value_or(default_len);
     } else if (key == "--font-size") {
       font_size = value;
+    } else if (key == "--font-family") {
+      font_family = value;
     } else if (key == "--word") {
       gd_word = value;
     }
@@ -64,10 +61,16 @@ struct stroke_order_params
 
 void print_css(stroke_order_params const& params)
 {
-  std::string temp{ css_style };
-  if (auto idx = temp.find(to_replace); idx != std::string::npos) {
-    temp.replace(idx, to_replace.length(), params.font_size);
+  static constexpr std::string_view css_style = R"EOF(<style>
+  .kanji_stroke_order {
+      font-size: <FONT_SIZE>;
+      font-family: "<FONT_FAMILY>";
   }
+  </style>)EOF";
+
+  std::string temp{ css_style };
+  str_replace(temp, "<FONT_SIZE>", params.font_size);
+  str_replace(temp, "<FONT_FAMILY>", params.font_family);
   fmt::print("{}\n", temp);
 }
 
