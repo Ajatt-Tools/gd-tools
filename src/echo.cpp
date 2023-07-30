@@ -61,23 +61,21 @@ struct stroke_order_params
 
 void print_css(stroke_order_params const& params)
 {
-  static constexpr std::string_view css_style = R"EOF(<style>
-  .kanji_stroke_order {
-      font-size: <FONT_SIZE>;
-      font-family: "<FONT_FAMILY>";
-  }
-  </style>)EOF";
-
-  std::string temp{ css_style };
-  str_replace(temp, "<FONT_SIZE>", params.font_size);
-  str_replace(temp, "<FONT_FAMILY>", params.font_family);
-  fmt::print("{}\n", temp);
+  static constexpr std::string_view css = R"EOF(
+  <style>
+  .gd_echo_{} {{
+      font-size: {};
+      font-family: "{}";
+  }}
+  </style>
+  )EOF";
+  fmt::print(css, this_pid, params.font_size, params.font_family);
 }
 
 void print_with_stroke_order(stroke_order_params const& params)
 {
   if (params.gd_word.length() <= params.max_len) {
-    fmt::print("<div class=\"kanji_stroke_order\">{}</div>\n", params.gd_word);
+    fmt::print("<div class=\"gd_echo_{}\">{}</div>\n", this_pid, params.gd_word);
     print_css(params);
   }
 }

@@ -18,6 +18,9 @@
 #include <system_error>
 #include <vector>
 
+// Glibc
+#include <unistd.h>
+
 // Other
 #include <cpr/cpr.h>
 #include <fmt/core.h>
