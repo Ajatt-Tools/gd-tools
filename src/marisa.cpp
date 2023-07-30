@@ -25,6 +25,7 @@
 // 首をなでられた
 // 護り手たちがボヤいてたんだよ
 // フハハッむつまじくかかってくるがよい
+// たどり
 
 using namespace std::string_literals;
 static constexpr std::string_view help_text = R"EOF(usage: gd-marisa [OPTIONS]
