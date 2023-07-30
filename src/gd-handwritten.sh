@@ -6,16 +6,16 @@ MAX_LEN=99
 FONT_SIZE=3rem
 GDWORD=""
 
-print_handwriten() {
+print_handwritten() {
 	# Don't output anything for empty or long queries.
 	if [[ -z $GDWORD ]] || [[ ${#GDWORD} -gt "$MAX_LEN" ]]; then
 		exit
 	fi
 
 	cat <<-EOF
-		<div class="font_handwriten">$GDWORD</div>
+		<div class="font_handwritten">$GDWORD</div>
 		<style>
-		.font_handwriten {
+		.font_handwritten {
 			font-size: $FONT_SIZE;
 			font-family: ArmedLemon;
 		}
@@ -66,7 +66,7 @@ main() {
 		shift
 	done
 	GDWORD=$(sed 's/^ *//g; s/ *$//g' <<<"$GDWORD")
-	print_handwriten
+	print_handwritten
 }
 
 main "$@"
