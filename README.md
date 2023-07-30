@@ -11,7 +11,7 @@ A set of helpful programs to enhance goldendict for immersion learning.
 - [gd-handwriten](#gd-handwriten)
 - [gd-massif](#gd-massif)
 - [gd-ankisearch](#gd-ankisearch)
-  
+
 ## Installation
 
 First, [install goldendict-ng](https://tatsumoto-ren.github.io/blog/setting-up-goldendict.html).
@@ -128,7 +128,7 @@ Download font: https://www.nihilist.org.uk/
 
 This script displays the handwriten form of each character
 
-![image](https://github.com/KonstantinDjairo/gd-tools/assets/53496273/4aa7d72d-2d58-4bd3-8b3a-c2f6f3186834)
+![screenshot](https://user-images.githubusercontent.com/53496273/254959907-4aa7d72d-2d58-4bd3-8b3a-c2f6f3186834.png)
 
 You need to install the [ArmedLemon](https://github.com/KonstantinDjairo/gd-tools/blob/main/res/ArmedLemon.TTF) fonts
 
