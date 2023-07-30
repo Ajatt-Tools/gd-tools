@@ -23,7 +23,7 @@
 using namespace std::string_view_literals;
 
 static constexpr std::size_t default_len{ CharByteLen::THREE * 5UL };
-static constexpr std::string_view help_text = R"EOF(usage: gd-strokeorder [OPTIONS]
+static constexpr std::string_view help_text = R"EOF(usage: gd-echo [OPTIONS]
 
 Echo input back to GoldenDict as HTML with the KanjiStrokeOrders font applied.
 
@@ -34,8 +34,8 @@ OPTIONS
   --word WORD       text to print.
 
 EXAMPLES
-  gd-strokeorder --max-len 5 --font-size 10rem --word "書"
-  gd-strokeorder --max-len 3 --font-size 120px --word "薔薇"
+  gd-echo --max-len 5 --font-size 10rem --word "書"
+  gd-echo --max-len 3 --font-size 120px --word "薔薇"
 )EOF";
 
 struct stroke_order_params

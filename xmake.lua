@@ -53,7 +53,7 @@ set_installdir("/usr/")
 after_install(function(target)
     local bin_dir = path.join(target:installdir(), "/bin/")
     local variants = {
-        "gd-ankisearch", "gd-strokeorder", "gd-massif", "gd-images", "gd-marisa"
+        "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa"
         -- "gd-mecab",
     }
 

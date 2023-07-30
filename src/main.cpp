@@ -28,10 +28,11 @@ A set of helpful programs to enhance GoldenDict for immersion learning.
 
 ACTIONS
   ankisearch  Search word in Anki.
-  strokeorder Show stroke order of a word.
   massif      Search word on Massif.
   images      Search images on Bing.
   marisa      Split search string using MARISA.
+  strokeorder Show stroke order of a word.
+  handwritten Display the handwritten form of a word.
 
 OPTIONS
   -h,--help  Print this help screen.
@@ -65,7 +66,7 @@ auto take_action(std::span<std::string_view const> const args) -> void
   if (program_name == "gd-ankisearch") {
     return search_anki_cards(args | std::views::drop(1));
   }
-  if (program_name == "gd-strokeorder") {
+  if (program_name == "gd-echo") {
     return stroke_order(args | std::views::drop(1));
   }
   if (program_name == "gd-massif") {
@@ -87,7 +88,7 @@ auto take_action(std::span<std::string_view const> const args) -> void
   if (args[1] == "ankisearch") {
     return search_anki_cards(args | std::views::drop(2));
   }
-  if (args[1] == "strokeorder") {
+  if (args[1] == "echo") {
     return stroke_order(args | std::views::drop(2));
   }
   if (args[1] == "massif") {
