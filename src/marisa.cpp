@@ -26,6 +26,7 @@
 // 護り手たちがボヤいてたんだよ
 // フハハッむつまじくかかってくるがよい
 // たどり
+// かゆく
 
 using namespace std::string_literals;
 static constexpr std::string_view help_text = R"EOF(usage: gd-marisa [OPTIONS]
@@ -171,7 +172,7 @@ void lookup_words(marisa_params params)
   std::ptrdiff_t pos_in_gd_word{ 0 };
 
   // Link longest words starting with each position in sentence.
-  for (auto const [idx, uni_char]: iter_unicode_chars(params.gd_sentence)) {
+  for (auto const [idx, uni_char]: enum_unicode_chars(params.gd_sentence)) {
     std::string const bword = longest_variant(
       agent, //
       trie,

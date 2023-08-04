@@ -15,8 +15,15 @@ inline constexpr std::string_view katakana_chars =
   "ァアィイゥウェエォオカガカ゚キギキ゚クグク゚ケゲケ゚コゴコ゚サザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフ"
   "ブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ";
 
-inline auto iter_unicode_chars(std::string_view str)
+struct Utf8CharView {
+  std::size_t idx; // starting position of a char, counting by bytes
+  std::string_view ch; // the whole character, e.g. "あ" (len=3)
+};
+
+constexpr auto enum_unicode_chars(std::string_view str)
 {
+  // return a sequence of Utf8CharView.
+  // e.g. [ (0, "あ"), (3, "い") ]
   return std::views::enumerate(str) //
          | std::views::transform([](auto const idx_chr) {
              return std::make_pair(std::get<0>(idx_chr), unicode_char_byte_len(std::get<1>(idx_chr)));
@@ -24,8 +31,12 @@ inline auto iter_unicode_chars(std::string_view str)
          | std::views::filter([](auto const idx_len) { return idx_len.second != CharByteLen::SKIP; })
          | std::views::transform([str](auto const idx_len) {
              assert(idx_len.second > 0);
-             return std::make_pair(idx_len.first, str.substr(idx_len.first, idx_len.second));
+             return Utf8CharView(idx_len.first, str.substr(idx_len.first, idx_len.second));
            });
+}
+
+constexpr auto iter_unicode_chars(std::string_view str) {
+  return enum_unicode_chars(str) | std::views::transform([](Utf8CharView const v) { return v.ch; });
 }
 
 template<Direction D>
@@ -41,7 +52,7 @@ auto convert_kana(std::string_view str) -> std::string
 
   std::string result{};
   result.reserve(str.length());
-  for (auto const [idx, uni_char]: iter_unicode_chars(str)) {
+  for (auto const [idx, uni_char]: enum_unicode_chars(str)) {
     result.append(conv_map.contains(uni_char) ? conv_map.at(uni_char) : uni_char);
   }
   return result;

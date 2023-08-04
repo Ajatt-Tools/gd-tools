@@ -6,6 +6,7 @@ set -xeuo pipefail
 
 readonly target="gd-tools"
 
+xmake f --tests=n
 xmake f -m release
 xmake build -vwy "$target"
 

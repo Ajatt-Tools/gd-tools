@@ -45,7 +45,7 @@ auto unicode_char_byte_len(auto const& ch) -> CharByteLen
 auto create_map(std::string_view from, std::string_view to) -> std::map<std::string_view, std::string_view>
 {
   std::map<std::string_view, std::string_view> result{};
-  for (auto const [idx, uni_char]: iter_unicode_chars(from)) {
+  for (auto const [idx, uni_char]: enum_unicode_chars(from)) {
     result.emplace(uni_char, to.substr(idx, uni_char.length()));
   }
   return result;
