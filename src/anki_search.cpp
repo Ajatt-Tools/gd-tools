@@ -259,13 +259,13 @@ auto card_json_to_obj(nlohmann::json const& card_json) -> card_info
   };
 }
 
-auto gd_format(std::string const& field, std::string const& media_dir) -> std::string
+auto gd_format(std::string const& field_content, std::string const& media_dir_path) -> std::string
 {
   // Make sure GoldenDict displays images correctly by specifying the full path.
   static std::regex const img_re{ "(<img[^<>]*src=\")" };
   static std::regex const any_undesirables{ R"EOF(\[sound:|\]|<[^<>]+>|["'.,!?]+|…|。|、|！|？|　|・|～|\(|\))EOF" };
-  auto const link_content = strtrim(std::regex_replace(field, any_undesirables, " "));
-  auto const link_text = std::regex_replace(field, img_re, fmt::format("$1file://{}/", media_dir));
+  auto const link_content = strtrim(std::regex_replace(field_content, any_undesirables, " "));
+  auto const link_text = std::regex_replace(field_content, img_re, fmt::format("$1file://{}/", media_dir_path));
   return link_content.empty() ? link_text : fmt::format("<a href=\"ankisearch:{}\">{}</a>", link_content, link_text);
 }
 
@@ -282,11 +282,11 @@ void print_cards_info(search_params const& params)
     fmt::print("<tr class=\"{}\">", determine_card_class(card.queue, card.type));
     fmt::print("<td><a href=\"ankisearch:cid:{}\">{}</a></td>", card.id, card.id);
     fmt::print("<td>{}</td>", card.deck_name);
-    for (auto const& field: params.show_fields) {
+    for (auto const& field_name: params.show_fields) {
       fmt::print(
         "<td>{}</td>",
-        (card.fields.contains(field) and not card.fields.at(field).empty()
-           ? gd_format(card.fields.at(field), media_dir_path)
+        (card.fields.contains(field_name) and not card.fields.at(field_name).empty()
+           ? gd_format(card.fields.at(field_name), media_dir_path)
            : "Not present")
       );
     }
