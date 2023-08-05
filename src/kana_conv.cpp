@@ -53,7 +53,7 @@ auto create_map(std::string_view from, std::string_view to) -> std::map<std::str
 
 auto half_to_full(std::string& str) -> std::string&
 {
-  static  std::map<std::string_view, std::string_view> const conv_map = {
+  static std::map<std::string_view, std::string_view> const conv_map = {
     { "ｱ", "ア" }, { "ｲ", "イ" }, { "ｳ", "ウ" }, { "ｴ", "エ" }, { "ｵ", "オ" }, { "ｶ", "カ" }, { "ｷ", "キ" },
     { "ｸ", "ク" }, { "ｹ", "ケ" }, { "ｺ", "コ" }, { "ｻ", "サ" }, { "ｼ", "シ" }, { "ｽ", "ス" }, { "ｾ", "セ" },
     { "ｿ", "ソ" }, { "ﾀ", "タ" }, { "ﾁ", "チ" }, { "ﾂ", "ツ" }, { "ﾃ", "テ" }, { "ﾄ", "ト" }, { "ﾅ", "ナ" },

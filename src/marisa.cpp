@@ -20,7 +20,6 @@
 #include "precompiled.h"
 #include "util.h"
 
-// TODO convert half width chars to full width chars
 // TODO inflections; fix things like グラついた
 // 首をなでられた
 // 護り手たちがボヤいてたんだよ
@@ -74,7 +73,7 @@ static constexpr std::size_t max_forward_search_len_bytes{ CharByteLen::THREE * 
 
 auto find_dic_file() -> std::filesystem::path
 {
-  static const auto locations = {
+  static auto const locations = {
     // possible .dic locations
     std::filesystem::path("/usr/share/gd-tools/marisa_words.dic"),
     std::filesystem::path(std::getenv("HOME")) / ".local/share/gd-tools/marisa_words.dic"
@@ -107,7 +106,7 @@ struct marisa_params
 
 struct KanaInsensitiveCompare
 {
-  bool operator()(const std::string& lhs, const std::string& rhs) const
+  bool operator()(std::string const& lhs, std::string const& rhs) const
   {
     return hiragana_to_katakana(lhs) < hiragana_to_katakana(rhs);
   }

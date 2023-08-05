@@ -44,7 +44,7 @@ constexpr auto iter_unicode_chars(std::string_view str)
 template<Direction D>
 auto convert_kana(std::string_view str) -> std::string
 {
-  static const auto conv_map{ [] {
+  static auto const conv_map{ [] {
     if constexpr (D == Direction::kata_to_hira) {
       return create_map(katakana_chars, hiragana_chars);
     } else {
