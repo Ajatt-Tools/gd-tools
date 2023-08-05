@@ -154,11 +154,14 @@ auto keywords_starting_with(marisa::Agent& agent, marisa::Trie const& trie, std:
 
 void lookup_words(marisa_params params)
 {
+  half_to_full(params.gd_word);
   std::erase_if(params.gd_word, is_space);
   std::erase_if(params.gd_sentence, is_space);
 
   if (params.gd_sentence.empty()) {
     params.gd_sentence = params.gd_word;
+  } else {
+    half_to_full(params.gd_sentence);
   }
 
   marisa::Trie trie;

@@ -15,7 +15,8 @@ inline constexpr std::string_view katakana_chars =
   "ァアィイゥウェエォオカガカ゚キギキ゚クグク゚ケゲケ゚コゴコ゚サザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフ"
   "ブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ";
 
-struct Utf8CharView {
+struct Utf8CharView
+{
   std::size_t idx; // starting position of a char, counting by bytes
   std::string_view ch; // the whole character, e.g. "あ" (len=3)
 };
@@ -35,7 +36,8 @@ constexpr auto enum_unicode_chars(std::string_view str)
            });
 }
 
-constexpr auto iter_unicode_chars(std::string_view str) {
+constexpr auto iter_unicode_chars(std::string_view str)
+{
   return enum_unicode_chars(str) | std::views::transform([](Utf8CharView const v) { return v.ch; });
 }
 
@@ -67,3 +69,5 @@ inline auto hiragana_to_katakana(std::string_view str) -> std::string
 {
   return convert_kana<Direction::hira_to_kata>(str);
 }
+
+auto half_to_full(std::string& str) -> std::string&;
