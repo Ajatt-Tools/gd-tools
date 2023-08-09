@@ -114,36 +114,9 @@ struct KanaInsensitiveCompare
 
 using JpSet = std::set<std::string, KanaInsensitiveCompare>;
 
-auto longest_result(
-  marisa::Agent& agent,
-  marisa::Trie const& trie,
-  std::string const& search_str,
-  std::size_t longestlen
-) -> std::string
-{
-  agent.set_query(search_str.c_str());
-  while (trie.common_prefix_search(agent)) { longestlen = agent.key().length(); }
-  return search_str.substr(0, longestlen);
-}
-
 auto cmp_len(std::string_view a, std::string_view b) -> bool
 {
   return a.length() < b.length();
-}
-
-auto longest_variant(
-  marisa::Agent& agent,
-  marisa::Trie const& trie,
-  std::string const& search_str,
-  std::size_t const longestlen
-) -> std::string
-{
-  return std::max(
-    { longest_result(agent, trie, search_str, longestlen),
-      longest_result(agent, trie, katakana_to_hiragana(search_str), longestlen),
-      longest_result(agent, trie, hiragana_to_katakana(search_str), longestlen) },
-    cmp_len
-  );
 }
 
 auto keywords_starting_with(marisa::Agent& agent, marisa::Trie const& trie, std::string const& search_str) -> JpSet
@@ -180,12 +153,12 @@ void lookup_words(marisa_params params)
 
   // Link longest words starting with each position in sentence.
   for (auto const [idx, uni_char]: enum_unicode_chars(params.gd_sentence)) {
-    std::string const bword = longest_variant(
-      agent, //
-      trie,
-      params.gd_sentence.substr(idx, max_forward_search_len_bytes),
-      uni_char.length()
-    );
+    auto const headwords{ keywords_starting_with(
+      agent,
+      trie, //
+      params.gd_sentence.substr(idx, max_forward_search_len_bytes)
+    ) };
+    auto const bword{ headwords.empty() ? uni_char : std::ranges::max(headwords, cmp_len) };
     pos_in_gd_word = params.gd_word == bword ? bword.length() : pos_in_gd_word - uni_char.length();
     fmt::print("<a{} href=\"bword:{}\">{}</a>", (pos_in_gd_word > 0 ? " class=\"gd-headword\"" : ""), bword, uni_char);
   }
