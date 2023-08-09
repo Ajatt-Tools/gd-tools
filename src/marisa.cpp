@@ -126,6 +126,11 @@ auto longest_result(
   return search_str.substr(0, longestlen);
 }
 
+auto cmp_len(std::string_view a, std::string_view b) -> bool
+{
+  return a.length() < b.length();
+}
+
 auto longest_variant(
   marisa::Agent& agent,
   marisa::Trie const& trie,
@@ -137,7 +142,7 @@ auto longest_variant(
     { longest_result(agent, trie, search_str, longestlen),
       longest_result(agent, trie, katakana_to_hiragana(search_str), longestlen),
       longest_result(agent, trie, hiragana_to_katakana(search_str), longestlen) },
-    [](auto const& a, auto const& b) { return a.length() < b.length(); }
+    cmp_len
   );
 }
 
