@@ -67,6 +67,25 @@ static constexpr std::string_view css_style = R"EOF(
     padding-inline-start: var(--size);
     margin-block: 2px;
   }
+  .gd-marisa .alternatives {
+    --size: 1rem;
+    display: grid;
+    font-size: var(--size);
+    gap: calc( var(--size) / 4);
+    max-width: 100%;
+    margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    align-content: start;
+    justify-content: space-around;
+    text-align: left;
+    padding: 5px 0px;
+  }
+  .gd-marisa .alternatives > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: calc( var(--size) / 4);
+    background-color: hsl(150deg 30% 60% / 10%);
+  }
 </style>
 )EOF";
 static constexpr std::size_t max_forward_search_len_bytes{ CharByteLen::THREE * 10UL };
@@ -150,6 +169,8 @@ void lookup_words(marisa_params params)
 
   fmt::print("<div class=\"gd-marisa\">\n");
   std::ptrdiff_t pos_in_gd_word{ 0 };
+  std::vector<JpSet> alternatives{};
+  alternatives.reserve(20);
 
   // Link longest words starting with each position in sentence.
   for (auto const [idx, uni_char]: enum_unicode_chars(params.gd_sentence)) {
@@ -158,21 +179,25 @@ void lookup_words(marisa_params params)
       trie, //
       params.gd_sentence.substr(idx, max_forward_search_len_bytes)
     ) };
-    auto const bword{ headwords.empty() ? uni_char : std::ranges::max(headwords, cmp_len) };
+    std::string const bword{ headwords.empty() ? std::string{ uni_char } : std::ranges::max(headwords, cmp_len) };
     pos_in_gd_word = params.gd_word == bword ? bword.length() : pos_in_gd_word - uni_char.length();
-    fmt::print("<a{} href=\"bword:{}\">{}</a>", (pos_in_gd_word > 0 ? " class=\"gd-headword\"" : ""), bword, uni_char);
+    fmt::print(
+      "<a class=\"{}\" href=\"bword:{}\">{}</a>",
+      (pos_in_gd_word > 0 ? "gd-headword" : "gd-word"),
+      bword,
+      uni_char
+    );
+    alternatives.push_back(headwords);
   }
 
-  // Show available entries for substrings starting with gdword
-  if (not params.gd_word.empty()) {
+  // Show available entries for other substrings.
+  fmt::print("<div class=\"alternatives\">\n");
+  for (auto const& group: alternatives | std::views::filter(&JpSet::size)) {
     fmt::print("<ul>\n");
-    for (auto const& sub_word: keywords_starting_with(agent, trie, params.gd_word)) {
-      if (hiragana_to_katakana(sub_word) != hiragana_to_katakana(params.gd_word)) {
-        fmt::print("<li><a href=\"bword:{}\">{}</a></li>\n", sub_word, sub_word);
-      }
-    }
+    for (auto const& word: group) { fmt::print("<li><a href=\"bword:{}\">{}</a></li>\n", word, word); }
     fmt::print("</ul>\n"); // close ul
   }
+  fmt::print("</div>\n"); // close div.alternatives
 
   fmt::print("</div>\n"); // close div.gd-marisa
   fmt::print("{}\n", css_style);
