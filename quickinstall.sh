@@ -31,5 +31,5 @@ while [[ $# -gt 0 ]]; do
 done
 
 if $run_mandarin_script; then
-    ./mandarin_installer.sh
+    ./src/mandarin_installer.sh
 fi
