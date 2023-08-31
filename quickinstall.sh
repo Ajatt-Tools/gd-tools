@@ -16,20 +16,25 @@ run_mandarin_script=false
 while [[ $# -gt 0 ]]; do
     case $1 in
     --local | --user)
-        xmake install -v --all --installdir=~/.local/ "$target"
+	readonly local_install=true
         shift
         ;;
     --mandarin)
-        run_mandarin_script=true
+        readonly run_mandarin_script=true
         shift
         ;;
     *)
-        xmake install -v --all --installdir=/usr --admin "$target"
         shift
         ;;
     esac
 done
 
+if ${local_install:-false}; then
+	xmake install -v --all --installdir=~/.local/ "$target"
+else
+	xmake install -v --all --installdir=/usr --admin "$target"
+fi
+
 if $run_mandarin_script; then
-    ./src/mandarin_installer.sh
+	./mandarin_installer.sh
 fi
