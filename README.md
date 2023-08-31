@@ -167,3 +167,14 @@ This script searches Anki cards in your collection that contain %GDWORD%.
 ```
 gd-ankisearch --field-name VocabKanji --show-fields VocabKanji,SentKanji,Image,SentAudio --word %GDWORD%
 ```
+
+
+## gd-mandarin
+
+This script passes a sentence through mecab in order to make every part of the sentence clickable.
+It also automatically converts the sentence to traditional characters.
+
+![image](https://github.com/KonstantinDjairo/gd-tools/assets/53496273/20921976-9221-416e-820a-b6bb22db906b)
+
+To use `gd-mandarin`,
+you need to install `gd-tools` by running `./quickinstall.sh --mandarin`.

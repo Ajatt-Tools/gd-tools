@@ -10,11 +10,26 @@ xmake f --tests=n
 xmake f -m release
 xmake build -vwy "$target"
 
-case ${1-} in
---local | --user)
-    xmake install -v --all --installdir=~/.local/ "$target"
-    ;;
-*)
-    xmake install -v --all --installdir=/usr --admin "$target"
-    ;;
-esac
+run_mandarin_script=false
+
+# Parse optional flags
+while [[ $# -gt 0 ]]; do
+    case $1 in
+    --local | --user)
+        xmake install -v --all --installdir=~/.local/ "$target"
+        shift
+        ;;
+    --mandarin)
+        run_mandarin_script=true
+        shift
+        ;;
+    *)
+        xmake install -v --all --installdir=/usr --admin "$target"
+        shift
+        ;;
+    esac
+done
+
+if $run_mandarin_script; then
+    ./src/mandarin_installer.sh
+fi
