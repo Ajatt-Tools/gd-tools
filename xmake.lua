@@ -2,7 +2,7 @@ local main_bin_name = "gd-tools"
 
 add_rules("mode.debug", "mode.release")
 add_rules("mode.ubsan", "mode.check")
-add_requires("cpr >= 1.10.3", "fmt >= 10.0", "nlohmann_json", "marisa")
+add_requires("cpr >= 1.10.3", "fmt >= 10", "nlohmann_json", "marisa")
 
 -- Main target
 target(main_bin_name)
