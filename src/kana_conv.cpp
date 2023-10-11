@@ -42,9 +42,9 @@ auto unicode_char_byte_len(auto const& ch) -> CharByteLen
   throw gd::runtime_error{ fmt::format("Can't recognize byte: '{:x}'.", ch) };
 }
 
-auto create_map(std::string_view from, std::string_view to) -> std::map<std::string_view, std::string_view>
+auto create_map(std::string_view from, std::string_view to) -> KanaConvMap
 {
-  std::map<std::string_view, std::string_view> result{};
+  KanaConvMap result{};
   for (auto const [idx, uni_char]: enum_unicode_chars(from)) {
     result.emplace(uni_char, to.substr(idx, uni_char.length()));
   }
@@ -53,7 +53,7 @@ auto create_map(std::string_view from, std::string_view to) -> std::map<std::str
 
 auto half_to_full(std::string& str) -> std::string&
 {
-  static std::map<std::string_view, std::string_view> const conv_map = {
+  static KanaConvMap const conv_map = {
     { "ｱ", "ア" }, { "ｲ", "イ" }, { "ｳ", "ウ" }, { "ｴ", "エ" }, { "ｵ", "オ" }, { "ｶ", "カ" }, { "ｷ", "キ" },
     { "ｸ", "ク" }, { "ｹ", "ケ" }, { "ｺ", "コ" }, { "ｻ", "サ" }, { "ｼ", "シ" }, { "ｽ", "ス" }, { "ｾ", "セ" },
     { "ｿ", "ソ" }, { "ﾀ", "タ" }, { "ﾁ", "チ" }, { "ﾂ", "ツ" }, { "ﾃ", "テ" }, { "ﾄ", "ト" }, { "ﾅ", "ナ" },
