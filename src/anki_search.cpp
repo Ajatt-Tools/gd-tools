@@ -101,13 +101,15 @@ static constexpr std::string_view css_style = R"EOF(<style>
 </style>
 )EOF";
 
+using NameToValMap = std::unordered_map<std::string, std::string>;
+
 struct card_info
 {
   uint64_t id;
   int64_t queue;
   int64_t type;
   std::string deck_name;
-  std::map<std::string, std::string> fields;
+  NameToValMap fields;
 };
 
 auto split_anki_field_names(std::string_view const show_fields) -> std::vector<std::string>
@@ -250,7 +252,7 @@ auto card_json_to_obj(nlohmann::json const& card_json) -> card_info
     .deck_name = card_json["deckName"], //
     .fields =
       [&card_json]() {
-        std::map<std::string, std::string> result;
+        NameToValMap result{};
         for (auto const& element: card_json["fields"].items()) {
           result.emplace(element.key(), element.value()["value"]);
         }
