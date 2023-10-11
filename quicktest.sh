@@ -2,7 +2,10 @@
 
 set -xeuo pipefail
 
-xmake f -m release
+readonly mode=release
+readonly prog=tests
+
+xmake f -m "$mode"
 xmake f --tests=y
-xmake build -w tests
-xmake run tests
+xmake build -w "$prog"
+xmake run --workdir="$(pwd)" "$prog"
