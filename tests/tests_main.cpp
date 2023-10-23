@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN
-#include "../src/kana_conv.h"
-#include "../src/util.h"
+#include "kana_conv.h"
+#include "util.h"
 #include <catch2/catch.hpp>
 
 using SVec = std::vector<std::string_view>;
