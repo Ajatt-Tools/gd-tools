@@ -6,8 +6,8 @@ set -xeuo pipefail
 
 readonly target="gd-tools"
 
-xmake f --tests=n
-xmake f -m release
+xmake config --tests=n
+xmake config -m release
 xmake build -vwy "$target"
 
 run_mandarin_script=false
