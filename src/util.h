@@ -25,11 +25,11 @@ inline void raise_if(bool expr, std::string_view const message = "Invalid argume
 
 template<typename T>
 concept PassedParamsStruct = requires(T params) {
-                               {
-                                 params.gd_word
-                                 } -> std::convertible_to<std::string_view>;
-                               params.assign("a", "b");
-                             };
+  {
+    params.gd_word
+  } -> std::convertible_to<std::string_view>;
+  params.assign("a", "b");
+};
 
 template<PassedParamsStruct T>
 auto fill_args(std::span<std::string_view const> const args) -> T
