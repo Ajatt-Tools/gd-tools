@@ -24,7 +24,7 @@ set -euo pipefail
 TEMP_FILE=/tmp/mecab-cache
 
 # Default path to user_dic.dic, assuming that the user ran `xmake install`.
-USER_DICT=/usr/share/gd-tools/user_dic.dic
+USER_DICT=""
 
 FONT_SIZE=2rem
 GDWORD=""
@@ -52,13 +52,21 @@ usage() {
 	EOF
 }
 
+find_user_dict() {
+	find \
+		"$USER_DICT" \
+		/usr/share/gd-tools/user_dic.dic \
+		~/.local/share/gd-tools/user_dic.dic \
+		-type f -print -quit 2>/dev/null
+}
+
 find_dicdir() {
 	dirname -- "$(
 		find \
 			/usr/lib/mecab/dic/mecab-ipadic-neologd \
 			/usr/lib/mecab/dic \
 			~/.local/share/Anki2/addons21 \
-			-type f -name dicrc -print -quit
+			-type f -name dicrc -print -quit 2>/dev/null
 	)"
 }
 
@@ -68,13 +76,19 @@ mecab_split() {
 		exit 1
 	fi
 
-	mecab \
-		--node-format='<a href="bword:%f[6]">%m</a>' \
-		--unk-format='<a href="bword:%m">%m</a>' \
-		--eos-format='<br>' \
-		--dicdir="$(find_dicdir)" \
+	local -r user_dict=$(find_user_dict)
+	local -a args=(
+		mecab
+		--node-format='<a href="bword:%f[6]">%m</a>'
+		--unk-format='<a href="bword:%m">%m</a>'
+		--eos-format='<br>'
+		--dicdir="$(find_dicdir)"
 		--userdic="${USER_DICT}"
-
+	)
+	if [[ -n $user_dict ]]; then
+		args+=("$user_dict")
+	fi
+	"${args[@]}"
 }
 
 print_css() {
@@ -159,7 +173,7 @@ main() {
 		shift
 	done
 
-	if ! [[ -f $USER_DICT ]]; then
+	if [[ -n $USER_DICT ]] && ! [[ -f $USER_DICT ]]; then
 		die "Provided user dictionary doesn't exist or isn't a file."
 	fi
 
