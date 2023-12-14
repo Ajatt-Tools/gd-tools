@@ -33,6 +33,23 @@ if is_host("linux") then
     )
 end
 
+local format = function(target)
+    import("lib.detect.find_program")
+    local clang_format = find_program("clang-format")
+    if not clang_format then
+        return print("Skipped clang-format run for target: %s", target:name())
+    end
+    local paramlist = {"--sort-includes", "-i"}
+    for _, file in pairs(target:headerfiles()) do
+        table.insert(paramlist, file)
+    end
+    for _, file in pairs(target:sourcefiles()) do
+        table.insert(paramlist, file)
+    end
+    os.execv(clang_format, paramlist)
+    print("Finished clang-format for target: %s", target:name())
+end
+
 -- Main target
 target(main_bin_name)
     set_kind("binary")
@@ -43,22 +60,7 @@ target(main_bin_name)
     add_headerfiles("src/*.h")
 
     -- Run clang-format before build
-    before_build(function(target)
-        import("lib.detect.find_program")
-        local clang_format = find_program("clang-format")
-        if not clang_format then
-            return print("Skipped clang-format run.")
-        end
-        local paramlist = {"--sort-includes", "-i"}
-        for _, file in pairs(target:headerfiles()) do
-            table.insert(paramlist, file)
-        end
-        for _, file in pairs(target:sourcefiles()) do
-            table.insert(paramlist, file)
-        end
-        os.execv(clang_format, paramlist)
-        print("Finished clang-format.")
-    end)
+    before_build(format)
 
     -- Default global install dir.
     set_installdir("/usr/")
@@ -124,6 +126,10 @@ target("tests")
     set_pcxxheader("src/precompiled.h")
     add_headerfiles("src/*.h")
     add_includedirs("src")
+
+    -- Run clang-format before build
+    before_build(format)
+
     before_run(function (target)
         print("Running unit tests on target: %s", target:name())
     end)
