@@ -4,11 +4,15 @@ set_toolchains("gcc")
 
 set_warnings("allextra", "error")
 add_cxxflags("clang::-Wno-c++98-compat")
+add_cxxflags("gcc::-Wno-error=maybe-uninitialized") -- temp build fix
 
 add_rules("mode.debug", "mode.release")
-add_rules("mode.ubsan", "mode.check")
+add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"})
 
 add_requires("cpr >= 1.10.5", "fmt >= 10", "nlohmann_json", "marisa")
+
+set_policy("build.sanitizer.address", true)
+set_policy("build.sanitizer.undefined", true)
 
 if is_mode("debug") then
     add_defines("DEBUG")
