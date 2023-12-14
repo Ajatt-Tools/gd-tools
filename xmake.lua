@@ -8,7 +8,7 @@ add_cxxflags("clang::-Wno-c++98-compat")
 add_rules("mode.debug", "mode.release")
 add_rules("mode.ubsan", "mode.check")
 
-add_requires("cpr >= 1.10.3", "fmt >= 10", "nlohmann_json", "marisa")
+add_requires("cpr >= 1.10.5", "fmt >= 10", "nlohmann_json", "marisa")
 
 if is_mode("debug") then
     add_defines("DEBUG")
