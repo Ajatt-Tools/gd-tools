@@ -119,7 +119,9 @@ target_end()
 
 option("tests", {default = false, description = "Enable tests"})
 if has_config("tests") then
-    add_requires("catch2")
+    -- system = false is required to pull the package from xrepo.
+    -- without the main component build will fail with "undefined reference to 'main'."
+    add_requires("catch2 3", { system = false, configs = {components = {"main"}, }})
 end
 
 -- Tests target
