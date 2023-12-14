@@ -107,6 +107,7 @@ target(main_bin_name)
             local destination = path.join(target:installdir(), "bin", path.basename(shell_file))
             maybe_rm(destination)
             os.cp(shell_file, destination)
+            os.runv("chmod", {"755", "--", destination})
         end
         print("Installed shell scripts.")
     end)
