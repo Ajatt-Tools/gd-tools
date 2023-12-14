@@ -29,10 +29,12 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+args=(xmake install -v --all)
+
 if ${local_install:-false}; then
-	xmake install -v --all --installdir=~/.local/ "$target"
+	"${args[@]}" --installdir=~/.local/ "$target"
 else
-	xmake install -v --all --installdir=/usr --admin "$target"
+	"${args[@]}" --installdir=/usr --admin "$target"
 fi
 
 if $run_mandarin_script; then
