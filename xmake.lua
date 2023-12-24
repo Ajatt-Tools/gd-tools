@@ -117,27 +117,30 @@ target(main_bin_name)
     end)
 target_end()
 
+-- Tests
 option("tests", {default = false, description = "Enable tests"})
+
 if has_config("tests") then
     -- system = false is required to pull the package from xrepo.
     -- without the main component build will fail with "undefined reference to 'main'."
-    add_requires("catch2 3", { system = false, configs = {components = {"main"}, }})
+    --add_requires("catch2 3.x", { system = false })
+    add_requires("catch2 3.x")
+
+    -- Tests target
+    target("tests")
+        set_kind("binary")
+        add_packages("cpr", "fmt", "nlohmann_json", "marisa", "catch2")
+        add_files("src/*.cpp", "tests/*.cpp")
+        remove_files("src/main.cpp")
+        set_pcxxheader("src/precompiled.h")
+        add_headerfiles("src/*.h")
+        add_includedirs("src")
+
+        -- Run clang-format before build
+        before_build(format)
+
+        before_run(function (target)
+            print("Running unit tests on target: %s", target:name())
+        end)
+    target_end()
 end
-
--- Tests target
-target("tests")
-    set_kind("binary")
-    add_packages("cpr", "fmt", "nlohmann_json", "marisa", "catch2")
-    add_files("src/*.cpp", "tests/*.cpp")
-    remove_files("src/main.cpp")
-    set_pcxxheader("src/precompiled.h")
-    add_headerfiles("src/*.h")
-    add_includedirs("src")
-
-    -- Run clang-format before build
-    before_build(format)
-
-    before_run(function (target)
-        print("Running unit tests on target: %s", target:name())
-    end)
-target_end()
