@@ -7,7 +7,10 @@ add_cxxflags("clang::-Wno-c++98-compat")
 add_cxxflags("gcc::-Wno-error=maybe-uninitialized") -- temp build fix
 
 add_rules("mode.debug", "mode.release")
-add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"})
+
+-- clangd will look in subdirectories named build/.
+-- https://clangd.llvm.org/installation#project-setup
+add_rules("plugin.compile_commands.autoupdate", {outputdir = "build"})
 
 add_requires("cpr >= 1.10.5", "fmt >= 10", "nlohmann_json", "marisa")
 
