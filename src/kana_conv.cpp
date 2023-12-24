@@ -20,7 +20,7 @@
 #include "precompiled.h"
 #include "util.h"
 
-auto unicode_char_byte_len(auto const& ch) -> CharByteLen
+auto unicode_char_byte_len(char const& ch) -> CharByteLen
 {
   // See `man charsets` -> Unicode for explanation of below
   if ((ch & 0xC0) == 0x80) {

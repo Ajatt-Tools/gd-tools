@@ -8,7 +8,7 @@ enum CharByteLen : std::size_t { SKIP = 0, ONE = 1, TWO = 2, THREE = 3, FOUR = 4
 enum class Direction { kata_to_hira, hira_to_kata };
 
 auto create_map(std::string_view from, std::string_view to) -> KanaConvMap;
-auto unicode_char_byte_len(auto const& ch) -> CharByteLen;
+auto unicode_char_byte_len(char const& ch) -> CharByteLen;
 
 inline constexpr std::string_view hiragana_chars =
   "ぁあぃいぅうぇえぉおかがか゚きぎき゚くぐく゚けげけ゚こごこ゚さざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふ"
