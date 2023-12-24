@@ -206,7 +206,7 @@ auto get_cids_info(std::vector<uint64_t> const& cids) -> nlohmann::json
 {
   auto const request_str = make_info_request_str(cids);
   cpr::Response const r = make_ankiconnect_request(request_str);
-  raise_if(r.status_code != 200, "Couldn't connect to Anki.");
+  raise_if(r.status_code != cpr::status::HTTP_OK, "Couldn't connect to Anki.");
   auto const obj = json::parse(r.text);
   raise_if(not obj["error"].is_null(), "Error getting data from AnkiConnect.");
   return obj["result"];
@@ -216,7 +216,7 @@ auto find_cids(search_params const& params) -> std::vector<uint64_t>
 {
   auto const request_str = make_find_cards_request_str(params);
   cpr::Response const r = make_ankiconnect_request(request_str);
-  raise_if(r.status_code != 200, "Couldn't connect to Anki.");
+  raise_if(r.status_code != cpr::status::HTTP_OK, "Couldn't connect to Anki.");
   auto const obj = json::parse(r.text);
   raise_if(not obj["error"].is_null(), "Error getting data from AnkiConnect.");
   return obj["result"];
@@ -226,7 +226,7 @@ auto fetch_media_dir_path() -> std::string
 {
   auto const request_str = make_get_media_dir_path_request_str();
   cpr::Response const r = make_ankiconnect_request(request_str);
-  raise_if(r.status_code != 200, "Couldn't connect to Anki.");
+  raise_if(r.status_code != cpr::status::HTTP_OK, "Couldn't connect to Anki.");
   auto const obj = json::parse(r.text);
   raise_if(not obj["error"].is_null(), "Error getting data from AnkiConnect.");
   return obj["result"];
