@@ -180,7 +180,11 @@ void lookup_words(marisa_params params)
       params.gd_sentence.substr(idx, max_forward_search_len_bytes)
     ) };
     std::string const bword{ headwords.empty() ? std::string{ uni_char } : std::ranges::max(headwords, cmp_len) };
-    pos_in_gd_word = params.gd_word == bword ? bword.length() : pos_in_gd_word - uni_char.length();
+    if (params.gd_word == bword) {
+      pos_in_gd_word = static_cast<std::ptrdiff_t>(bword.length());
+    } else {
+      pos_in_gd_word -= static_cast<std::ptrdiff_t>(uni_char.length());
+    }
     fmt::print(
       R"(<a class="{}" href="bword:{}">{}</a>)",
       (pos_in_gd_word > 0 ? "gd-headword" : "gd-word"),
