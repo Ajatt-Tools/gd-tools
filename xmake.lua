@@ -121,6 +121,7 @@ target(main_bin_name)
 target_end()
 
 -- Tests
+-- xmake f --tests=y
 option("tests", {default = false, description = "Enable tests"})
 
 if has_config("tests") then
