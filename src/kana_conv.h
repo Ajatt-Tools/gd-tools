@@ -19,8 +19,22 @@ inline constexpr std::string_view katakana_chars =
 
 struct Utf8CharView
 {
-  std::size_t idx; // starting position of a char, counting by bytes
+  std::size_t idx; // starting position of a char in string, counting by bytes
   std::string_view ch; // the whole character, e.g. "あ" (len=3)
+};
+
+struct Utf8IdxLen
+{
+  std::size_t idx; // starting position of a char in string, counting by bytes
+  std::size_t len; // length of the utf8 character in bytes.
+
+  static Utf8IdxLen from_tuple(std::tuple<std::size_t, char const> enumerated)
+  {
+    return Utf8IdxLen(
+      std::get<0>(enumerated), //
+      unicode_char_byte_len(std::get<1>(enumerated))
+    );
+  }
 };
 
 constexpr auto enum_unicode_chars(std::string_view str)
@@ -28,13 +42,11 @@ constexpr auto enum_unicode_chars(std::string_view str)
   // return a sequence of Utf8CharView.
   // e.g. [ (0, "あ"), (3, "い") ]
   return std::views::enumerate(str) //
-         | std::views::transform([](auto const idx_chr) {
-             return std::make_pair(std::get<0>(idx_chr), unicode_char_byte_len(std::get<1>(idx_chr)));
-           })
-         | std::views::filter([](auto const idx_len) { return idx_len.second != CharByteLen::SKIP; })
-         | std::views::transform([str](auto const idx_len) {
-             assert(idx_len.second > 0);
-             return Utf8CharView(idx_len.first, str.substr(idx_len.first, idx_len.second));
+         | std::views::transform(Utf8IdxLen::from_tuple)
+         | std::views::filter([](Utf8IdxLen const ch) { return (ch.len != CharByteLen::SKIP); })
+         | std::views::transform([str](Utf8IdxLen const ch) {
+             assert(ch.len > 0);
+             return Utf8CharView(ch.idx, str.substr(ch.idx, ch.len));
            });
 }
 
