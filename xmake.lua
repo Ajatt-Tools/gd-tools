@@ -153,7 +153,7 @@ end
 -- Describe the rdricpp dependency
 package("rdricpp")
     set_homepage("https://github.com/Ajatt-Tools/rdricpp")
-    set_description("Rikaitan Deinflector Reference Implemenation.")
+    set_description("Rikaitan Deinflector Reference Implementation.")
     set_license("GPL-3.0")
 
     add_urls("https://github.com/Ajatt-Tools/rdricpp/archive/refs/tags/$(version).tar.gz")

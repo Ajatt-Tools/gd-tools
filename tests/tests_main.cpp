@@ -42,3 +42,9 @@ TEST_CASE("half to full", "[convert]")
   half_to_full(from);
   REQUIRE(from == to);
 }
+
+TEST_CASE("JpSet", "[JpSet]")
+{
+  JpSet set = { "キサマ", "きさま" };
+  REQUIRE(set.size() == 1);
+}

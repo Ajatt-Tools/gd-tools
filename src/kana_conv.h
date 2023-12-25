@@ -85,3 +85,17 @@ inline auto hiragana_to_katakana(std::string_view str) -> std::string
 }
 
 auto half_to_full(std::string& str) -> std::string&;
+
+struct KanaInsensitiveMore
+{
+  bool operator()(std::string const& lhs, std::string const& rhs) const
+  {
+    if (lhs.length() != rhs.length()) {
+      return lhs.length() > rhs.length();
+    } else {
+      return hiragana_to_katakana(lhs) > hiragana_to_katakana(rhs);
+    }
+  }
+};
+
+using JpSet = std::set<std::string, KanaInsensitiveMore>;

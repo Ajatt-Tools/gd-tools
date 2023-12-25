@@ -67,7 +67,7 @@ static constexpr std::string_view css_style = R"EOF(
     gap: calc( var(--size) / 4);
     max-width: 100%;
     margin: 0 auto;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     align-content: start;
     justify-content: space-around;
     text-align: left;
@@ -115,16 +115,6 @@ struct marisa_params
     }
   }
 };
-
-struct KanaInsensitiveCompare
-{
-  bool operator()(std::string const& lhs, std::string const& rhs) const
-  {
-    return hiragana_to_katakana(lhs) < hiragana_to_katakana(rhs);
-  }
-};
-
-using JpSet = std::set<std::string, KanaInsensitiveCompare>;
 
 auto cmp_len(std::string_view a, std::string_view b) -> bool
 {
