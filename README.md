@@ -50,8 +50,7 @@ These programs are treated as dictionaries and you can add them under "Dictionar
 This script outputs the sentence with clickable characters
 and searches for the longest available dictionary entry
 (from a predefined list) beginning at that character.
-For deinflection it currently relies on the hunspell dictionary by epistularum,
-available [here](https://github.com/epistularum/hunspell-ja-deinflection).
+For deinflection it currently relies on [rdricpp](https://github.com/Ajatt-Tools/rdricpp).
 It also provides links of available entries of smaller substrings.
 
 ![demo](https://user-images.githubusercontent.com/50422430/229341045-96283fc9-8ecb-49bb-a011-abd2d3e4e43e.gif)
