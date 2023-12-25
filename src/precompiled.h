@@ -27,3 +27,4 @@
 #include <fmt/ranges.h>
 #include <marisa/trie.h>
 #include <nlohmann/json.hpp>
+#include <rdricpp/rdricpp.h>

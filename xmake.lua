@@ -1,5 +1,6 @@
 local main_bin_name = "gd-tools"
-set_languages("c++23")
+set_license("GPL-3.0")
+set_languages("c++2b")
 set_toolchains("gcc")
 
 set_warnings("allextra", "error")
@@ -12,7 +13,7 @@ add_rules("mode.debug", "mode.release")
 -- https://clangd.llvm.org/installation#project-setup
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "build"})
 
-add_requires("cpr >= 1.10.5", "fmt >= 10", "nlohmann_json", "marisa")
+add_requires("cpr >= 1.10.5", "fmt >= 10", "nlohmann_json", "marisa", "rdricpp")
 
 set_policy("build.sanitizer.address", true)
 set_policy("build.sanitizer.undefined", true)
@@ -60,7 +61,7 @@ end
 -- Main target
 target(main_bin_name)
     set_kind("binary")
-    add_packages("cpr", "fmt", "nlohmann_json", "marisa")
+    add_packages("cpr", "fmt", "nlohmann_json", "marisa", "rdricpp")
     add_files("src/*.cpp")
     add_cxflags("-D_GLIBCXX_ASSERTIONS")
     set_pcxxheader("src/precompiled.h")
@@ -133,7 +134,7 @@ if has_config("tests") then
     -- Tests target
     target("tests")
         set_kind("binary")
-        add_packages("cpr", "fmt", "nlohmann_json", "marisa", "catch2")
+        add_packages("cpr", "fmt", "nlohmann_json", "marisa", "catch2", "rdricpp")
         add_files("src/*.cpp", "tests/*.cpp")
         remove_files("src/main.cpp")
         set_pcxxheader("src/precompiled.h")
@@ -148,3 +149,17 @@ if has_config("tests") then
         end)
     target_end()
 end
+
+-- Describe the rdricpp dependency
+package("rdricpp")
+    set_homepage("https://github.com/Ajatt-Tools/rdricpp")
+    set_description("Rikaitan Deinflector Reference Implemenation.")
+    set_license("GPL-3.0")
+
+    add_urls("https://github.com/Ajatt-Tools/rdricpp/archive/refs/tags/$(version).tar.gz")
+    add_versions("v0.1", "89a2ebb2f3c21fdd5f8177a507a09d6b23cd8adf1328c1a4c5dfad6c91d35878")
+
+    on_install(function (package)
+        import("package.tools.xmake").install(package)
+    end)
+package_end()

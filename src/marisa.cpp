@@ -20,13 +20,6 @@
 #include "precompiled.h"
 #include "util.h"
 
-// TODO inflections; fix things like グラついた
-// 首をなでられた
-// 護り手たちがボヤいてたんだよ
-// フハハッむつまじくかかってくるがよい
-// たどり
-// かゆく
-
 using namespace std::string_literals;
 static constexpr std::string_view help_text = R"EOF(usage: gd-marisa [OPTIONS]
 
@@ -88,7 +81,7 @@ static constexpr std::string_view css_style = R"EOF(
   }
 </style>
 )EOF";
-static constexpr std::size_t max_forward_search_len_bytes{ CharByteLen::THREE * 10UL };
+static constexpr std::size_t max_forward_search_len_bytes{ CharByteLen::THREE * 20UL };
 
 auto find_dic_file() -> std::filesystem::path
 {
@@ -138,12 +131,25 @@ auto cmp_len(std::string_view a, std::string_view b) -> bool
   return a.length() < b.length();
 }
 
+auto find_possible_deinflections(std::string_view const search_str) -> std::vector<std::string>
+{
+  std::vector<std::string> hits;
+  for (size_t size = search_str.size(); size > 0; --size) {
+    auto const substr = search_str.substr(0, size);
+    for (Deinflection const& hit: deinflect(substr)) { hits.push_back(hit.term); }
+  }
+  return hits;
+}
+
 auto keywords_starting_with(marisa::Agent& agent, marisa::Trie const& trie, std::string const& search_str) -> JpSet
 {
   JpSet results{};
   for (auto const& variant: { search_str, hiragana_to_katakana(search_str), katakana_to_hiragana(search_str) }) {
-    agent.set_query(variant.c_str());
-    while (trie.common_prefix_search(agent)) { results.emplace(agent.key().ptr(), agent.key().length()); }
+    // search all possible deinflected variants
+    for (auto const& deinflected: find_possible_deinflections(variant)) {
+      agent.set_query(deinflected.c_str());
+      while (trie.common_prefix_search(agent)) { results.emplace(agent.key().ptr(), agent.key().length()); }
+    }
   }
   return results;
 }
@@ -179,6 +185,7 @@ void lookup_words(marisa_params params)
       trie, //
       params.gd_sentence.substr(idx, max_forward_search_len_bytes)
     ) };
+    // set bword to the longest found key in the trie.
     std::string const bword{ headwords.empty() ? std::string{ uni_char } : std::ranges::max(headwords, cmp_len) };
     if (params.gd_word == bword) {
       pos_in_gd_word = static_cast<std::ptrdiff_t>(bword.length());
