@@ -121,26 +121,46 @@ auto cmp_len(std::string_view a, std::string_view b) -> bool
   return a.length() < b.length();
 }
 
-auto find_possible_deinflections(std::string_view const search_str) -> std::vector<std::string>
+struct Deinflected
 {
-  std::vector<std::string> hits;
-  for (size_t size = search_str.size(); size > 0; --size) {
-    auto const substr = search_str.substr(0, size);
-    for (Deinflection const& hit: deinflect(substr)) { hits.push_back(hit.term); }
+  std::string_view from;
+  std::vector<Deinflection> to;
+};
+
+auto find_deinflections_starting_with(std::string_view const search_str) -> std::vector<Deinflected>
+{
+  std::vector<Deinflected> hits;
+  // loop from larger towards shorter substrings
+  for (std::string_view substr: enum_unicode_chars(search_str) //
+                                  | std::views::reverse
+                                  | std::views::transform( //
+                                    [&search_str](Utf8CharView const ch) { //
+                                      return search_str.substr(0UL, ch.idx + ch.ch.size());
+                                    }
+                                  )) {
+    hits.emplace_back(substr, deinflect(substr));
   }
   return hits;
 }
 
-auto keywords_starting_with(marisa::Agent& agent, marisa::Trie const& trie, std::string const& search_str) -> JpSet
+auto find_keywords_starting_with(marisa::Agent& agent, marisa::Trie const& trie, std::string const& search_str) -> JpSet
 {
   JpSet results{};
-  for (auto const& variant: { search_str, hiragana_to_katakana(search_str), katakana_to_hiragana(search_str) }) {
-    // search all possible deinflected variants
-    for (auto const& deinflected: find_possible_deinflections(variant)) {
-      agent.set_query(deinflected.c_str());
-      while (trie.common_prefix_search(agent)) { results.emplace(agent.key().ptr(), agent.key().length()); }
+  auto const variants = { search_str, hiragana_to_katakana(search_str), katakana_to_hiragana(search_str) };
+
+  auto deinflections = std::views::all(variants) //
+                       | std::views::transform(find_deinflections_starting_with) //
+                       | std::views::join //
+                       | std::views::transform([](Deinflected const& group) { return group.to; }) //
+                       | std::views::join;
+
+  for (auto const& deinflection: deinflections) {
+    agent.set_query(deinflection.term.c_str());
+    while (trie.common_prefix_search(agent)) { //
+      results.emplace(agent.key().ptr(), agent.key().length());
     }
   }
+
   return results;
 }
 
@@ -170,11 +190,12 @@ void lookup_words(marisa_params params)
 
   // Link longest words starting with each position in sentence.
   for (auto const [idx, uni_char]: enum_unicode_chars(params.gd_sentence)) {
-    auto const headwords{ keywords_starting_with(
+    auto const headwords{ find_keywords_starting_with(
       agent,
       trie, //
       params.gd_sentence.substr(idx, max_forward_search_len_bytes)
     ) };
+
     // set bword to the longest found key in the trie.
     std::string const bword{ headwords.empty() ? std::string{ uni_char } : std::ranges::max(headwords, cmp_len) };
     if (params.gd_word == bword) {
@@ -182,6 +203,7 @@ void lookup_words(marisa_params params)
     } else {
       pos_in_gd_word -= static_cast<std::ptrdiff_t>(uni_char.length());
     }
+
     fmt::print(
       R"(<a class="{}" href="bword:{}">{}</a>)",
       (pos_in_gd_word > 0 ? "gd-headword" : "gd-word"),
