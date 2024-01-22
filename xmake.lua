@@ -15,13 +15,12 @@ add_rules("plugin.compile_commands.autoupdate", {outputdir = "build"})
 
 add_requires("cpr >= 1.10.5", "fmt >= 10", "nlohmann_json", "marisa", "rdricpp")
 
-set_policy("build.sanitizer.address", true)
-set_policy("build.sanitizer.undefined", true)
-
 if is_mode("debug") then
     add_defines("DEBUG")
     set_symbols("debug")
     set_optimize("none")
+    set_policy("build.sanitizer.address", true)
+    set_policy("build.sanitizer.undefined", true)
 elseif is_mode("release") then
     add_defines("NDEBUG")
     set_optimize("faster") -- Arch Linux builds its packages with -O2
@@ -158,6 +157,7 @@ package("rdricpp")
 
     add_urls("https://github.com/Ajatt-Tools/rdricpp/archive/refs/tags/$(version).tar.gz")
     add_versions("v0.1", "89a2ebb2f3c21fdd5f8177a507a09d6b23cd8adf1328c1a4c5dfad6c91d35878")
+    add_versions("v0.2", "5643bbfba2cc4892ead1e04d2fe06a571feb2868f28abfbaffbab07088e8aaac")
 
     on_install(function (package)
         import("package.tools.xmake").install(package)
