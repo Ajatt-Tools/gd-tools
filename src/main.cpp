@@ -58,25 +58,31 @@ auto base_name(auto file_path) -> std::string
   return std::filesystem::path(file_path).filename();
 }
 
+template<std::integral Ret = uint64_t>
+constexpr auto djbx33a(std::string_view const s) -> Ret
+{
+  Ret acc = 5381;
+  for (auto const ch: s) { acc = (acc * 33) + static_cast<Ret>(ch); }
+  return acc;
+}
+
 auto take_action(std::span<std::string_view const> const args) -> void
 {
-  auto const program_name = base_name(args[0]);
+  auto const program_name = base_name(args.front());
 
   // Command passed as program name (first arg).
-  if (program_name == "gd-ankisearch") {
-    return search_anki_cards(args | std::views::drop(1));
-  }
-  if (program_name == "gd-echo") {
-    return stroke_order(args | std::views::drop(1));
-  }
-  if (program_name == "gd-massif") {
-    return massif(args | std::views::drop(1));
-  }
-  if (program_name == "gd-images") {
-    return images(args | std::views::drop(1));
-  }
-  if (program_name == "gd-marisa") {
-    return marisa_split(args | std::views::drop(1));
+  std::span rest = args.subspan(1);
+  switch (djbx33a(program_name)) {
+  case djbx33a("gd-ankisearch"):
+    return search_anki_cards(rest);
+  case djbx33a("gd-echo"):
+    return stroke_order(rest);
+  case djbx33a("gd-massif"):
+    return massif(rest);
+  case djbx33a("gd-images"):
+    return images(rest);
+  case djbx33a("gd-marisa"):
+    return marisa_split(rest);
   }
 
   // Help requested explicitly.
@@ -85,20 +91,18 @@ auto take_action(std::span<std::string_view const> const args) -> void
   }
 
   // Command passed as second arg (first is "gd-tools").
-  if (args[1] == "ankisearch") {
-    return search_anki_cards(args | std::views::drop(2));
-  }
-  if (args[1] == "echo") {
-    return stroke_order(args | std::views::drop(2));
-  }
-  if (args[1] == "massif") {
-    return massif(args | std::views::drop(2));
-  }
-  if (args[1] == "images") {
-    return images(args | std::views::drop(2));
-  }
-  if (args[1] == "marisa") {
-    return marisa_split(args | std::views::drop(2));
+  rest = rest.subspan(1);
+  switch (djbx33a(args[1])) {
+  case djbx33a("ankisearch"):
+    return search_anki_cards(rest);
+  case djbx33a("echo"):
+    return stroke_order(rest);
+  case djbx33a("massif"):
+    return massif(rest);
+  case djbx33a("images"):
+    return images(rest);
+  case djbx33a("marisa"):
+    return marisa_split(rest);
   }
 
   // Couldn't determine command.
