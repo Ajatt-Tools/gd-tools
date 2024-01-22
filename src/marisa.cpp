@@ -21,6 +21,7 @@
 #include "util.h"
 
 using namespace std::string_literals;
+using namespace ajt::rdricpp;
 static constexpr std::string_view help_text = R"EOF(usage: gd-marisa [OPTIONS]
 
 Split sentence using MARISA and print links to each word.
