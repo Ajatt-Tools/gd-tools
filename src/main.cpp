@@ -66,6 +66,11 @@ constexpr auto djbx33a(std::string_view const s) -> Ret
   return acc;
 }
 
+constexpr auto operator""_h(char const* s, [[maybe_unused]] size_t const size)
+{
+  return djbx33a(std::string_view(s, size));
+}
+
 auto take_action(std::span<std::string_view const> const args) -> void
 {
   auto const program_name = base_name(args.front());
@@ -73,15 +78,15 @@ auto take_action(std::span<std::string_view const> const args) -> void
   // Command passed as program name (first arg).
   std::span rest = args.subspan(1);
   switch (djbx33a(program_name)) {
-  case djbx33a("gd-ankisearch"):
+  case "gd-ankisearch"_h:
     return search_anki_cards(rest);
-  case djbx33a("gd-echo"):
+  case "gd-echo"_h:
     return stroke_order(rest);
-  case djbx33a("gd-massif"):
+  case "gd-massif"_h:
     return massif(rest);
-  case djbx33a("gd-images"):
+  case "gd-images"_h:
     return images(rest);
-  case djbx33a("gd-marisa"):
+  case "gd-marisa"_h:
     return marisa_split(rest);
   }
 
@@ -93,15 +98,15 @@ auto take_action(std::span<std::string_view const> const args) -> void
   // Command passed as second arg (first is "gd-tools").
   rest = rest.subspan(1);
   switch (djbx33a(args[1])) {
-  case djbx33a("ankisearch"):
+  case "ankisearch"_h:
     return search_anki_cards(rest);
-  case djbx33a("echo"):
+  case "echo"_h:
     return stroke_order(rest);
-  case djbx33a("massif"):
+  case "massif"_h:
     return massif(rest);
-  case djbx33a("images"):
+  case "images"_h:
     return images(rest);
-  case djbx33a("marisa"):
+  case "marisa"_h:
     return marisa_split(rest);
   }
 
