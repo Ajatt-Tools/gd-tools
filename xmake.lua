@@ -13,7 +13,7 @@ add_rules("mode.debug", "mode.release")
 -- https://clangd.llvm.org/installation#project-setup
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "build"})
 
-add_requires("cpr >= 1.10.5", "fmt >= 10", "nlohmann_json", "marisa", "rdricpp")
+add_requires("cpr >= 1.10.5", "fmt >= 10.2", "nlohmann_json", "marisa", "rdricpp")
 
 if is_mode("debug") then
     add_defines("DEBUG")
