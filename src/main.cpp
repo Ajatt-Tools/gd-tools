@@ -61,8 +61,11 @@ auto base_name(auto file_path) -> std::string
 template<std::integral Ret = uint64_t>
 constexpr auto djbx33a(std::string_view const s) -> Ret
 {
-  Ret acc = 5381;
-  for (auto const ch: s) { acc = (acc * 33) + static_cast<Ret>(ch); }
+  static constexpr Ret init = 5381;
+  static constexpr Ret mul = 33;
+
+  Ret acc = init;
+  for (auto const ch: s) { acc = (acc * mul) + static_cast<Ret>(ch); }
   return acc;
 }
 
