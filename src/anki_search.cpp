@@ -98,6 +98,9 @@ static constexpr std::string_view css_style = R"EOF(<style>
 .gd-ankisearch-table a:hover {
   filter: hue-rotate(-20deg) brightness(120%);
 }
+.gd-tag-link:not(:last-of-type)::after {
+  content: ", ";
+}
 </style>
 )EOF";
 
@@ -110,6 +113,7 @@ struct card_info
   int64_t type;
   std::string deck_name;
   NameToValMap fields;
+  uint64_t nid;
 };
 
 auto split_anki_field_names(std::string_view const show_fields) -> std::vector<std::string>
@@ -189,7 +193,7 @@ auto make_ankiconnect_request(std::string_view const request_str) -> cpr::Respon
   );
 }
 
-auto make_info_request_str(std::vector<uint64_t> const& cids)
+auto make_info_request_str(std::vector<uint64_t> const& cids) -> std::string
 {
   auto request = json::parse(R"EOF({
     "action": "cardsInfo",
@@ -232,6 +236,33 @@ auto fetch_media_dir_path() -> std::string
   return obj["result"];
 }
 
+auto make_get_note_tags_request_str(uint64_t const nid) -> std::string
+{
+  auto request = json::parse(R"EOF({
+    "action": "getNoteTags",
+    "version": 6,
+    "params": {
+        "note": 1483959289817
+    }
+  })EOF");
+  request["params"]["note"] = nid;
+  return request.dump();
+}
+
+auto get_note_tags(uint64_t const nid) -> std::string
+{
+  auto const request_str = make_get_note_tags_request_str(nid);
+  cpr::Response const r = make_ankiconnect_request(request_str);
+  raise_if(r.status_code != cpr::status::HTTP_OK, "Couldn't connect to Anki.");
+  auto const obj = json::parse(r.text);
+  raise_if(not obj["error"].is_null(), "Error getting data from AnkiConnect.");
+  std::string html;
+  for (std::string const tag_name: obj["result"]) {
+    html += fmt::format(R"EOF(<a class="gd-tag-link" href="ankisearch:tag:{}">{}</a>)EOF", tag_name, tag_name);
+  }
+  return html;
+}
+
 void print_table_header(search_params const& params)
 {
   // Print the first row (header) that contains <th></th> tags, starting with Card ID.
@@ -239,6 +270,7 @@ void print_table_header(search_params const& params)
   fmt::print("<th>Card ID</th>");
   fmt::print("<th>Deck name</th>");
   for (auto const& field: params.show_fields) { fmt::print("<th>{}</th>", field); }
+  fmt::print("<th>Tags</th>");
   fmt::print("</tr>\n");
 }
 
@@ -257,7 +289,8 @@ auto card_json_to_obj(nlohmann::json const& card_json) -> card_info
           result.emplace(element.key(), element.value()["value"]);
         }
         return result;
-      }(), //
+      }(),
+    .nid = card_json["note"] //
   };
 }
 
@@ -292,6 +325,7 @@ void print_cards_info(search_params const& params)
            : "Not present")
       );
     }
+    fmt::print("<td>{}</td>\n", get_note_tags(card.nid));
     fmt::print("</tr>\n");
   }
   fmt::print("</table>\n");
