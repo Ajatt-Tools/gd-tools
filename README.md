@@ -29,6 +29,10 @@ please create a pull request.
 
 <summary>Manual installation</summary>
 
+This way is not recommended
+because it's easy to make a mistake during the process
+and end up with a broken install.
+
 1) To build the `gd-tools` you need to install `xmake` and `gcc` (13.1 and newer).
 2) Run `./quickinstall.sh`.
 
