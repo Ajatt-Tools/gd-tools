@@ -45,15 +45,18 @@ gd-ankisearch --field-name VocabKanji --word %GDWORD%
 gd-ankisearch --deck-name Mining --word %GDWORD%
 )EOF";
 static constexpr std::string_view css_style = R"EOF(<style>
+.gd-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
 .gd-ankisearch-table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   border-spacing: 0;
   max-width: 100%;
   width: 100%;
-  display: block;
-  overflow-x: auto;
   overscroll-behavior-inline: contain;
+  margin: 0 auto;
 }
 .gd-ankisearch-table td,
 .gd-ankisearch-table th {
@@ -311,6 +314,7 @@ void print_cards_info(search_params const& params)
     return fmt::print("No cards found.\n");
   }
   auto const media_dir_path = fetch_media_dir_path();
+  fmt::print("<div class=\"gd-table-wrap\">");
   fmt::print("<table class=\"gd-ankisearch-table\">\n");
   print_table_header(params);
   for (auto const& card: get_cids_info(cids) | std::views::transform(card_json_to_obj)) {
@@ -328,7 +332,8 @@ void print_cards_info(search_params const& params)
     fmt::print("<td>{}</td>\n", get_note_tags(card.nid));
     fmt::print("</tr>\n");
   }
-  fmt::print("</table>\n");
+  fmt::print("</table>");
+  fmt::print("</div>\n"); // gd-table-wrap
   fmt::print("{}\n", css_style);
 }
 
