@@ -74,4 +74,9 @@ auto strtrim(std::string_view str) noexcept -> std::string;
 
 void str_replace(std::string& str, std::string_view from, std::string_view to) noexcept;
 
-inline std::string const this_pid{ std::to_string(getpid()) };
+// Getpid
+#if __linux__
+inline std::string const this_pid{ std::to_string(getpid()) }; // Glibc's getpid
+#elif _WIN32
+inline std::string const this_pid{ std::to_string(GetCurrentProcessId()) };
+#endif

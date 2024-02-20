@@ -18,8 +18,12 @@
 #include <system_error>
 #include <vector>
 
-// Glibc
-#include <unistd.h>
+// Getpid
+#if __linux__
+#include <unistd.h> // Glibc's getpid
+#elif _WIN32
+#include <windows.h> // GetCurrentProcessId
+#endif
 
 // Other
 #include <cpr/cpr.h>
