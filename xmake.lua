@@ -158,6 +158,7 @@ package("rdricpp")
     add_urls("https://github.com/Ajatt-Tools/rdricpp/archive/refs/tags/$(version).tar.gz")
     add_versions("v0.1", "89a2ebb2f3c21fdd5f8177a507a09d6b23cd8adf1328c1a4c5dfad6c91d35878")
     add_versions("v0.2", "5643bbfba2cc4892ead1e04d2fe06a571feb2868f28abfbaffbab07088e8aaac")
+    add_versions("v0.3", "b43fec2ac123b4abfe9bf5c143f397c3623cceb5e9daebb242d6eb4249fe13d9")
 
     on_install(function (package)
         import("package.tools.xmake").install(package)
