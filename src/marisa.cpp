@@ -89,7 +89,7 @@ auto find_dic_file() -> std::filesystem::path
   static auto const locations = {
     // possible .dic locations
     std::filesystem::path("/usr/share/gd-tools/marisa_words.dic"),
-    std::filesystem::path(std::getenv("HOME")) / ".local/share/gd-tools/marisa_words.dic"
+    user_home() / ".local/share/gd-tools/marisa_words.dic",
   };
   for (auto const& location: locations) {
     if (std::filesystem::exists(location) and std::filesystem::is_regular_file(location)) {
