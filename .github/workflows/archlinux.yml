@@ -1,0 +1,49 @@
+name: Archlinux
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    container: archlinux:base-devel
+    runs-on: ${{ matrix.os }}
+
+    concurrency:
+        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-Archlinux
+        cancel-in-progress: true
+
+    env:
+      XMAKE_ROOT: y
+
+    steps:
+      - name: Installation
+        run: |
+          pacman -Syu --noconfirm --needed openssl
+          pacman -Sy --noconfirm --needed glibc git base-devel perl make unzip p7zip
+          pacman -Sy --noconfirm --needed mesa gcc-fortran glu libc++
+          git config --global --add safe.directory /__w/xmake/xmake
+          git config --global --add safe.directory /__w/xmake-repo/xmake-repo
+          pacman -Sy --noconfirm --needed xmake
+
+      - uses: actions/checkout@v4
+
+      - name: Build gd-tools
+        run: |
+          xmake config -y -m release
+          xmake config -y --tests=n
+          xmake build  -y -vw "gd-tools"
+
+      - name: Build tests
+        run: |
+          xmake config -y -m release
+          xmake config -y --tests=y
+          xmake build  -y -vw "tests"
+
+      - name: Run tests
+        run: |
+          xmake run --workdir="$(pwd)" "tests"
