@@ -21,7 +21,7 @@
 #include "images.h"
 #include "marisa.h"
 #include "massif.h"
-#include "mecab.h"
+#include "mecab_split.h"
 #include "precompiled.h"
 
 static constexpr std::string_view help_text = R"EOF(usage: {} ACTION [OPTIONS]

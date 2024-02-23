@@ -126,7 +126,7 @@ struct mecab_params
   }
 };
 
-std::string replace_all(std::string str, std::string_view const from, std::string_view const to)
+auto replace_all(std::string str, std::string_view const from, std::string_view const to) -> std::string
 {
   size_t start_pos = 0;
   while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
