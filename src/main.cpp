@@ -19,7 +19,7 @@
 #include "anki_search.h"
 #include "echo.h"
 #include "images.h"
-#include "marisa.h"
+#include "marisa_split.h"
 #include "massif.h"
 #include "mecab_split.h"
 #include "precompiled.h"
