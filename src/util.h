@@ -80,3 +80,8 @@ inline std::string const this_pid{ std::to_string(getpid()) }; // Glibc's getpid
 #elif _WIN32
 inline std::string const this_pid{ std::to_string(GetCurrentProcessId()) };
 #endif
+
+inline auto user_home() -> std::filesystem::path
+{
+  return std::getenv("HOME");
+}

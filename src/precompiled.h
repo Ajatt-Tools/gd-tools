@@ -30,5 +30,6 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 #include <marisa/trie.h>
+#include <mecab.h>
 #include <nlohmann/json.hpp>
 #include <rdricpp/rdricpp.h>
