@@ -4,14 +4,15 @@ on:
   push:
 
 name: "Run Shellcheck"
-permissions: {}
+
+permissions: read-all
 
 jobs:
   shellcheck:
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: "Run ShellCheck"
         uses: ludeeus/action-shellcheck@master
