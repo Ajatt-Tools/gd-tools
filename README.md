@@ -114,9 +114,17 @@ This script shows the top 5 pictures from Bing images for the given search strin
 
 ![image](https://user-images.githubusercontent.com/50422430/224940994-eb3e1be6-9cd8-4776-88cf-850c78648e81.png)
 
+```
+gd-images --word %GDWORD%
+```
+
 ## gd-strokeorder
 
 This script shows the search string in the `KanjiStrokeOrders` font.
+
+```
+gd-strokeorder --word %GDWORD%
+```
 
 ![screenshot](https://user-images.githubusercontent.com/69171671/224840590-b740a1b6-8526-49ed-b4cd-efe03689a132.png)
 
@@ -137,6 +145,10 @@ gd-strokeorder --word %GDWORD%
 
 This script displays the handwritten form of each character
 
+```
+gd-handwritten --word %GDWORD% --font-size 4rem
+```
+
 ![screenshot](https://user-images.githubusercontent.com/53496273/254959907-4aa7d72d-2d58-4bd3-8b3a-c2f6f3186834.png)
 
 Font source: [ArmedLemon](https://github.com/Ajatt-Tools/gd-tools/blob/main/res/ArmedLemon.ttf).
@@ -150,6 +162,10 @@ gd-handwritten --word %GDWORD%
 ## gd-massif
 
 This script shows example sentences from https://massif.la/
+
+```
+gd-massif --word %GDWORD%
+```
 
 ![image](https://user-images.githubusercontent.com/50422430/226018360-e46605f0-2fb4-481c-801e-73aca84fae70.png)
 
@@ -170,7 +186,6 @@ This script searches Anki cards in your collection that contain %GDWORD%.
 ```
 gd-ankisearch --field-name VocabKanji --show-fields VocabKanji,SentKanji,Image,SentAudio --word %GDWORD%
 ```
-
 
 ## gd-mandarin
 
