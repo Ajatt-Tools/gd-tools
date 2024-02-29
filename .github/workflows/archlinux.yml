@@ -9,12 +9,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+        mode: [debug, release]
 
     container: archlinux:base-devel
     runs-on: ${{ matrix.os }}
 
     concurrency:
-        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-Archlinux
+        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-Archlinux-${{ matrix.mode }}
         cancel-in-progress: true
 
     env:
@@ -34,13 +35,13 @@ jobs:
 
       - name: Build gd-tools
         run: |
-          xmake config -y -m release
+          xmake config -y -m ${{ matrix.mode }}
           xmake config -y --tests=n
           xmake build  -y -vw "gd-tools"
 
       - name: Build tests
         run: |
-          xmake config -y -m release
+          xmake config -y -m ${{ matrix.mode }}
           xmake config -y --tests=y
           xmake build  -y -vw "tests"
 
