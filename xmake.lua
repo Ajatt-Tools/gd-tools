@@ -13,7 +13,7 @@ add_rules("mode.debug", "mode.release")
 -- https://clangd.llvm.org/installation#project-setup
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "build"})
 
-add_requires("cpr >= 1.10.5", "fmt >= 10.2", "nlohmann_json", "marisa", "rdricpp")
+add_requires("mecab", "cpr >= 1.10.5", "fmt >= 10.2", "nlohmann_json", "marisa", "rdricpp")
 
 if is_mode("debug") then
     add_defines("DEBUG")
@@ -60,7 +60,7 @@ end
 -- Main target
 target(main_bin_name)
     set_kind("binary")
-    add_packages("cpr", "fmt", "nlohmann_json", "marisa", "rdricpp")
+    add_packages("cpr", "fmt", "nlohmann_json", "marisa", "rdricpp", "mecab")
     add_files("src/*.cpp")
     add_cxflags("-D_GLIBCXX_ASSERTIONS")
     set_pcxxheader("src/precompiled.h")
@@ -78,10 +78,7 @@ target(main_bin_name)
         end
 
         local bin_dir = path.join(target:installdir(), "/bin/")
-        local variants = {
-            "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa"
-            -- "gd-mecab",
-        }
+        local variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", }
 
         -- Link alternative names
         -- to enable calling `gd-ankisearch` instead of more verbose `gd-tools ankisearch`, etc.
@@ -133,7 +130,7 @@ if has_config("tests") then
     -- Tests target
     target("tests")
         set_kind("binary")
-        add_packages("cpr", "fmt", "nlohmann_json", "marisa", "catch2", "rdricpp")
+        add_packages("cpr", "fmt", "nlohmann_json", "marisa", "catch2", "rdricpp", "mecab")
         add_files("src/*.cpp", "tests/*.cpp")
         remove_files("src/main.cpp")
         set_pcxxheader("src/precompiled.h")

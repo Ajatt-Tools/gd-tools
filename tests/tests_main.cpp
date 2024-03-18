@@ -1,4 +1,5 @@
 #include "kana_conv.h"
+#include "mecab_split.h"
 #include "util.h"
 #include <catch2/catch_test_macros.hpp>
 
@@ -47,4 +48,12 @@ TEST_CASE("JpSet", "[JpSet]")
 {
   JpSet set = { "キサマ", "きさま" };
   REQUIRE(set.size() == 1);
+}
+
+TEST_CASE("replace_all", "[replace_all]")
+{
+  std::string test = "私私私　家　出ようと思うんだ。";
+  test = replace_all(test, "思う", "omou");
+  test = replace_all(test, "私私", "");
+  REQUIRE(test == "私　家　出ようとomouんだ。");
 }

@@ -19,8 +19,9 @@
 #include "anki_search.h"
 #include "echo.h"
 #include "images.h"
-#include "marisa.h"
+#include "marisa_split.h"
 #include "massif.h"
+#include "mecab_split.h"
 #include "precompiled.h"
 
 static constexpr std::string_view help_text = R"EOF(usage: {} ACTION [OPTIONS]
@@ -31,6 +32,7 @@ ACTIONS
   massif      Search word on Massif.
   images      Search images on Bing.
   marisa      Split search string using MARISA.
+  mecab       Split search string using Mecab.
   strokeorder Show stroke order of a word.
   handwritten Display the handwritten form of a word.
 
@@ -91,6 +93,8 @@ auto take_action(std::span<std::string_view const> const args) -> void
     return images(rest);
   case "gd-marisa"_h:
     return marisa_split(rest);
+  case "gd-mecab"_h:
+    return mecab_split(rest);
   }
 
   // Help requested explicitly.
@@ -111,6 +115,8 @@ auto take_action(std::span<std::string_view const> const args) -> void
     return images(rest);
   case "marisa"_h:
     return marisa_split(rest);
+  case "mecab"_h:
+    return mecab_split(rest);
   }
 
   // Couldn't determine command.
