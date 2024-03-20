@@ -36,8 +36,10 @@ TEST_CASE("Iterate chars", "[iterate]")
 TEST_CASE("half to full", "[convert]")
 {
   std::string from =
+    "ﾃﾞｻﾞｲﾝ"
     "ｱ ｲ ｳ ｴ ｵ ｶ ｷ ｸ ｹ ｺ ｻ ｼ ｽ ｾ ｿ ﾀ ﾁ ﾂ ﾃ ﾄ ﾅ ﾆ ﾇ ﾈ ﾉ ﾊ ﾋ ﾌ ﾍ ﾎ ﾏ ﾐ ﾑ ﾒ ﾓ ﾔ ﾕ ﾖ ﾗ ﾘ ﾙ ﾚ ﾛ ﾜ ｦ ﾝ ｧ ｨ ｩ ｪ ｫ ｯ ｬ ｭ ｮ";
   std::string const to =
+    "デザイン"
     "ア イ ウ エ オ カ キ ク ケ コ サ シ ス セ ソ タ チ ツ テ ト ナ ニ ヌ ネ ノ ハ ヒ フ ヘ ホ マ ミ ム メ モ ヤ ユ ヨ "
     "ラ リ ル レ ロ ワ ヲ ン ァ ィ ゥ ェ ォ ッ ャ ュ ョ";
   half_to_full(from);
