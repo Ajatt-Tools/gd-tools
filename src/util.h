@@ -15,23 +15,23 @@ public:
   runtime_error(std::string_view const what) : std::runtime_error(std::string{ what }) {}
 };
 
+template<typename... Args>
+void print(std::string_view format, Args const&... args)
+{
+  std::string result;
+  result = std::vformat(format, std::make_format_args(args...));
+  std::ios::sync_with_stdio(false);
+  std::cout << result;
+}
 
-template <typename... Args>
-void print(std::string_view format, const Args&... args) {
-    std::string result;
-	result = std::vformat(format, std::make_format_args(args...));
-    std::ios::sync_with_stdio(false);
-    std::cout << result;
-    }
-
-template <typename... Args>
-void println(std::string_view format, const Args&... args) {
-    std::string result;
-	result = std::vformat(format, std::make_format_args(args...));
-    std::ios::sync_with_stdio(false);
-    std::cout << result << '\n';
-    }
-
+template<typename... Args>
+void println(std::string_view format, Args const&... args)
+{
+  std::string result;
+  result = std::vformat(format, std::make_format_args(args...));
+  std::ios::sync_with_stdio(false);
+  std::cout << result << '\n';
+}
 
 } // namespace gd
 

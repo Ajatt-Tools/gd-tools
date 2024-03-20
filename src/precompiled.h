@@ -5,6 +5,7 @@
 #include <chrono>
 #include <concepts>
 #include <filesystem>
+#include <format>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
@@ -17,7 +18,6 @@
 #include <string_view>
 #include <system_error>
 #include <vector>
-#include <format>
 
 // Getpid
 #if __linux__
