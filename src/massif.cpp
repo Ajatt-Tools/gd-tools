@@ -79,7 +79,7 @@ void fetch_massif_examples(massif_params const& params)
     cpr::VerifySsl{ false }
   );
   raise_if(r.status_code != 200, "Couldn't connect to Massif.");
-  gd::print("<ul class=\"gd-massif\">\n");
+  gd::println("<ul class=\"gd-massif\">");
   for (auto const& line:
        r.text //
          | std::views::split('\n') //
@@ -88,10 +88,10 @@ void fetch_massif_examples(massif_params const& params)
              return not str_view.contains("<li class=\"text-japanese\">");
            })
          | std::views::take_while([](auto const str_view) { return not str_view.contains("</ul>"); })) {
-    gd::print("{}\n", line);
+    gd::println("{}", line);
   }
-  gd::print("</ul>\n");
-  gd::print("{}\n", css_style);
+  gd::println("</ul>");
+  gd::println("{}", css_style);
 }
 
 void massif(std::span<std::string_view const> const args)
@@ -101,6 +101,6 @@ void massif(std::span<std::string_view const> const args)
   } catch (gd::help_requested const& ex) {
     gd::print(help_text);
   } catch (gd::runtime_error const& ex) {
-    gd::print("{}\n", ex.what());
+    gd::println("{}", ex.what());
   }
 }
