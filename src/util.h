@@ -104,3 +104,16 @@ inline auto user_home() -> std::filesystem::path
 {
   return std::getenv("HOME");
 }
+
+template<typename Stored>
+auto join_with(std::vector<Stored> const& seq, std::string_view const sep) -> std::string
+{
+  std::stringstream ss;
+  for (size_t idx = 0; idx != seq.size(); ++idx) {
+    ss << seq.at(idx);
+    if (idx != seq.size() - 1) {
+      ss << sep;
+    }
+  }
+  return ss.str();
+}

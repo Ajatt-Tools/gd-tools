@@ -183,8 +183,7 @@ void lookup_words(mecab_params params)
   gd::println("dicdir: {}", params.dic_dir.string());
   gd::println("userdic: {}", params.user_dict.string());
 
-  //TODO There must be a better way but ranges are not supported yet as far as I know
-  gd::println("mecab args: {} {} {} {} {}", args[0], args[1], args[2], args[3], args[4]);
+  gd::println("mecab args: [{}]", join_with(args, ", "));
   gd::println(R"EOF(</div>)EOF");
 }
 
