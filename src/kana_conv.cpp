@@ -39,7 +39,7 @@ auto unicode_char_byte_len(char const& ch) -> CharByteLen
     // Other Unicode
     return CharByteLen::FOUR;
   }
-  throw gd::runtime_error{ fmt::format("Can't recognize byte: '{:x}'.", ch) };
+  throw gd::runtime_error{ std::format("Can't recognize byte: '{:x}'.", ch) };
 }
 
 auto create_map(std::string_view from, std::string_view to) -> KanaConvMap

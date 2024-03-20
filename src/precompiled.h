@@ -17,6 +17,7 @@
 #include <string_view>
 #include <system_error>
 #include <vector>
+#include <format>
 
 // Getpid
 #if __linux__
@@ -27,8 +28,7 @@
 
 // Other
 #include <cpr/cpr.h>
-#include <fmt/core.h>
-#include <fmt/ranges.h>
+
 #include <marisa/trie.h>
 #include <mecab.h>
 #include <nlohmann/json.hpp>

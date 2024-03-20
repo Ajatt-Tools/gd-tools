@@ -121,7 +121,7 @@ struct mecab_params
     } else if (key == "--user-dict") {
       user_dict = value;
     } else {
-      throw gd::runtime_error(std::string(fmt::format("Unknown argument name: {}", key)));
+      throw gd::runtime_error(std::string(std::format("Unknown argument name: {}", key)));
     }
   }
 };
@@ -174,16 +174,18 @@ void lookup_words(mecab_params params)
   }
 
   std::string result = tagger->parse(params.gd_sentence.c_str());
-  result = replace_all(result, fmt::format(">{}<", params.gd_word), fmt::format("><b>{}</b><", params.gd_word));
-  fmt::println(R"EOF(<div class="gd-mecab">{}</div>)EOF", result);
-  fmt::println("{}", css_style);
+  result = replace_all(result, std::format(">{}<", params.gd_word), std::format("><b>{}</b><", params.gd_word));
+  gd::println(R"EOF(<div class="gd-mecab">{}</div>)EOF", result);
+  gd::println("{}", css_style);
 
   // debug info, not shown in GD.
-  fmt::println(R"EOF(<div style="display: none;">)EOF");
-  fmt::println("dicdir: {}", params.dic_dir.string());
-  fmt::println("userdic: {}", params.user_dict.string());
-  fmt::println("mecab args: {}", args);
-  fmt::println(R"EOF(</div>)EOF");
+  gd::println(R"EOF(<div style="display: none;">)EOF");
+  gd::println("dicdir: {}", params.dic_dir.string());
+  gd::println("userdic: {}", params.user_dict.string());
+
+  //TODO There must be a better way but ranges are not supported yet as far as I know
+  gd::println("mecab args: {} {} {} {} {}", args[0], args[1], args[2], args[3], args[4]);
+  gd::println(R"EOF(</div>)EOF");
 }
 
 void mecab_split(std::span<std::string_view const> const args)
@@ -191,8 +193,8 @@ void mecab_split(std::span<std::string_view const> const args)
   try {
     lookup_words(fill_args<mecab_params>(args));
   } catch (gd::help_requested const& ex) {
-    fmt::println(help_text);
+    gd::println(help_text);
   } catch (gd::runtime_error const& ex) {
-    fmt::println("{}", ex.what());
+    gd::println("{}", ex.what());
   }
 }

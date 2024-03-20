@@ -74,12 +74,12 @@ struct massif_params
 void fetch_massif_examples(massif_params const& params)
 {
   cpr::Response const r = cpr::Get(
-    cpr::Url{ fmt::format("https://massif.la/ja/search?q={}", params.gd_word) },
+    cpr::Url{ std::format("https://massif.la/ja/search?q={}", params.gd_word) },
     cpr::Timeout{ params.max_time },
     cpr::VerifySsl{ false }
   );
   raise_if(r.status_code != 200, "Couldn't connect to Massif.");
-  fmt::print("<ul class=\"gd-massif\">\n");
+  gd::print("<ul class=\"gd-massif\">\n");
   for (auto const& line:
        r.text //
          | std::views::split('\n') //
@@ -88,10 +88,10 @@ void fetch_massif_examples(massif_params const& params)
              return not str_view.contains("<li class=\"text-japanese\">");
            })
          | std::views::take_while([](auto const str_view) { return not str_view.contains("</ul>"); })) {
-    fmt::print("{}\n", line);
+    gd::print("{}\n", line);
   }
-  fmt::print("</ul>\n");
-  fmt::print("{}\n", css_style);
+  gd::print("</ul>\n");
+  gd::print("{}\n", css_style);
 }
 
 void massif(std::span<std::string_view const> const args)
@@ -99,8 +99,8 @@ void massif(std::span<std::string_view const> const args)
   try {
     fetch_massif_examples(fill_args<massif_params>(args));
   } catch (gd::help_requested const& ex) {
-    fmt::print(help_text);
+    gd::print(help_text);
   } catch (gd::runtime_error const& ex) {
-    fmt::print("{}\n", ex.what());
+    gd::print("{}\n", ex.what());
   }
 }

@@ -69,13 +69,13 @@ void print_css(stroke_order_params const& params)
   }}
   </style>
   )EOF";
-  fmt::print(css, this_pid, params.font_size, params.font_family);
+  gd::print(css, this_pid, params.font_size, params.font_family);
 }
 
 void print_with_stroke_order(stroke_order_params const& params)
 {
   if (params.gd_word.length() <= params.max_len) {
-    fmt::print("<div class=\"gd_echo_{}\">{}</div>\n", this_pid, params.gd_word);
+    gd::print("<div class=\"gd_echo_{}\">{}</div>\n", this_pid, params.gd_word);
     print_css(params);
   }
 }
@@ -85,8 +85,8 @@ void stroke_order(std::span<std::string_view const> const args)
   try {
     print_with_stroke_order(fill_args<stroke_order_params>(args));
   } catch (gd::help_requested const& ex) {
-    fmt::print(help_text);
+    gd::print(help_text);
   } catch (gd::runtime_error const& ex) {
-    fmt::print("{}\n", ex.what());
+    gd::print("{}\n", ex.what());
   }
 }
