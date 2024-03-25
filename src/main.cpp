@@ -23,6 +23,7 @@
 #include "massif.h"
 #include "mecab_split.h"
 #include "precompiled.h"
+#include "util.h"
 
 static constexpr std::string_view help_text = R"EOF(usage: {} ACTION [OPTIONS]
 A set of helpful programs to enhance GoldenDict for immersion learning.
@@ -47,12 +48,12 @@ gd-ankisearch --deck-name Mining %GDWORD%
 
 auto get_help_str(std::string_view program_name) -> std::string
 {
-  return fmt::format(help_text, program_name);
+  return std::format(help_text, program_name);
 }
 
 auto print_help(std::string_view const program_name) -> void
 {
-  fmt::print("{}", get_help_str(program_name));
+  gd::print("{}", get_help_str(program_name));
 }
 
 auto base_name(auto file_path) -> std::string

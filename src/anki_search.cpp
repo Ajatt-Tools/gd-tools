@@ -167,10 +167,10 @@ auto make_find_cards_request_str(search_params const& params) -> std::string
   std::string query{ params.gd_word };
 
   if (not params.field_name.empty()) {
-    query = fmt::format("\"{}:*{}*\"", params.field_name, query);
+    query = std::format("\"{}:*{}*\"", params.field_name, query);
   }
   if (not params.deck_name.empty()) {
-    query = fmt::format("\"deck:{}\" {}", params.deck_name, query);
+    query = std::format("\"deck:{}\" {}", params.deck_name, query);
   }
 
   request["params"]["query"] = query;
@@ -261,7 +261,7 @@ auto get_note_tags(uint64_t const nid) -> std::string
   raise_if(not obj["error"].is_null(), "Error getting data from AnkiConnect.");
   std::string html;
   for (std::string const tag_name: obj["result"]) {
-    html += fmt::format(R"EOF(<a class="gd-tag-link" href="ankisearch:tag:{}">{}</a>)EOF", tag_name, tag_name);
+    html += std::format(R"EOF(<a class="gd-tag-link" href="ankisearch:tag:{}">{}</a>)EOF", tag_name, tag_name);
   }
   return html;
 }
@@ -269,12 +269,12 @@ auto get_note_tags(uint64_t const nid) -> std::string
 void print_table_header(search_params const& params)
 {
   // Print the first row (header) that contains <th></th> tags, starting with Card ID.
-  fmt::print("<tr>");
-  fmt::print("<th>Card ID</th>");
-  fmt::print("<th>Deck name</th>");
-  for (auto const& field: params.show_fields) { fmt::print("<th>{}</th>", field); }
-  fmt::print("<th>Tags</th>");
-  fmt::print("</tr>\n");
+  gd::print("<tr>");
+  gd::print("<th>Card ID</th>");
+  gd::print("<th>Deck name</th>");
+  for (auto const& field: params.show_fields) { gd::print("<th>{}</th>", field); }
+  gd::print("<th>Tags</th>");
+  gd::println("</tr>");
 }
 
 auto card_json_to_obj(nlohmann::json const& card_json) -> card_info
@@ -303,38 +303,38 @@ auto gd_format(std::string const& field_content, std::string const& media_dir_pa
   static std::regex const img_re{ "(<img[^<>]*src=\")" };
   static std::regex const any_undesirables{ R"EOF(\[sound:|\]|<[^<>]+>|["'.,!?]+|…|。|、|！|？|　|・|～|\(|\))EOF" };
   auto const link_content = strtrim(std::regex_replace(field_content, any_undesirables, " "));
-  auto const link_text = std::regex_replace(field_content, img_re, fmt::format("$1file://{}/", media_dir_path));
-  return link_content.empty() ? link_text : fmt::format("<a href=\"ankisearch:{}\">{}</a>", link_content, link_text);
+  auto const link_text = std::regex_replace(field_content, img_re, std::format("$1file://{}/", media_dir_path));
+  return link_content.empty() ? link_text : std::format("<a href=\"ankisearch:{}\">{}</a>", link_content, link_text);
 }
 
 void print_cards_info(search_params const& params)
 {
   auto const cids = find_cids(params);
   if (cids.empty()) {
-    return fmt::print("No cards found.\n");
+    return gd::println("No cards found.");
   }
   auto const media_dir_path = fetch_media_dir_path();
-  fmt::print("<div class=\"gd-table-wrap\">");
-  fmt::print("<table class=\"gd-ankisearch-table\">\n");
+  gd::print("<div class=\"gd-table-wrap\">");
+  gd::println("<table class=\"gd-ankisearch-table\">");
   print_table_header(params);
   for (auto const& card: get_cids_info(cids) | std::views::transform(card_json_to_obj)) {
-    fmt::print("<tr class=\"{}\">", determine_card_class(card.queue, card.type));
-    fmt::print("<td><a href=\"ankisearch:cid:{}\">{}</a></td>", card.id, card.id);
-    fmt::print("<td>{}</td>", card.deck_name);
+    gd::print("<tr class=\"{}\">", determine_card_class(card.queue, card.type));
+    gd::print("<td><a href=\"ankisearch:cid:{}\">{}</a></td>", card.id, card.id);
+    gd::print("<td>{}</td>", card.deck_name);
     for (auto const& field_name: params.show_fields) {
-      fmt::print(
+      gd::print(
         "<td>{}</td>",
         (card.fields.contains(field_name) and not card.fields.at(field_name).empty()
            ? gd_format(card.fields.at(field_name), media_dir_path)
            : "Not present")
       );
     }
-    fmt::print("<td>{}</td>\n", get_note_tags(card.nid));
-    fmt::print("</tr>\n");
+    gd::println("<td>{}</td>", get_note_tags(card.nid));
+    gd::println("</tr>");
   }
-  fmt::print("</table>");
-  fmt::print("</div>\n"); // gd-table-wrap
-  fmt::print("{}\n", css_style);
+  gd::print("</table>");
+  gd::println("</div>"); // gd-table-wrap
+  gd::println("{}", css_style);
 }
 
 void search_anki_cards(std::span<std::string_view const> const args)
@@ -342,8 +342,8 @@ void search_anki_cards(std::span<std::string_view const> const args)
   try {
     print_cards_info(fill_args<search_params>(args));
   } catch (gd::help_requested const& ex) {
-    fmt::print(help_text);
+    gd::print(help_text);
   } catch (gd::runtime_error const& ex) {
-    fmt::print("{}\n", ex.what());
+    gd::println("{}", ex.what());
   }
 }

@@ -181,10 +181,10 @@ void lookup_words(marisa_params params)
   marisa::Agent agent;
 
   std::ifstream file{ params.path_to_dic };
-  raise_if(not file.good(), fmt::format(R"(Error. The dictionary file "{}" does not exist.)", params.path_to_dic));
+  raise_if(not file.good(), std::format(R"(Error. The dictionary file "{}" does not exist.)", params.path_to_dic));
   trie.load(params.path_to_dic.c_str());
 
-  fmt::println(R"(<div class="gd-marisa">)");
+  gd::println(R"(<div class="gd-marisa">)");
   std::ptrdiff_t pos_in_gd_word{ 0 };
   std::vector<JpSet> alternatives{};
   alternatives.reserve(20);
@@ -205,7 +205,7 @@ void lookup_words(marisa_params params)
       pos_in_gd_word -= static_cast<std::ptrdiff_t>(uni_char.length());
     }
 
-    fmt::print(
+    gd::print(
       R"(<a class="{}" href="bword:{}">{}</a>)",
       (pos_in_gd_word > 0 ? "gd-headword" : "gd-word"),
       bword,
@@ -215,23 +215,23 @@ void lookup_words(marisa_params params)
   }
 
   // Show available entries for other substrings.
-  fmt::println(R"(<div class="alternatives">)");
+  gd::println(R"(<div class="alternatives">)");
   for (auto const& group: alternatives | std::views::filter(&JpSet::size)) {
-    fmt::println("<ul>");
+    gd::println("<ul>");
     for (auto const& word: group) {
-      fmt::println(
+      gd::println(
         R"(<li><a class="{}" href="bword:{}">{}</a></li>)",
         (word == params.gd_word ? "gd-headword" : ""),
         word,
         word
       );
     }
-    fmt::println("</ul>"); // close ul
+    gd::println("</ul>"); // close ul
   }
-  fmt::println("</div>"); // close div.alternatives
+  gd::println("</div>"); // close div.alternatives
 
-  fmt::println("</div>"); // close div.gd-marisa
-  fmt::println("{}", css_style);
+  gd::println("</div>"); // close div.gd-marisa
+  gd::println("{}", css_style);
 }
 
 void marisa_split(std::span<std::string_view const> const args)
@@ -239,8 +239,8 @@ void marisa_split(std::span<std::string_view const> const args)
   try {
     lookup_words(fill_args<marisa_params>(args));
   } catch (gd::help_requested const& ex) {
-    fmt::println(help_text);
+    gd::println(help_text);
   } catch (gd::runtime_error const& ex) {
-    fmt::println("{}", ex.what());
+    gd::println("{}", ex.what());
   }
 }

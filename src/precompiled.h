@@ -5,6 +5,7 @@
 #include <chrono>
 #include <concepts>
 #include <filesystem>
+#include <format>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
@@ -27,8 +28,7 @@
 
 // Other
 #include <cpr/cpr.h>
-#include <fmt/core.h>
-#include <fmt/ranges.h>
+
 #include <marisa/trie.h>
 #include <mecab.h>
 #include <nlohmann/json.hpp>
