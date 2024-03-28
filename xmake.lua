@@ -64,7 +64,6 @@ target(main_bin_name)
     add_files("src/*.cpp")
     add_cxflags("-D_GLIBCXX_ASSERTIONS")
     set_pcxxheader("src/precompiled.h")
-    add_headerfiles("src/*.h")
 
     -- Run clang-format before build
     before_build(format)
@@ -134,7 +133,6 @@ if has_config("tests") then
         add_files("src/*.cpp", "tests/*.cpp")
         remove_files("src/main.cpp")
         set_pcxxheader("src/precompiled.h")
-        add_headerfiles("src/*.h")
         add_includedirs("src")
 
         -- Run clang-format before build
