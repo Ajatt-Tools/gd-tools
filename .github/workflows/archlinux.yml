@@ -31,13 +31,18 @@ jobs:
           git config --global --add safe.directory /__w/xmake-repo/xmake-repo
           pacman -Sy --noconfirm --needed xmake
 
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Build gd-tools
         run: |
           xmake config -y -m ${{ matrix.mode }}
           xmake config -y --tests=n
           xmake build  -y -vw "gd-tools"
+
+      - name: Clean
+        run: |
+          xmake clean
 
       - name: Build tests
         run: |
