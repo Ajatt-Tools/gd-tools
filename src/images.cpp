@@ -80,7 +80,7 @@ void fetch_images(images_params const& params)
     cpr::VerifySsl{ false },
     cpr::Timeout{ params.max_time }
   );
-  raise_if(r.status_code != 200, "Couldn't connect to Bing.");
+  raise_if(r.status_code != cpr::status::HTTP_OK, "Couldn't connect to Bing.");
   static std::regex const img_re("<img[^<>]*class=\"mimg[^<>]*>");
   auto images_begin = std::sregex_iterator(std::begin(r.text), std::end(r.text), img_re);
   auto images_end = std::sregex_iterator();
