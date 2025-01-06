@@ -15,24 +15,6 @@ public:
   runtime_error(std::string_view const what) : std::runtime_error(std::string{ what }) {}
 };
 
-template<typename... Args>
-void print(std::string_view format, Args const&... args)
-{
-  std::string result;
-  result = std::vformat(format, std::make_format_args(args...));
-  std::ios::sync_with_stdio(false);
-  std::cout << result;
-}
-
-template<typename... Args>
-void println(std::string_view format, Args const&... args)
-{
-  std::string result;
-  result = std::vformat(format, std::make_format_args(args...));
-  std::ios::sync_with_stdio(false);
-  std::cout << result << '\n';
-}
-
 } // namespace gd
 
 inline void raise_if(bool expr, std::string_view const message = "Invalid argument.")
@@ -44,9 +26,7 @@ inline void raise_if(bool expr, std::string_view const message = "Invalid argume
 
 template<typename T>
 concept PassedParamsStruct = requires(T params) {
-  {
-    params.gd_word
-  } -> std::convertible_to<std::string_view>;
+  { params.gd_word } -> std::convertible_to<std::string_view>;
   params.assign("a", "b");
 };
 

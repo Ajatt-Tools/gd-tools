@@ -53,7 +53,7 @@ auto get_help_str(std::string_view program_name) -> std::string
 
 auto print_help(std::string_view const program_name) -> void
 {
-  gd::print("{}", get_help_str(program_name));
+  std::print("{}", get_help_str(program_name));
 }
 
 auto base_name(auto file_path) -> std::string

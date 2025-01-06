@@ -84,12 +84,12 @@ void fetch_images(images_params const& params)
   static std::regex const img_re("<img[^<>]*class=\"mimg[^<>]*>");
   auto images_begin = std::sregex_iterator(std::begin(r.text), std::end(r.text), img_re);
   auto images_end = std::sregex_iterator();
-  gd::println("<div class=\"gallery\">");
+  std::println("<div class=\"gallery\">");
   for (auto const& match: std::ranges::subrange(images_begin, images_end) | std::views::take(5)) {
-    gd::println("{}", match.str());
+    std::println("{}", match.str());
   }
-  gd::println("</div>");
-  gd::println("{}", css_style);
+  std::println("</div>");
+  std::println("{}", css_style);
 }
 
 void images(std::span<std::string_view const> const args)
@@ -97,8 +97,8 @@ void images(std::span<std::string_view const> const args)
   try {
     fetch_images(fill_args<images_params>(args));
   } catch (gd::help_requested const& ex) {
-    gd::print(help_text);
+    std::print(help_text);
   } catch (gd::runtime_error const& ex) {
-    gd::println("{}", ex.what());
+    std::println("{}", ex.what());
   }
 }

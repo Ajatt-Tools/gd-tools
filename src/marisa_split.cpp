@@ -184,7 +184,7 @@ void lookup_words(marisa_params params)
   raise_if(not file.good(), std::format(R"(Error. The dictionary file "{}" does not exist.)", params.path_to_dic));
   trie.load(params.path_to_dic.c_str());
 
-  gd::println(R"(<div class="gd-marisa">)");
+  std::println(R"(<div class="gd-marisa">)");
   std::ptrdiff_t pos_in_gd_word{ 0 };
   std::vector<JpSet> alternatives{};
   alternatives.reserve(20);
@@ -205,7 +205,7 @@ void lookup_words(marisa_params params)
       pos_in_gd_word -= static_cast<std::ptrdiff_t>(uni_char.length());
     }
 
-    gd::print(
+    std::print(
       R"(<a class="{}" href="bword:{}">{}</a>)",
       (pos_in_gd_word > 0 ? "gd-headword" : "gd-word"),
       bword,
@@ -215,23 +215,23 @@ void lookup_words(marisa_params params)
   }
 
   // Show available entries for other substrings.
-  gd::println(R"(<div class="alternatives">)");
+  std::println(R"(<div class="alternatives">)");
   for (auto const& group: alternatives | std::views::filter(&JpSet::size)) {
-    gd::println("<ul>");
+    std::println("<ul>");
     for (auto const& word: group) {
-      gd::println(
+      std::println(
         R"(<li><a class="{}" href="bword:{}">{}</a></li>)",
         (word == params.gd_word ? "gd-headword" : ""),
         word,
         word
       );
     }
-    gd::println("</ul>"); // close ul
+    std::println("</ul>"); // close ul
   }
-  gd::println("</div>"); // close div.alternatives
+  std::println("</div>"); // close div.alternatives
 
-  gd::println("</div>"); // close div.gd-marisa
-  gd::println("{}", css_style);
+  std::println("</div>"); // close div.gd-marisa
+  std::println("{}", css_style);
 }
 
 void marisa_split(std::span<std::string_view const> const args)
@@ -239,8 +239,8 @@ void marisa_split(std::span<std::string_view const> const args)
   try {
     lookup_words(fill_args<marisa_params>(args));
   } catch (gd::help_requested const& ex) {
-    gd::println(help_text);
+    std::println(help_text);
   } catch (gd::runtime_error const& ex) {
-    gd::println("{}", ex.what());
+    std::println("{}", ex.what());
   }
 }
