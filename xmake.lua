@@ -130,7 +130,7 @@ if has_config("tests") then
     -- Tests target
     target("tests")
         set_kind("binary")
-        add_packages("cpr","nlohmann_json", "marisa", "catch2", "rdricpp", "mecab")
+        add_packages("cpr", "nlohmann_json", "marisa", "catch2", "rdricpp", "mecab")
         add_files("src/*.cpp", "tests/*.cpp")
         remove_files("src/main.cpp")
         set_pcxxheader("src/precompiled.h")
