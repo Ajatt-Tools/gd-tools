@@ -202,10 +202,16 @@ gd-translate --spoiler yes --to fr --sentence %GDSEARCH%
 This script requires [Argos Translate](https://github.com/argosopentech/argos-translate) and the JA -> target language package to be installed.
 
 ```sh
-pip install argostranslate
+pipx install argostranslate
 argospm install translate-ja_en
 
 argos-translate -f ja --t en "Hello World!"
+```
+
+If you can't install `argostranslate` due to an error, try an older version of python.
+
+```sh
+pipx install --python /usr/bin/python3.9 argostranslate
 ```
 
 ## gd-mandarin
