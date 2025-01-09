@@ -17,9 +17,11 @@
  */
 
 #include "precompiled.h"
+#include "subprocess.hpp"
 #include "util.h"
 
 using namespace std::literals;
+using namespace subprocess;
 
 static constexpr std::string default_to{ "en" };
 static constexpr std::string_view help_text = R"EOF(usage: gd-translate [OPTIONS]
@@ -68,29 +70,24 @@ struct translate_params
 
 void exec_translate(translate_params const& params)
 {
+  auto cmd_argos = Popen(
+    {
+      "argos-translate",
+      "-f",
+      "ja",
+      "-t",
+      params.to,
+      params.gd_word,
+    },
+    output{ PIPE }
+  );
 
-  char tmpname[L_tmpnam];
-  char* tmp_result = std::tmpnam(tmpname);
-  raise_if(tmp_result == nullptr, "Couldn't translate sentence.");
-  std::ofstream otmpFile(tmpname);
+  auto cmd_tail = Popen({ "tail", "-n1" }, input{ cmd_argos.output() }, output{ PIPE });
 
-  std::string cmd =
-    std::format("argos-translate -f ja --t {} \"{}\" | tail -n1 > {}", params.to, params.gd_word, std::string(tmpname));
-
-  int cmd_result = system(cmd.c_str());
-  raise_if(cmd_result != 0, "Couldn't translate sentence.");
-
-  otmpFile.close();
-  std::ifstream itmpFile(tmpname);
-
-  std::string line;
-  std::getline(itmpFile, line);
-
-  itmpFile.close();
-  std::remove(tmpname);
+  auto resp = cmd_tail.communicate().first;
 
   std::println("<div{}>", params.spoiler == "yes" ? " class=\"spoiler\"" : "");
-  std::println("{}", line);
+  std::println("{}", resp.buf.data());
   std::println("</div>");
   std::println("{}", css_style);
 }
