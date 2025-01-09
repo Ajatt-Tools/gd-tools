@@ -85,7 +85,7 @@ void exec_translate(translate_params const& params)
   auto const [stdout, stderr] = cmd_argos.communicate();
 
   std::println("<div{}>", params.spoiler == "yes" ? " class=\"spoiler\"" : "");
-  std::println("{}", std::string_view(resp.buf.data(), resp.length));
+  std::println("{}", std::string_view(stdout.buf.data(), stdout.length));
   std::println("</div>");
   std::println("{}", css_style);
 }
