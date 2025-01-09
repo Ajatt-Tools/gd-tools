@@ -86,7 +86,7 @@ void exec_translate(translate_params const& params)
   auto resp = cmd_tail.communicate().first;
 
   std::println("<div{}>", params.spoiler == "yes" ? " class=\"spoiler\"" : "");
-  std::println("{}", resp.buf.data());
+  std::println("{}", std::string_view(resp.buf.data(), resp.length));
   std::println("</div>");
   std::println("{}", css_style);
 }
