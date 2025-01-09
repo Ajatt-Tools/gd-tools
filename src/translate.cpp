@@ -78,12 +78,11 @@ void exec_translate(translate_params const& params)
       params.to,
       params.gd_word,
     },
-    sp::output{ sp::PIPE }
+    sp::output{ sp::PIPE },
+    sp::error{ sp::PIPE }
   );
 
-  auto cmd_tail = sp::Popen({ "tail", "-n1" }, sp::input{ cmd_argos.output() }, sp::output{ sp::PIPE });
-
-  auto resp = cmd_tail.communicate().first;
+  auto const [stdout, stderr] = cmd_argos.communicate();
 
   std::println("<div{}>", params.spoiler == "yes" ? " class=\"spoiler\"" : "");
   std::println("{}", std::string_view(resp.buf.data(), resp.length));
