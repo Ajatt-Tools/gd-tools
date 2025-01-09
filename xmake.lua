@@ -14,6 +14,7 @@ add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "build"})
 
 add_requires("cpr >= 1.11", {configs = {ssl = true}})
+add_requires("cpp-subprocess")
 add_requires("nlohmann_json", "marisa", "rdricpp", "mecab")
 
 if is_mode("debug") then
@@ -61,7 +62,7 @@ end
 -- Main target
 target(main_bin_name)
     set_kind("binary")
-    add_packages("cpr","nlohmann_json", "marisa", "rdricpp", "mecab")
+    add_packages("cpr","nlohmann_json", "marisa", "rdricpp", "mecab", "cpp-subprocess")
     add_files("src/*.cpp")
     add_cxflags("-D_GLIBCXX_ASSERTIONS")
     set_pcxxheader("src/precompiled.h")
@@ -130,7 +131,7 @@ if has_config("tests") then
     -- Tests target
     target("tests")
         set_kind("binary")
-        add_packages("cpr", "nlohmann_json", "marisa", "catch2", "rdricpp", "mecab")
+        add_packages("cpr", "nlohmann_json", "marisa", "catch2", "rdricpp", "mecab", "cpp-subprocess")
         add_files("src/*.cpp", "tests/*.cpp")
         remove_files("src/main.cpp")
         set_pcxxheader("src/precompiled.h")

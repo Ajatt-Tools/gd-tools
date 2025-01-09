@@ -17,11 +17,10 @@
  */
 
 #include "precompiled.h"
-#include "subprocess.hpp"
 #include "util.h"
 
 using namespace std::literals;
-using namespace subprocess;
+namespace sp = subprocess;
 
 static constexpr std::string default_to{ "en" };
 static constexpr std::string_view help_text = R"EOF(usage: gd-translate [OPTIONS]
@@ -51,7 +50,7 @@ static constexpr std::string_view css_style = R"EOF(<style>
 struct translate_params
 {
   std::string to{ default_to };
-  std::string gd_word{};
+  std::string gd_word;
   std::string spoiler{ "no" };
 
   void assign(std::string_view const key, std::string_view const value)
@@ -70,7 +69,7 @@ struct translate_params
 
 void exec_translate(translate_params const& params)
 {
-  auto cmd_argos = Popen(
+  auto cmd_argos = sp::Popen(
     {
       "argos-translate",
       "-f",
@@ -79,10 +78,10 @@ void exec_translate(translate_params const& params)
       params.to,
       params.gd_word,
     },
-    output{ PIPE }
+    sp::output{ sp::PIPE }
   );
 
-  auto cmd_tail = Popen({ "tail", "-n1" }, input{ cmd_argos.output() }, output{ PIPE });
+  auto cmd_tail = sp::Popen({ "tail", "-n1" }, sp::input{ cmd_argos.output() }, sp::output{ sp::PIPE });
 
   auto resp = cmd_tail.communicate().first;
 
@@ -100,5 +99,7 @@ void translate(std::span<std::string_view const> const args)
     std::print(help_text);
   } catch (gd::runtime_error const& ex) {
     std::println("{}", ex.what());
+  } catch (std::runtime_error const& ex) {
+    std::println("subprocess error. {}", ex.what());
   }
 }

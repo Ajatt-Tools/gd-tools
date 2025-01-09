@@ -19,11 +19,11 @@
 #include "anki_search.h"
 #include "echo.h"
 #include "images.h"
-#include "translate.h"
 #include "marisa_split.h"
 #include "massif.h"
 #include "mecab_split.h"
 #include "precompiled.h"
+#include "translate.h"
 #include "util.h"
 
 static constexpr std::string_view help_text = R"EOF(usage: {} ACTION [OPTIONS]
