@@ -29,7 +29,7 @@
 
 // Other
 #include <cpr/cpr.h>
-
+#include <subprocess.hpp>
 #include <marisa/trie.h>
 #include <mecab.h>
 #include <nlohmann/json.hpp>

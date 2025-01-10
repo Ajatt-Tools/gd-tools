@@ -188,6 +188,32 @@ This script searches Anki cards in your collection that contain %GDWORD%.
 gd-ankisearch --field-name VocabKanji --show-fields VocabKanji,SentKanji,Image,SentAudio --word %GDWORD%
 ```
 
+## gd-translate
+
+**Usage**
+
+```
+gd-translate --sentence %GDSEARCH%
+gd-translate --spoiler yes --to fr --sentence %GDSEARCH%
+```
+
+**Dependencies**
+
+This script requires [Argos Translate](https://github.com/argosopentech/argos-translate) and the JA -> target language package to be installed.
+
+```sh
+pipx install argostranslate
+argospm install translate-ja_en
+
+argos-translate -f ja --t en "Hello World!"
+```
+
+If you can't install `argostranslate` due to an error, try an older version of python.
+
+```sh
+pipx install --python /usr/bin/python3.9 argostranslate
+```
+
 ## gd-mandarin
 
 This script passes a sentence through mecab in order to make every part of the sentence clickable.

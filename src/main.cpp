@@ -23,6 +23,7 @@
 #include "massif.h"
 #include "mecab_split.h"
 #include "precompiled.h"
+#include "translate.h"
 #include "util.h"
 
 static constexpr std::string_view help_text = R"EOF(usage: {} ACTION [OPTIONS]
@@ -32,6 +33,7 @@ ACTIONS
   ankisearch  Search word in Anki.
   massif      Search word on Massif.
   images      Search images on Bing.
+  translate   Translate text using argostranslate.
   marisa      Split search string using MARISA.
   mecab       Split search string using Mecab.
   strokeorder Show stroke order of a word.
@@ -92,6 +94,8 @@ auto take_action(std::span<std::string_view const> const args) -> void
     return massif(rest);
   case "gd-images"_h:
     return images(rest);
+  case "gd-translate"_h:
+    return translate(rest);
   case "gd-marisa"_h:
     return marisa_split(rest);
   case "gd-mecab"_h:
@@ -114,6 +118,8 @@ auto take_action(std::span<std::string_view const> const args) -> void
     return massif(rest);
   case "images"_h:
     return images(rest);
+  case "translate"_h:
+    return translate(rest);
   case "marisa"_h:
     return marisa_split(rest);
   case "mecab"_h:

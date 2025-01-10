@@ -14,6 +14,7 @@ add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "build"})
 
 add_requires("cpr >= 1.11", {configs = {ssl = true}})
+add_requires("cpp-subprocess")
 add_requires("nlohmann_json", "marisa", "rdricpp", "mecab")
 
 if is_mode("debug") then
@@ -61,7 +62,7 @@ end
 -- Main target
 target(main_bin_name)
     set_kind("binary")
-    add_packages("cpr","nlohmann_json", "marisa", "rdricpp", "mecab")
+    add_packages("cpr","nlohmann_json", "marisa", "rdricpp", "mecab", "cpp-subprocess")
     add_files("src/*.cpp")
     add_cxflags("-D_GLIBCXX_ASSERTIONS")
     set_pcxxheader("src/precompiled.h")
@@ -130,7 +131,7 @@ if has_config("tests") then
     -- Tests target
     target("tests")
         set_kind("binary")
-        add_packages("cpr", "nlohmann_json", "marisa", "catch2", "rdricpp", "mecab")
+        add_packages("cpr", "nlohmann_json", "marisa", "catch2", "rdricpp", "mecab", "cpp-subprocess")
         add_files("src/*.cpp", "tests/*.cpp")
         remove_files("src/main.cpp")
         set_pcxxheader("src/precompiled.h")
@@ -158,5 +159,35 @@ package("rdricpp")
 
     on_install(function (package)
         import("package.tools.xmake").install(package)
+    end)
+package_end()
+
+package("cpp-subprocess")
+    set_kind("library", {headeronly = true})
+    set_homepage("https://github.com/arun11299/cpp-subprocess")
+    set_description("Subprocessing with modern C++.")
+    set_license("MIT")
+
+    set_urls("https://github.com/arun11299/cpp-subprocess.git")
+    add_versions("2024.01.25", "4025693decacaceb9420efedbf4967a04cb028e7")
+
+    add_links("cpp-subprocess")
+
+    on_install(function (package)
+        os.cp("subprocess.hpp", package:installdir("include"))
+    end)
+
+    on_test(function (package)
+        assert(package:check_cxxsnippets({test = [[
+            #include <subprocess.hpp>
+            #include <cstring>
+            #include <thread>
+            namespace sp = subprocess;
+            int main() {
+                auto obuf = sp::check_output({"ls", "-l"});
+                std::cout << "Data : " << obuf.buf.data() << std::endl;
+                std::cout << "Data len: " << obuf.length << std::endl;
+            }
+        ]]}, {configs = {languages = "c++23"}}))
     end)
 package_end()
