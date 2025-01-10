@@ -22,7 +22,6 @@
 using namespace std::literals;
 namespace sp = subprocess;
 
-static constexpr std::string default_to{ "en" };
 static constexpr std::string_view help_text = R"EOF(usage: gd-translate [OPTIONS]
 
 Translate text from Japanese to target language
@@ -49,7 +48,7 @@ static constexpr std::string_view css_style = R"EOF(<style>
 
 struct translate_params
 {
-  std::string to{ default_to };
+  std::string to{ "en" };
   std::string gd_word;
   std::string spoiler{ "no" };
 
