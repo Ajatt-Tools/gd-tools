@@ -28,9 +28,9 @@ static constexpr std::string_view help_text = R"EOF(usage: gd-translate [OPTIONS
 Translate text from Japanese to target language
 
 OPTIONS
-        --to LANG             target language (default: en)
-  --sentence SENTENCE         japanese sentence to translate
-   --spoiler yes/no           black out the sentence with a spoiler box (default: no)
+  --to LANG            target language (default: en)
+  --sentence SENTENCE  japanese sentence to translate
+  --spoiler yes/no     black out the sentence with a spoiler box (default: no)
 
 EXAMPLES
   gd-translate --spoiler yes --sentence %GDSEARCH%
