@@ -50,7 +50,7 @@ struct translate_params
 {
   std::string to{ "en" };
   std::string gd_word;
-  std::string spoiler{ "no" };
+  bool spoiler{ false };
 
   void assign(std::string_view const key, std::string_view const value)
   {
@@ -58,10 +58,8 @@ struct translate_params
       to = value;
     } else if (key == "--sentence") {
       gd_word = value;
-    } else if (key == "--spoiler") {
-      if (value == "yes") {
-        spoiler = value;
-      }
+    } else if (key == "--spoiler" and value == "yes") {
+      spoiler = true;
     }
   }
 };
@@ -83,7 +81,7 @@ void exec_translate(translate_params const& params)
 
   auto const [stdout, stderr] = cmd_argos.communicate();
 
-  std::println("<div{}>", params.spoiler == "yes" ? " class=\"spoiler\"" : "");
+  std::println("<div{}>", params.spoiler ? " class=\"spoiler\"" : "");
   std::println("{}", std::string_view(stdout.buf.data(), stdout.length));
   std::println("</div>");
   std::println("{}", css_style);
