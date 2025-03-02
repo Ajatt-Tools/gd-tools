@@ -73,6 +73,9 @@ auto find_file_recursive(
 ) -> std::filesystem::path
 {
   for (size_t idx = 0; idx < possible_dirs.size(); ++idx) {
+    if (!std::filesystem::is_directory(possible_dirs[idx])) {
+      continue;
+    }
     for (auto const& dir_entry: std::filesystem::directory_iterator(possible_dirs.at(idx))) {
       if (dir_entry.is_regular_file() and dir_entry.path().filename() == file_name) {
         return dir_entry.path();
@@ -99,6 +102,7 @@ auto find_dic_dir() -> std::filesystem::path
   static std::vector<std::filesystem::path> const possible_dirs = {
     "/usr/lib/mecab/dic/mecab-ipadic-neologd", // neologd is preferred if available
     "/usr/lib/mecab/dic",
+    "/usr/lib64/mecab/dic",
     user_home() / ".local/share/Anki2/addons21",
   };
   // parent path of an empty entry returns itself.
