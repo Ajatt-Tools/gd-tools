@@ -94,7 +94,7 @@ https://user-images.githubusercontent.com/50422430/226139459-0c8bcf0e-e68f-491e-
 **Dependencies**
 
 This script requires [MeCab](https://taku910.github.io/mecab/) and the IPA dictionary to be installed.
-If you are on an Arch Linux system you can simply install the AUR package `mecab-ipa` to obtain both.
+If you are on an Arch Linux system you can simply install the AUR package `mecab-ipadic` to obtain both.
 
 **Command format**
 
