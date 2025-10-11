@@ -208,7 +208,7 @@ void lookup_words(marisa_params params)
     std::print(
       R"(<a class="{}" href="bword:{}">{}</a>)",
       (pos_in_gd_word > 0 ? "gd-headword" : "gd-word"),
-      bword,
+      cpr::util::urlEncode(bword),
       uni_char
     );
     alternatives.push_back(headwords);
