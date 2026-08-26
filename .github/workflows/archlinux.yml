@@ -3,6 +3,8 @@ name: Archlinux
 on:
   pull_request:
   push:
+    branches:
+      - "**"
 
 jobs:
   build:
