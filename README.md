@@ -33,12 +33,21 @@ This way is not recommended
 because it's easy to make a mistake during the process
 and end up with a broken install.
 
-1) To build the `gd-tools` you need to install `xmake` and `gcc` (13.1 and newer).
+1) To build `gd-tools`, install Xmake `2.9.3` or newer and GCC `13.1` or newer.
 1) Install `mecab` (`mecab-git` from the AUR).
 2) Run `./quickinstall.sh`.
 
-   **Note:** You can run `./quickinstall.sh --local`
-   to install the program locally (to `~/.local/` ).
+**Note:** You can run `./quickinstall.sh --local`
+to install the program locally (to `~/.local/` ).
+
+**Note:** Ubuntu's standard repository may provide an outdated version of Xmake.
+Install Xmake from the official Xmake PPA instead:
+
+```bash
+sudo add-apt-repository ppa:xmake-io/xmake
+sudo apt update
+sudo apt install xmake
+```
 
 </details>
 
