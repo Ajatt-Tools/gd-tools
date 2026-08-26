@@ -75,14 +75,10 @@ auto convert_kana(std::string_view str) -> std::string
 }
 
 inline auto katakana_to_hiragana(std::string_view str) -> std::string
-{
-  return convert_kana<Direction::kata_to_hira>(str);
-}
+{ return convert_kana<Direction::kata_to_hira>(str); }
 
 inline auto hiragana_to_katakana(std::string_view str) -> std::string
-{
-  return convert_kana<Direction::hira_to_kata>(str);
-}
+{ return convert_kana<Direction::hira_to_kata>(str); }
 
 auto half_to_full(std::string& str) -> std::string&;
 
