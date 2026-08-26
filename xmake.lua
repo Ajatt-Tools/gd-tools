@@ -1,4 +1,5 @@
 local main_bin_name = "gd-tools"
+set_xmakever("2.9.3")
 set_license("GPL-3.0")
 set_languages("c++23")
 set_toolchains("gcc")
