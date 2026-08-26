@@ -1,0 +1,33 @@
+name: Ubuntu 24.04
+
+on:
+  pull_request:
+  push:
+
+permissions: read-all
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    env:
+      GD_TOOLS_TOOLCHAIN: gcc-14
+    steps:
+      - uses: actions/checkout@v4
+
+      # Track new Xmake releases here; release packaging enforces its minimum version separately.
+      - name: Install supported Xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install --yes build-essential g++-14 libmecab-dev mecab-utils
+
+      - name: Install gd-tools locally
+        run: ./scripts/quickinstall.sh --local
+
+      - name: Build tests
+        run: xmake config -y -m release --tests=y && xmake build -y -vw tests
+
+      - name: Run tests
+        run: xmake run --workdir="$(pwd)" tests
