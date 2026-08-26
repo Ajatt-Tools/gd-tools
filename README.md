@@ -49,6 +49,9 @@ and end up with a broken install.
 **Note:** You can run `./scripts/quickinstall.sh --local`
 to install the program locally (to `~/.local/` ).
 
+To uninstall a system-wide manual installation, run `./scripts/quickuninstall.sh`.
+If you installed with `--local` or `--user`, run `./scripts/quickuninstall.sh --local` instead.
+
 **Note:** Ubuntu's standard repository may provide an outdated version of Xmake.
 Install Xmake from the official Xmake PPA instead:
 

@@ -120,6 +120,19 @@ target(main_bin_name)
         print("Installed shell scripts.")
     end)
 
+    after_uninstall(function(target)
+        local bin_dir = path.join(target:installdir(), "bin")
+        for _, variant in ipairs(bin_variants) do
+            os.rm(path.join(bin_dir, variant))
+        end
+        for _, shell_file in ipairs(os.files("src/*.sh")) do
+            os.rm(path.join(bin_dir, path.basename(shell_file)))
+        end
+        os.rm(path.join(target:installdir(), "share/fonts", main_bin_name))
+        os.rm(path.join(target:installdir(), "share", main_bin_name))
+        print("Removed gd-tools installation files.")
+    end)
+
     before_run(function (target)
         print("Running %s", target:targetfile())
     end)
