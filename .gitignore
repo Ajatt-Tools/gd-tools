@@ -9,6 +9,8 @@ xmake-docs
 # Build directories and binary files
 build/
 out/
+dist/
+package-contents.txt
 cmake-build-*/
 conan-cache/
 
