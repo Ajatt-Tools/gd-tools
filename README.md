@@ -35,9 +35,9 @@ and end up with a broken install.
 
 1) To build `gd-tools`, install Xmake `2.9.3` or newer and GCC `13.1` or newer.
 1) Install `mecab` (`mecab-git` from the AUR).
-2) Run `./quickinstall.sh`.
+2) Run `./scripts/quickinstall.sh`.
 
-**Note:** You can run `./quickinstall.sh --local`
+**Note:** You can run `./scripts/quickinstall.sh --local`
 to install the program locally (to `~/.local/` ).
 
 **Note:** Ubuntu's standard repository may provide an outdated version of Xmake.
@@ -231,4 +231,4 @@ It also automatically converts the sentence to traditional characters.
 ![image](https://github.com/KonstantinDjairo/gd-tools/assets/53496273/20921976-9221-416e-820a-b6bb22db906b)
 
 To use `gd-mandarin`,
-you need to install `gd-tools` by running `./quickinstall.sh --mandarin`.
+you need to install `gd-tools` by running `./scripts/quickinstall.sh --mandarin`.

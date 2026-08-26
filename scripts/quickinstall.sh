@@ -1,8 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script can be used instead of `make install`.
 
 set -xeuo pipefail
+
+ROOT_DIR="$(git rev-parse --show-toplevel)" || exit 1
+readonly ROOT_DIR
+cd -- "$ROOT_DIR" || exit 1
+
+this_dir=$(dirname -- "$(readlink -f -- "$0")")
+readonly this_dir
 
 readonly target="gd-tools"
 
@@ -38,5 +45,5 @@ else
 fi
 
 if $run_mandarin_script; then
-	./mandarin_installer.sh
+	"$this_dir/mandarin_installer.sh"
 fi
