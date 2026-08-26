@@ -118,9 +118,7 @@ struct marisa_params
 };
 
 auto cmp_len(std::string_view a, std::string_view b) -> bool
-{
-  return a.length() < b.length();
-}
+{ return a.length() < b.length(); }
 
 struct Deinflected
 {

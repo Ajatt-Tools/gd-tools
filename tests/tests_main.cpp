@@ -19,9 +19,7 @@ TEST_CASE("Hiragana to katakana", "[hiragana_to_katakana]")
 }
 
 TEST_CASE("Trim string", "[strtrim]")
-{
-  REQUIRE(strtrim("  あいうえお ") == "あいうえお");
-}
+{ REQUIRE(strtrim("  あいうえお ") == "あいうえお"); }
 
 TEST_CASE("Iterate chars", "[iterate]")
 {
