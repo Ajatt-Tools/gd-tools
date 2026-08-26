@@ -33,7 +33,7 @@ This way is not recommended
 because it's easy to make a mistake during the process
 and end up with a broken install.
 
-1) To build `gd-tools`, install Xmake `2.9.3` or newer and GCC `13.1` or newer.
+1) To build `gd-tools`, install Xmake `2.9.3` or newer and GCC `14.1` or newer.
 1) Install `mecab` (`mecab-git` from the AUR).
 2) Run `./scripts/quickinstall.sh`.
 
