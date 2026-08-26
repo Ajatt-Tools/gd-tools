@@ -101,6 +101,7 @@ auto find_dic_dir() -> std::filesystem::path
 {
   static std::vector<std::filesystem::path> const possible_dirs = {
     "/usr/lib/mecab/dic/mecab-ipadic-neologd", // neologd is preferred if available
+    "/var/lib/mecab/dic/debian", // active dictionary on Debian-based distributions
     "/usr/lib/mecab/dic",
     "/usr/lib64/mecab/dic",
     user_home() / ".local/share/Anki2/addons21",

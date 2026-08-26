@@ -6,11 +6,10 @@ on:
       - 'v*'
 
 # Creating a GitHub Release is the only operation that needs write access.
-permissions:
-  contents: write
+permissions: read-all
 
 jobs:
-  build-and-release:
+  build-package:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -53,14 +52,52 @@ jobs:
           grep -qF './usr/share/gd-tools/marisa_words.dic' package-contents.txt
           grep -qF './usr/share/fonts/gd-tools/KanjiStrokeOrders_v4.004.ttf' package-contents.txt
 
-      - name: Test Debian package installation
+      - name: Upload Debian package
+        uses: actions/upload-artifact@v4
+        with:
+          name: gd-tools-deb
+          path: dist/gd-tools.deb
+          if-no-files-found: error
+
+  install-test:
+    needs: build-package
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download Debian package
+        uses: actions/download-artifact@v4
+        with:
+          name: gd-tools-deb
+          path: dist
+
+      - name: Install Debian package and dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install --yes ./dist/gd-tools.deb
           test -x /usr/bin/gd-tools
           test -L /usr/bin/gd-mecab
           test -x /usr/bin/gd-strokeorder
           test -f /usr/share/gd-tools/marisa_words.dic
           gd-tools --help
+
+      - name: Test MeCab integration
+        run: |
+          output="$(gd-mecab --sentence お前はもう死んでいる --word お前)"
+          grep -qF '<b>お前</b>' <<< "$output"
+          grep -qF 'href="bword:死ぬ"' <<< "$output"
+          grep -qF 'dicdir: /var/lib/mecab/dic/debian' <<< "$output"
+          ! grep -qF "Couldn't find dictionary directory" <<< "$output"
+
+  release:
+    needs: install-test
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download Debian package
+        uses: actions/download-artifact@v4
+        with:
+          name: gd-tools-deb
+          path: dist
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
