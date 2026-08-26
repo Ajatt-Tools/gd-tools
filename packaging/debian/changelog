@@ -1,0 +1,5 @@
+${PACKAGE_NAME} (${PACKAGE_VERSION}-1) UNRELEASED; urgency=medium
+
+  * Build the tagged gd-tools release.
+
+ -- ${PACKAGE_MAINTAINER}  ${PACKAGE_DATE}

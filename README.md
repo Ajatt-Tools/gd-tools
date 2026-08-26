@@ -20,6 +20,15 @@ First, [install goldendict-ng](https://tatsumoto-ren.github.io/blog/setting-up-g
 
 Install [gd-tools-git](https://aur.archlinux.org/packages/gd-tools-git) from the AUR.
 
+### Debian-based distros
+
+Ubuntu and Debian users can install the package attached to the latest GitHub release.
+
+```bash
+wget https://github.com/Ajatt-Tools/gd-tools/releases/latest/download/gd-tools.deb
+sudo apt install ./gd-tools.deb
+```
+
 ### Other distros
 
 If you want to package `gd-tools` for your distro and know how to do it,

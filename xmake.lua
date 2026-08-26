@@ -1,15 +1,22 @@
 local main_bin_name = "gd-tools"
 local bin_variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", }
+local package_version = os.getenv("GD_TOOLS_VERSION") or "0.0.0"
+local toolchain = os.getenv("GD_TOOLS_TOOLCHAIN") or "gcc"
 set_xmakever("2.9.3")
 set_license("GPL-3.0")
 set_languages("c++23")
-set_toolchains("gcc")
+set_toolchains(toolchain)
 
 set_warnings("allextra", "error")
 add_cxxflags("clang::-Wno-c++98-compat")
 add_cxxflags("gcc::-Wno-error=maybe-uninitialized") -- temp build fix
 
 add_rules("mode.debug", "mode.release")
+
+-- xmake f --tests=y
+option("tests", {default = false, description = "Enable tests"})
+
+includes("@builtin/xpack")
 
 -- clangd will look in subdirectories named build/.
 -- https://clangd.llvm.org/installation#project-setup
@@ -118,9 +125,35 @@ target(main_bin_name)
     end)
 target_end()
 
--- Tests
--- xmake f --tests=y
-option("tests", {default = false, description = "Enable tests"})
+-- XPack cannot translate the imperative after_install hook, so its payload is declared explicitly.
+xpack(main_bin_name)
+    set_formats("deb")
+    set_inputkind("binary")
+    set_specfile("packaging/debian")
+    set_version(package_version)
+    set_basename(main_bin_name)
+    set_title("GoldenDict tools")
+    set_description("A set of helpful programs to enhance GoldenDict for immersion learning.")
+    set_author("Ajatt-Tools and contributors")
+    set_maintainer("Ren Tatsumoto <tatsu@autistici.org>")
+    set_homepage("https://github.com/Ajatt-Tools/gd-tools")
+    set_license("GPL-3.0")
+    set_licensefile("LICENSE")
+    add_targets(main_bin_name)
+    add_installfiles("res/*.ttf", {prefixdir = "share/fonts/gd-tools"})
+    add_installfiles("res/*.dic", {prefixdir = "share/gd-tools"})
+    for _, shell_file in ipairs(os.files("src/*.sh")) do
+        add_installfiles(shell_file, {prefixdir = "bin", filename = path.basename(shell_file)})
+    end
+    add_installfiles("LICENSE", {prefixdir = "share/licenses/gd-tools"})
+    add_installfiles("README.md", {prefixdir = "share/doc/gd-tools", filename = "README"})
+
+    after_installcmd(function(package, batchcmds)
+        for _, variant in ipairs(bin_variants) do
+            batchcmds:runv("ln", {"-s", main_bin_name, path.new(package:installdir(path.join("bin", variant)))})
+        end
+    end)
+xpack_end()
 
 if has_config("tests") then
     -- system = false is required to pull the package from xrepo.

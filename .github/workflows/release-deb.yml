@@ -1,0 +1,72 @@
+name: Release Debian Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+# Creating a GitHub Release is the only operation that needs write access.
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # Xmake 3.1.0 includes fixes required by the DEB generator and install-file expansion.
+      # https://github.com/xmake-io/github-action-setup-xmake
+      - name: Install Xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: '>=3.1.0'
+
+      - name: Install build and packaging dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            build-essential \
+            debhelper \
+            devscripts \
+            g++-14 \
+            libmecab-dev \
+            mecab-ipadic-utf8 \
+            mecab-utils
+
+      - name: Set package version
+        run: echo "GD_TOOLS_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+
+      - name: Build Debian package
+        run: ./scripts/build_deb.sh
+
+      # Test the artifact before publishing so a tag cannot release an incomplete install tree.
+      - name: Validate Debian package
+        run: |
+          test "$(dpkg-deb --field dist/gd-tools.deb Package)" = "gd-tools"
+          test "$(dpkg-deb --field dist/gd-tools.deb Version)" = "${GD_TOOLS_VERSION}-1"
+          dpkg-deb --contents dist/gd-tools.deb > package-contents.txt
+          grep -qF './usr/bin/gd-tools' package-contents.txt
+          grep -qF './usr/bin/gd-mecab' package-contents.txt
+          grep -qF './usr/bin/gd-strokeorder' package-contents.txt
+          grep -qF './usr/share/gd-tools/marisa_words.dic' package-contents.txt
+          grep -qF './usr/share/fonts/gd-tools/KanjiStrokeOrders_v4.004.ttf' package-contents.txt
+
+      - name: Test Debian package installation
+        run: |
+          sudo apt-get install --yes ./dist/gd-tools.deb
+          test -x /usr/bin/gd-tools
+          test -L /usr/bin/gd-mecab
+          test -x /usr/bin/gd-strokeorder
+          test -f /usr/share/gd-tools/marisa_words.dic
+          gd-tools --help
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: "gd-tools ${{ github.ref_name }}"
+          generate_release_notes: true
+          make_latest: true
+          fail_on_unmatched_files: true
+          files: dist/gd-tools.deb
