@@ -51,6 +51,7 @@ jobs:
           grep -qF './usr/bin/gd-strokeorder' package-contents.txt
           grep -qF './usr/share/gd-tools/marisa_words.dic' package-contents.txt
           grep -qF './usr/share/fonts/gd-tools/KanjiStrokeOrders_v4.004.ttf' package-contents.txt
+          grep -qF './usr/share/doc/gd-tools/ArmedLemon-LICENSE.txt' package-contents.txt
 
       - name: Upload Debian package
         uses: actions/upload-artifact@v4

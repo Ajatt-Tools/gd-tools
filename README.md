@@ -173,7 +173,9 @@ gd-handwritten --word %GDWORD% --font-size 4rem
 
 ![screenshot](https://user-images.githubusercontent.com/53496273/254959907-4aa7d72d-2d58-4bd3-8b3a-c2f6f3186834.png)
 
-Font source: [ArmedLemon](https://github.com/Ajatt-Tools/gd-tools/blob/main/res/ArmedLemon.ttf).
+Bundled font: [ArmedLemon.ttf](res/ArmedLemon.ttf).
+The original usage terms and an English summary are included in
+[res/ArmedLemon-LICENSE.txt](res/ArmedLemon-LICENSE.txt).
 
 **How to call**:
 

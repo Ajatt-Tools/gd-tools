@@ -160,6 +160,7 @@ xpack(main_bin_name)
     end
     add_installfiles("LICENSE", {prefixdir = "share/licenses/gd-tools"})
     add_installfiles("README.md", {prefixdir = "share/doc/gd-tools", filename = "README"})
+    add_installfiles("res/ArmedLemon-LICENSE.txt", {prefixdir = "share/doc/gd-tools"})
 
     after_installcmd(function(package, batchcmds)
         for _, variant in ipairs(bin_variants) do

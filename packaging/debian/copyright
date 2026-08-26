@@ -13,3 +13,13 @@ License: ${PACKAGE_LICENSE}
  .
  On Debian systems, the complete text of the GNU General Public License
  version 3 can be found in /usr/share/common-licenses/GPL-3.
+
+Files: res/ArmedLemon.ttf res/ArmedLemon-LICENSE.txt
+Copyright: Millimeter (ミリメートル)
+License: ArmedLemon
+ No fee is charged for commercial use or other uses. The copyright holder asks,
+ but does not require, users to provide notice so the font may be promoted on
+ the copyright holder's homepage.
+ .
+ Source: http://millimeter.cool.ne.jp/
+ Download: https://www.vector.co.jp/soft/data/writing/se334877.html
