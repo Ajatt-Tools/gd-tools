@@ -1,4 +1,5 @@
 local main_bin_name = "gd-tools"
+local bin_variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", }
 set_xmakever("2.9.3")
 set_license("GPL-3.0")
 set_languages("c++23")
@@ -80,12 +81,10 @@ target(main_bin_name)
         end
 
         local bin_dir = path.join(target:installdir(), "/bin/")
-        local variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", }
-
         -- Link alternative names
         -- to enable calling `gd-ankisearch` instead of more verbose `gd-tools ankisearch`, etc.
         local link
-        for _, link in pairs(variants) do
+        for _, link in pairs(bin_variants) do
             link = path.join(bin_dir, link)
             maybe_rm(link)
             os.ln(main_bin_name, link)
