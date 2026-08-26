@@ -1,6 +1,7 @@
 # Xmake cache
 .xmake/
 build/
+xmake-docs
 
 # MacOS Cache
 .DS_Store
@@ -28,6 +29,8 @@ _ReSharper*
 *.log
 compile_commands.json
 /.cache
+/*.md
+!/README.md
 
 # OS Generated Files
 .DS_Store
