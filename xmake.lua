@@ -86,6 +86,21 @@ local format = function(target)
     print("Finished clang-format for target: %s", target:name())
 end
 
+-- Remove an installed file or dangling alias without failing when it is absent.
+local function remove_if_present(xos, file)
+    if xos.isfile(file) or xos.islink(file) then xos.rm(file) end
+end
+
+-- Install short command aliases for the multicall binary.
+local function install_variants(xos, target)
+    local bin_dir = path.join(target:installdir(), "bin")
+    for _, variant in ipairs(bin_variants) do
+        local link = path.join(bin_dir, variant)
+        remove_if_present(xos, link)
+        xos.ln(main_bin_name, link)
+    end
+end
+
 -- Main target
 target(main_bin_name)
     set_kind("binary")
@@ -105,15 +120,9 @@ target(main_bin_name)
             if os.isfile(file) or os.islink(file) then os.rm(file) end
         end
 
-        local bin_dir = path.join(target:installdir(), "/bin/")
-        -- Link alternative names
-        -- to enable calling `gd-ankisearch` instead of more verbose `gd-tools ankisearch`, etc.
-        local link
-        for _, link in pairs(bin_variants) do
-            link = path.join(bin_dir, link)
-            maybe_rm(link)
-            os.ln(main_bin_name, link)
-        end
+        -- Link alternative names to enable calling `gd-ankisearch`
+        -- instead of more verbose `gd-tools ankisearch`, etc.
+        install_variants(os, target)
         print("Created symlinks.")
 
         -- Copy fonts
