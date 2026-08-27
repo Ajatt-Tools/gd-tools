@@ -3,6 +3,8 @@ name: Ubuntu 24.04
 on:
   pull_request:
   push:
+    branches:
+      - "**"
 
 permissions: read-all
 
