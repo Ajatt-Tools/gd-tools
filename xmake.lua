@@ -3,6 +3,7 @@ local bin_variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd
 local package_version = os.getenv("GD_TOOLS_VERSION") or "0.0.0"
 local font_files = "res/*.ttf"
 local dictionary_files = "res/*.dic"
+local shell_files = "src/*.sh"
 local fonts_prefix = path.join("share/fonts", main_bin_name)
 local data_prefix = path.join("share", main_bin_name)
 
@@ -111,6 +112,17 @@ local function install_resources(xos, files, directory)
     xos.cp(files, directory)
 end
 
+-- Install shell commands without their source .sh extensions.
+local function install_shell_files(xos, target)
+    local bin_dir = path.join(target:installdir(), "bin")
+    for _, shell_file in ipairs(xos.files(shell_files)) do
+        local destination = path.join(bin_dir, path.basename(shell_file))
+        remove_if_present(xos, destination)
+        xos.cp(shell_file, destination)
+        xos.runv("chmod", {"755", "--", destination})
+    end
+end
+
 -- Main target
 target(main_bin_name)
     set_kind("binary")
@@ -126,10 +138,6 @@ target(main_bin_name)
     set_installdir("/usr/")
 
     after_install(function(target)
-        local function maybe_rm(file)
-            if os.isfile(file) or os.islink(file) then os.rm(file) end
-        end
-
         -- Link alternative names to enable calling `gd-ankisearch`
         -- instead of more verbose `gd-tools ankisearch`, etc.
         install_variants(os, target)
@@ -144,14 +152,8 @@ target(main_bin_name)
         print("Installed dictionary files.")
 
         -- Copy sh files
-        for _, shell_file in pairs(os.files("src/*.sh")) do
-            local destination = path.join(target:installdir(), "bin", path.basename(shell_file))
-            maybe_rm(destination)
-            os.cp(shell_file, destination)
-            os.runv("chmod", {"755", "--", destination})
-        end
+        install_shell_files(os, target)
         print("Installed shell scripts.")
-
     end)
 
     after_uninstall(function(target)
