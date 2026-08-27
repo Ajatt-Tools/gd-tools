@@ -1,5 +1,5 @@
 local main_bin_name = "gd-tools"
-local bin_variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", }
+local bin_variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", "gd-translate", }
 local package_version = os.getenv("GD_TOOLS_VERSION") or "0.0.0"
 local font_files = "res/*.ttf"
 local dictionary_files = "res/*.dic"

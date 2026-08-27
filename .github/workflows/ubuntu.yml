@@ -37,6 +37,7 @@ jobs:
         run: |
           ./scripts/quickinstall.sh --local --mandarin
           "$HOME/.local/bin/gd-tools" --help
+          test -L "$HOME/.local/bin/gd-translate"
           output="$("$HOME/.local/bin/gd-mecab" --sentence お前はもう死んでいる --word お前)"
           grep -qF '<b>お前</b>' <<< "$output"
           test -f "$HOME/.local/gd-mandarin/sys.dic"

@@ -68,6 +68,7 @@ jobs:
           dpkg-deb --contents dist/gd-tools.deb > package-contents.txt
           grep -qF './usr/bin/gd-tools' package-contents.txt
           grep -qF './usr/bin/gd-mecab' package-contents.txt
+          grep -qF './usr/bin/gd-translate' package-contents.txt
           grep -qF './usr/bin/gd-strokeorder' package-contents.txt
           grep -qF './usr/share/gd-tools/marisa_words.dic' package-contents.txt
           grep -qF './usr/share/fonts/gd-tools/KanjiStrokeOrders_v4.004.ttf' package-contents.txt
@@ -98,6 +99,7 @@ jobs:
           sudo apt-get install --yes ./dist/gd-tools.deb
           test -x /usr/bin/gd-tools
           test -L /usr/bin/gd-mecab
+          test -L /usr/bin/gd-translate
           test -x /usr/bin/gd-strokeorder
           test -f /usr/share/gd-tools/marisa_words.dic
           gd-tools --help
