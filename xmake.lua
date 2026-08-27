@@ -26,6 +26,9 @@ includes("@builtin/xpack")
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "build"})
 
 add_requires("cpr >= 1.11", {configs = {ssl = true}})
+if os.getenv("GD_TOOLS_USE_SYSTEM_CURL") == "y" then
+    add_requireconfs("cpr.libcurl", {system = true, override = true, version = ">=8.5.0"})
+end
 add_requires("cpp-subprocess")
 add_requires("nlohmann_json", "marisa", "rdricpp", "mecab")
 

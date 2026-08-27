@@ -35,6 +35,10 @@ jobs:
         shell: bash
         run: ./scripts/build_deb.sh
 
+      - name: Verify shared curl linkage
+        shell: bash
+        run: ldd build/linux/x86_64/release/gd-tools | grep -qF 'libcurl.so.4'
+
       # Test the artifact before publishing so a tag cannot release an incomplete install tree.
       - name: Validate Debian package
         shell: bash
@@ -48,6 +52,7 @@ jobs:
           grep -qF './usr/share/gd-tools/marisa_words.dic' package-contents.txt
           grep -qF './usr/share/fonts/gd-tools/KanjiStrokeOrders_v4.004.ttf' package-contents.txt
           grep -qF './usr/share/doc/gd-tools/ArmedLemon-LICENSE.txt' package-contents.txt
+          dpkg-deb --field dist/gd-tools.deb Depends | grep -qF 'libcurl4t64'
 
       - name: Upload Debian package
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -76,6 +81,7 @@ jobs:
           test -x /usr/bin/gd-strokeorder
           test -f /usr/share/gd-tools/marisa_words.dic
           gd-tools --help
+          ldd /usr/bin/gd-tools | grep -qF 'libcurl.so.4'
 
       - name: Test MeCab integration
         shell: bash
