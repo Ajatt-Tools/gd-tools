@@ -210,7 +210,9 @@ xpack(main_bin_name)
     add_installfiles(font_files, {prefixdir = fonts_prefix})
     add_installfiles(dictionary_files, {prefixdir = data_prefix})
     for _, shell_file in ipairs(os.files(shell_files)) do
-        add_installfiles(shell_file, {prefixdir = "bin", filename = path.basename(shell_file)})
+        if path.basename(shell_file) ~= "gd-mandarin" then
+            add_installfiles(shell_file, {prefixdir = "bin", filename = path.basename(shell_file)})
+        end
     end
     add_installfiles("LICENSE", {prefixdir = "share/licenses/gd-tools"})
     add_installfiles("README.md", {prefixdir = "share/doc/gd-tools", filename = "README"})

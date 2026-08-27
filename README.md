@@ -30,6 +30,7 @@ sudo apt install ./gd-tools.deb
 ```
 
 Compile from source if `apt` reports an incompatible or unavailable dependency.
+The DEB package does not include the optional Mandarin dictionary resources.
 
 ### Other distros
 

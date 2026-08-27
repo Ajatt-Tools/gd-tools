@@ -70,6 +70,7 @@ jobs:
           grep -qF './usr/bin/gd-mecab' package-contents.txt
           grep -qF './usr/bin/gd-translate' package-contents.txt
           grep -qF './usr/bin/gd-strokeorder' package-contents.txt
+          if grep -qF './usr/bin/gd-mandarin' package-contents.txt; then exit 1; fi
           grep -qF './usr/share/gd-tools/marisa_words.dic' package-contents.txt
           grep -qF './usr/share/fonts/gd-tools/KanjiStrokeOrders_v4.004.ttf' package-contents.txt
           grep -qF './usr/share/doc/gd-tools/ArmedLemon-LICENSE.txt' package-contents.txt
@@ -101,6 +102,7 @@ jobs:
           test -L /usr/bin/gd-mecab
           test -L /usr/bin/gd-translate
           test -x /usr/bin/gd-strokeorder
+          test ! -e /usr/bin/gd-mandarin
           test -f /usr/share/gd-tools/marisa_words.dic
           gd-tools --help
           ldd /usr/bin/gd-tools | grep -qF 'libcurl.so.4'
