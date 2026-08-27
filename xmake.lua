@@ -1,10 +1,22 @@
 local main_bin_name = "gd-tools"
 local bin_variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", }
 local package_version = os.getenv("GD_TOOLS_VERSION") or "0.0.0"
+
+-- Return whether the host is Ubuntu, which provides the GCC 14 toolchain and system curl packages.
+local function is_ubuntu()
+    return is_host("linux") and linuxos.name() == "ubuntu"
+end
+
+-- Respect explicit curl linkage requests; otherwise prefer Ubuntu's maintained shared library.
+local function use_system_curl()
+    local requested = os.getenv("GD_TOOLS_USE_SYSTEM_CURL")
+    return requested == "y" or (requested ~= "n" and is_ubuntu())
+end
+
 set_xmakever("2.9.3")
 set_license("GPL-3.0")
 set_languages("c++23")
-if is_host("linux") and linuxos.name() == "ubuntu" and not os.getenv("GD_TOOLS_TOOLCHAIN") then
+if is_ubuntu() and not os.getenv("GD_TOOLS_TOOLCHAIN") then
     set_toolchains("gcc-14")
 else
     set_toolchains(os.getenv("GD_TOOLS_TOOLCHAIN") or "gcc")
@@ -26,8 +38,8 @@ includes("@builtin/xpack")
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "build"})
 
 add_requires("cpr >= 1.11", {configs = {ssl = true}})
-if os.getenv("GD_TOOLS_USE_SYSTEM_CURL") == "y" then
-    add_requireconfs("cpr.libcurl", {system = true, override = true, version = ">=8.5.0"})
+if use_system_curl() then
+    add_requireconfs("cpr.libcurl", {system = true, override = true, version = ">=7.64.0"})
 end
 add_requires("cpp-subprocess")
 add_requires("nlohmann_json", "marisa", "rdricpp", "mecab")

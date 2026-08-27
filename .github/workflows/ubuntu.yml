@@ -11,9 +11,6 @@ permissions: read-all
 jobs:
   build:
     runs-on: ubuntu-24.04
-    env:
-      # Match DEB builds, which link Ubuntu's maintained shared libcurl.
-      GD_TOOLS_USE_SYSTEM_CURL: y
     steps:
       - name: Checkout repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
