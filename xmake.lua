@@ -1,11 +1,14 @@
 local main_bin_name = "gd-tools"
 local bin_variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", }
 local package_version = os.getenv("GD_TOOLS_VERSION") or "0.0.0"
-local toolchain = os.getenv("GD_TOOLS_TOOLCHAIN") or "gcc"
 set_xmakever("2.9.3")
 set_license("GPL-3.0")
 set_languages("c++23")
-set_toolchains(toolchain)
+if is_host("linux") and linuxos.name() == "ubuntu" and not os.getenv("GD_TOOLS_TOOLCHAIN") then
+    set_toolchains("gcc-14")
+else
+    set_toolchains(os.getenv("GD_TOOLS_TOOLCHAIN") or "gcc")
+end
 
 set_warnings("allextra", "error")
 add_cxxflags("clang::-Wno-c++98-compat")

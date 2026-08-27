@@ -12,7 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     env:
-      GD_TOOLS_TOOLCHAIN: gcc-14
     steps:
       - name: Checkout repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
