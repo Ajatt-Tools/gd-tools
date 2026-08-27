@@ -23,7 +23,8 @@ jobs:
           xmake-version: latest
 
       - name: Install build dependencies
-        run: sudo apt-get update && sudo apt-get install --yes build-essential g++-14 libmecab-dev mecab-utils
+        shell: bash
+        run: ./scripts/install_ubuntu_dependencies.sh
 
       - name: Install gd-tools locally
         run: ./scripts/quickinstall.sh --local

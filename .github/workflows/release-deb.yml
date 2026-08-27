@@ -23,16 +23,8 @@ jobs:
           xmake-version: '>=3.1.0'
 
       - name: Install build and packaging dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes \
-            build-essential \
-            debhelper \
-            devscripts \
-            g++-14 \
-            libmecab-dev \
-            mecab-ipadic-utf8 \
-            mecab-utils
+        shell: bash
+        run: ./scripts/install_ubuntu_dependencies.sh --packaging
 
       - name: Set package version
         shell: bash
