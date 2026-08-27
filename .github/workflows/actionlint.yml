@@ -1,0 +1,27 @@
+name: Lint GitHub Actions workflows
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+  push:
+    branches:
+      - "**"
+    paths:
+      - ".github/workflows/**"
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      # GitHub-hosted Ubuntu runners include Go. Pin actionlint for deterministic checks.
+      - name: Lint workflows
+        shell: bash
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
