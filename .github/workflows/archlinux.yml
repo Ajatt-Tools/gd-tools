@@ -26,6 +26,7 @@ jobs:
 
     steps:
       - name: Installation
+        shell: bash
         run: |
           pacman -Syu --noconfirm --needed openssl
           pacman -Sy --noconfirm --needed glibc git base-devel perl make unzip p7zip
@@ -38,21 +39,25 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build gd-tools
+        shell: bash
         run: |
           xmake config -y -m ${{ matrix.mode }}
           xmake config -y --tests=n
           xmake build  -y -vw "gd-tools"
 
       - name: Clean
+        shell: bash
         run: |
           xmake clean
 
       - name: Build tests
+        shell: bash
         run: |
           xmake config -y -m ${{ matrix.mode }}
           xmake config -y --tests=y
           xmake build  -y -vw "tests"
 
       - name: Run tests
+        shell: bash
         run: |
           xmake run --workdir="$(pwd)" "tests"
