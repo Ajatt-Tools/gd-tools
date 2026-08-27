@@ -29,6 +29,8 @@ wget https://github.com/Ajatt-Tools/gd-tools/releases/latest/download/gd-tools.d
 sudo apt install ./gd-tools.deb
 ```
 
+Compile from source if `apt` reports an incompatible or unavailable dependency.
+
 ### Other distros
 
 If you want to package `gd-tools` for your distro and know how to do it,
@@ -38,19 +40,22 @@ please create a pull request.
 
 <summary>Manual installation</summary>
 
-This way is not recommended
+This method is **not recommended**
 because it's easy to make a mistake during the process
 and end up with a broken install.
+If a package for your system isn't available, you should create it first.
 
-1) To build `gd-tools`, install Xmake `2.9.3` or newer and GCC `14.1` or newer.
+1) Install Xmake `2.9.3` or newer and GCC `14.1` or newer.
 1) Install `mecab` (`mecab-git` from the AUR).
-2) Run `./scripts/quickinstall.sh`.
+1) Ubuntu users also need GCC 14 and libcurl headers: `sudo apt install g++-14 libcurl4-openssl-dev`.
+1) Run `./scripts/quickinstall.sh`.
 
 **Note:** You can run `./scripts/quickinstall.sh --local`
 to install the program locally (to `~/.local/` ).
 
 To uninstall a system-wide manual installation, run `./scripts/quickuninstall.sh`.
 If you installed with `--local` or `--user`, run `./scripts/quickuninstall.sh --local` instead.
+This removes the optional `~/.local/gd-mandarin` dictionary data as well.
 
 **Note:** Ubuntu's standard repository may provide an outdated version of Xmake.
 Install Xmake from the official Xmake PPA instead:
