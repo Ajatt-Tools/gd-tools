@@ -55,7 +55,7 @@ to install the program locally (to `~/.local/` ).
 
 To uninstall a system-wide manual installation, run `./scripts/quickuninstall.sh`.
 If you installed with `--local` or `--user`, run `./scripts/quickuninstall.sh --local` instead.
-This removes the optional `~/.local/gd-mandarin` dictionary data as well.
+This removes files installed by the scripts and preserves other files in their directories.
 
 **Note:** Ubuntu's standard repository may provide an outdated version of Xmake.
 Install Xmake from the official Xmake PPA instead:

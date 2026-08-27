@@ -35,6 +35,7 @@ jobs:
       - name: Test local installation and removal
         shell: bash
         run: |
+          # install-uninstall round trip and check
           ./scripts/quickinstall.sh --local --mandarin
           "$HOME/.local/bin/gd-tools" --help
           test -L "$HOME/.local/bin/gd-translate"
@@ -47,3 +48,18 @@ jobs:
           test ! -e "$HOME/.local/share/gd-tools"
           test ! -e "$HOME/.local/share/fonts/gd-tools"
           test ! -e "$HOME/.local/gd-mandarin"
+
+          # same but with user-added files
+          mkdir -p "$HOME/.local/share/gd-tools" "$HOME/.local/share/fonts/gd-tools" "$HOME/.local/gd-mandarin"
+          # create fake files
+          touch "$HOME/.local/share/gd-tools/custom.dic"
+          touch "$HOME/.local/share/fonts/gd-tools/custom.ttf"
+          touch "$HOME/.local/gd-mandarin/custom.dic"
+          # install-uninstall
+          ./scripts/quickinstall.sh --local --mandarin
+          ./scripts/quickuninstall.sh --local
+          # fake files should survive
+          test -f "$HOME/.local/share/gd-tools/custom.dic"
+          test -f "$HOME/.local/share/fonts/gd-tools/custom.ttf"
+          test -f "$HOME/.local/gd-mandarin/custom.dic"
+          test ! -e "$HOME/.local/gd-mandarin/sys.dic"

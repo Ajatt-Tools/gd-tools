@@ -112,6 +112,18 @@ local function install_resources(xos, files, directory)
     xos.cp(files, directory)
 end
 
+-- Remove installed files while preserving additions made by the user.
+local function remove_resources(xos, files, directory)
+    for _, file in ipairs(xos.files(files)) do
+        remove_if_present(xos, path.join(directory, path.filename(file)))
+    end
+end
+
+-- Remove a directory only after all install-owned files have been removed.
+local function remove_directory_if_empty(xos, directory)
+    if xos.isdir(directory) then xos.runv("rmdir", {"--ignore-fail-on-non-empty", "--", directory}) end
+end
+
 -- Install shell commands without their source .sh extensions.
 local function install_shell_files(xos, target)
     local bin_dir = path.join(target:installdir(), "bin")
@@ -166,8 +178,12 @@ target(main_bin_name)
         for _, shell_file in ipairs(os.files(shell_files)) do
             remove_if_present(os, path.join(bin_dir, path.basename(shell_file)))
         end
-        os.rm(path.join(target:installdir(), fonts_prefix))
-        os.rm(path.join(target:installdir(), data_prefix))
+        local fonts_dir = path.join(target:installdir(), fonts_prefix)
+        local data_dir = path.join(target:installdir(), data_prefix)
+        remove_resources(os, font_files, fonts_dir)
+        remove_resources(os, dictionary_files, data_dir)
+        remove_directory_if_empty(os, fonts_dir)
+        remove_directory_if_empty(os, data_dir)
         print("Removed gd-tools installation files.")
     end)
 

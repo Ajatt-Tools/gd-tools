@@ -7,6 +7,7 @@ readonly ROOT_DIR
 cd -- "$ROOT_DIR" || exit 1
 
 readonly target=gd-tools
+readonly mandarin_dir="$HOME/.local/gd-mandarin"
 
 case ${1:-} in
 --local | --user)
@@ -21,4 +22,9 @@ case ${1:-} in
     ;;
 esac
 
-rm -rf -- "$HOME/.local/gd-mandarin"
+for source_file in res/mandarin_dict/*; do
+    rm -f -- "$mandarin_dir/${source_file##*/}"
+done
+if [[ -d "$mandarin_dir" ]]; then
+    rmdir --ignore-fail-on-non-empty -- "$mandarin_dir"
+fi
