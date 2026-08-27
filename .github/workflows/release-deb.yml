@@ -9,7 +9,27 @@ on:
 permissions: read-all
 
 jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Install Xmake
+        uses: xmake-io/github-action-setup-xmake@3a1a5dddfc7fa625d9a698738334bf55655a861a # v1
+        with:
+          xmake-version: latest
+
+      - name: Install test dependencies
+        shell: bash
+        run: ./scripts/install_ubuntu_dependencies.sh
+
+      - name: Run tests
+        shell: bash
+        run: ./scripts/quicktest.sh
+
   build-package:
+    needs: test
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
