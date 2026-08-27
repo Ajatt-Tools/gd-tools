@@ -2,7 +2,7 @@
 
 set -xeuo pipefail
 
-ROOT_DIR="$(git rev-parse --show-toplevel)" || exit 1
+ROOT_DIR="$(dirname -- "$(readlink -f -- "$0")")/.."
 readonly ROOT_DIR
 cd -- "$ROOT_DIR" || exit 1
 
