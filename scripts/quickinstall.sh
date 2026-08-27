@@ -13,8 +13,7 @@ readonly this_dir
 
 readonly target="gd-tools"
 
-xmake config -P "$ROOT_DIR" --tests=n
-xmake config -P "$ROOT_DIR" -m release
+xmake config -P "$ROOT_DIR" -y -m release --tests=n
 xmake build -P "$ROOT_DIR" -vwy "$target"
 
 run_mandarin_script=false
