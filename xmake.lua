@@ -1,6 +1,10 @@
 local main_bin_name = "gd-tools"
 local bin_variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", }
 local package_version = os.getenv("GD_TOOLS_VERSION") or "0.0.0"
+local font_files = "res/*.ttf"
+local dictionary_files = "res/*.dic"
+local fonts_prefix = path.join("share/fonts", main_bin_name)
+local data_prefix = path.join("share", main_bin_name)
 
 -- Return whether the host is Ubuntu, which provides the GCC 14 toolchain and system curl packages.
 local function is_ubuntu()
@@ -101,6 +105,12 @@ local function install_variants(xos, target)
     end
 end
 
+-- Copy one resource pattern into its installation directory.
+local function install_resources(xos, files, directory)
+    if not xos.isdir(directory) then xos.mkdir(directory) end
+    xos.cp(files, directory)
+end
+
 -- Main target
 target(main_bin_name)
     set_kind("binary")
@@ -126,15 +136,11 @@ target(main_bin_name)
         print("Created symlinks.")
 
         -- Copy fonts
-        local fonts_dir = path.join(target:installdir(), "/share/fonts/", main_bin_name)
-        if not os.isdir(fonts_dir) then os.mkdir(fonts_dir) end
-        os.cp("res/*.ttf", fonts_dir)
+        install_resources(os, font_files, path.join(target:installdir(), fonts_prefix))
         print("Installed fonts.")
 
         -- Copy dictionary files
-        local share_dir = path.join(target:installdir(), "/share/", main_bin_name)
-        if not os.isdir(share_dir) then os.mkdir(share_dir) end
-        os.cp("res/*.dic", share_dir)
+        install_resources(os, dictionary_files, path.join(target:installdir(), data_prefix))
         print("Installed dictionary files.")
 
         -- Copy sh files
@@ -145,6 +151,7 @@ target(main_bin_name)
             os.runv("chmod", {"755", "--", destination})
         end
         print("Installed shell scripts.")
+
     end)
 
     after_uninstall(function(target)
