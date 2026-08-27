@@ -156,16 +156,18 @@ target(main_bin_name)
         print("Installed shell scripts.")
     end)
 
+    -- Xmake does not track files created by after_install.
     after_uninstall(function(target)
+        -- Remove every file created outside Xmake's tracked target installation.
         local bin_dir = path.join(target:installdir(), "bin")
         for _, variant in ipairs(bin_variants) do
-            os.rm(path.join(bin_dir, variant))
+            remove_if_present(os, path.join(bin_dir, variant))
         end
-        for _, shell_file in ipairs(os.files("src/*.sh")) do
-            os.rm(path.join(bin_dir, path.basename(shell_file)))
+        for _, shell_file in ipairs(os.files(shell_files)) do
+            remove_if_present(os, path.join(bin_dir, path.basename(shell_file)))
         end
-        os.rm(path.join(target:installdir(), "share/fonts", main_bin_name))
-        os.rm(path.join(target:installdir(), "share", main_bin_name))
+        os.rm(path.join(target:installdir(), fonts_prefix))
+        os.rm(path.join(target:installdir(), data_prefix))
         print("Removed gd-tools installation files.")
     end)
 
@@ -189,9 +191,9 @@ xpack(main_bin_name)
     set_license("GPL-3.0")
     set_licensefile("LICENSE")
     add_targets(main_bin_name)
-    add_installfiles("res/*.ttf", {prefixdir = "share/fonts/gd-tools"})
-    add_installfiles("res/*.dic", {prefixdir = "share/gd-tools"})
-    for _, shell_file in ipairs(os.files("src/*.sh")) do
+    add_installfiles(font_files, {prefixdir = fonts_prefix})
+    add_installfiles(dictionary_files, {prefixdir = data_prefix})
+    for _, shell_file in ipairs(os.files(shell_files)) do
         add_installfiles(shell_file, {prefixdir = "bin", filename = path.basename(shell_file)})
     end
     add_installfiles("LICENSE", {prefixdir = "share/licenses/gd-tools"})
