@@ -28,8 +28,9 @@ jobs:
       - name: Install gd-tools locally
         run: ./scripts/quickinstall.sh --local
 
-      - name: Build tests
-        run: xmake config -y -m release --tests=y && xmake build -y -vw tests
-
-      - name: Run tests
-        run: xmake run --workdir="$(pwd)" tests
+      - name: Run tests from source archive
+        shell: bash
+        run: |
+          archive_dir="$(mktemp --directory)"
+          git archive --format=tar HEAD | tar --extract --file=- --directory="$archive_dir"
+          "$archive_dir/scripts/quicktest.sh"
