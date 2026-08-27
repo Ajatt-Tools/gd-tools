@@ -12,11 +12,12 @@ jobs:
     env:
       GD_TOOLS_TOOLCHAIN: gcc-14
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       # Track new Xmake releases here; release packaging enforces its minimum version separately.
       - name: Install supported Xmake
-        uses: xmake-io/github-action-setup-xmake@v1
+        uses: xmake-io/github-action-setup-xmake@3a1a5dddfc7fa625d9a698738334bf55655a861a # v1
         with:
           xmake-version: latest
 
