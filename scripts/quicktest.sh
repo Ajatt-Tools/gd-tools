@@ -9,7 +9,7 @@ cd -- "$ROOT_DIR" || exit 1
 readonly mode=release
 readonly prog=tests
 
-xmake config -m "$mode"
-xmake config --tests=y
-xmake build -w "$prog"
-xmake run --workdir="$(pwd)" "$prog"
+xmake config -P "$ROOT_DIR" -m "$mode"
+xmake config -P "$ROOT_DIR" --tests=y
+xmake build -P "$ROOT_DIR" -w "$prog"
+xmake run -P "$ROOT_DIR" --workdir="$ROOT_DIR" "$prog"

@@ -17,6 +17,8 @@ case ${1:-} in
     ;;
 *)
     printf 'usage: %s [--local|--user]\n' "$0" >&2
-    exit 2
+    exit 1
     ;;
 esac
+
+rm -rf -- "$HOME/.local/gd-mandarin"

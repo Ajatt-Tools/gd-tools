@@ -6,11 +6,6 @@ ROOT_DIR="$(dirname -- "$(readlink -f -- "$0")")/.."
 readonly ROOT_DIR
 cd -- "$ROOT_DIR" || exit 1
 
-mode=debug
-prog=gd-tools
-platform=$(uname)
-
-xmake f -m "$mode"
-xmake -w -v
-
-./"build/${platform,,}/x86_64/$mode/$prog" "$@"
+xmake config -P "$ROOT_DIR" -y -m debug
+xmake build -P "$ROOT_DIR" -y gd-tools
+xmake run -P "$ROOT_DIR" -y gd-tools -- "$@"

@@ -13,9 +13,9 @@ readonly this_dir
 
 readonly target="gd-tools"
 
-xmake config --tests=n
-xmake config -m release
-xmake build -vwy "$target"
+xmake config -P "$ROOT_DIR" --tests=n
+xmake config -P "$ROOT_DIR" -m release
+xmake build -P "$ROOT_DIR" -vwy "$target"
 
 run_mandarin_script=false
 
@@ -36,7 +36,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-args=(xmake install -v --all)
+args=(xmake install -P "$ROOT_DIR" -v --all)
 
 if ${local_install:-false}; then
 	"${args[@]}" --installdir=~/.local/ "$target"

@@ -8,7 +8,7 @@ cd -- "$ROOT_DIR" || exit 1
 
 if ! command -v clang-format >/dev/null 2>&1; then
     printf 'clang-format is required to format the C/C++ sources.\n' >&2
-    exit 127
+    exit 1
 fi
 
 # Restrict formatting to tracked files so generated and dependency sources remain untouched.
