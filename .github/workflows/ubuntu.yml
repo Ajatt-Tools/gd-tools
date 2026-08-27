@@ -25,12 +25,24 @@ jobs:
         shell: bash
         run: ./scripts/install_ubuntu_dependencies.sh
 
-      - name: Install gd-tools locally
-        run: ./scripts/quickinstall.sh --local
-
       - name: Run tests from source archive
         shell: bash
         run: |
           archive_dir="$(mktemp --directory)"
           git archive --format=tar HEAD | tar --extract --file=- --directory="$archive_dir"
           "$archive_dir/scripts/quicktest.sh"
+
+      - name: Test local installation and removal
+        shell: bash
+        run: |
+          ./scripts/quickinstall.sh --local --mandarin
+          "$HOME/.local/bin/gd-tools" --help
+          output="$("$HOME/.local/bin/gd-mecab" --sentence お前はもう死んでいる --word お前)"
+          grep -qF '<b>お前</b>' <<< "$output"
+          test -f "$HOME/.local/gd-mandarin/sys.dic"
+          ./scripts/quickuninstall.sh --local
+          test ! -e "$HOME/.local/bin/gd-tools"
+          test ! -e "$HOME/.local/bin/gd-mecab"
+          test ! -e "$HOME/.local/share/gd-tools"
+          test ! -e "$HOME/.local/share/fonts/gd-tools"
+          test ! -e "$HOME/.local/gd-mandarin"
