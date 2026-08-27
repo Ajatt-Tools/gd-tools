@@ -97,6 +97,7 @@ auto find_user_dict_file() -> std::filesystem::path
   return find_file_recursive(possible_dirs, "user_dic.dic");
 }
 
+/** Locate the first available MeCab dictionary in the supported system and user paths. */
 auto find_dic_dir() -> std::filesystem::path
 {
   static std::vector<std::filesystem::path> const possible_dirs = {
