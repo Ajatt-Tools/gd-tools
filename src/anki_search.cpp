@@ -343,7 +343,5 @@ void search_anki_cards(std::span<std::string_view const> const args)
     print_cards_info(fill_args<search_params>(args));
   } catch (gd::help_requested const& ex) {
     std::print(help_text);
-  } catch (gd::runtime_error const& ex) {
-    std::println("{}", ex.what());
   }
 }

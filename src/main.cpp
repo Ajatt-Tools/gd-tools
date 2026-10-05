@@ -124,6 +124,10 @@ auto take_action(std::span<std::string_view const> const args) -> void
 
 auto main(int const argc, char const* const* const argv) -> int
 {
-  take_action(std::vector<std::string_view>{ argv, std::next(argv, argc) });
+  try {
+    take_action(std::vector<std::string_view>{ argv, std::next(argv, argc) });
+  } catch (gd::runtime_error const& ex) {
+    std::println("{}", ex.what());
+  }
   return 0;
 }

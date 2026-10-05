@@ -86,7 +86,5 @@ void stroke_order(std::span<std::string_view const> const args)
     print_with_stroke_order(fill_args<stroke_order_params>(args));
   } catch (gd::help_requested const& ex) {
     std::print(help_text);
-  } catch (gd::runtime_error const& ex) {
-    std::println("{}", ex.what());
   }
 }

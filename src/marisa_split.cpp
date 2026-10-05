@@ -238,7 +238,5 @@ void marisa_split(std::span<std::string_view const> const args)
     lookup_words(fill_args<marisa_params>(args));
   } catch (gd::help_requested const& ex) {
     std::println(help_text);
-  } catch (gd::runtime_error const& ex) {
-    std::println("{}", ex.what());
   }
 }

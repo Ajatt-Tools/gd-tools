@@ -93,9 +93,9 @@ void translate(std::span<std::string_view const> const args)
     exec_translate(fill_args<translate_params>(args));
   } catch (gd::help_requested const& ex) {
     std::print(help_text);
-  } catch (gd::runtime_error const& ex) {
-    std::println("{}", ex.what());
-  } catch (std::runtime_error const& ex) {
+  } catch (sp::OSError const& ex) {
+    std::println("subprocess error. {}", ex.what());
+  } catch (sp::CalledProcessError const& ex) {
     std::println("subprocess error. {}", ex.what());
   }
 }

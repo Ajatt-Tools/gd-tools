@@ -100,7 +100,5 @@ void massif(std::span<std::string_view const> const args)
     fetch_massif_examples(fill_args<massif_params>(args));
   } catch (gd::help_requested const& ex) {
     std::print(help_text);
-  } catch (gd::runtime_error const& ex) {
-    std::println("{}", ex.what());
   }
 }
