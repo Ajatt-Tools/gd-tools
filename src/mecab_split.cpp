@@ -18,44 +18,8 @@
 
 #include "kana_conv.h"
 #include "precompiled.h"
+#include "split_html.h"
 #include "util.h"
-
-static constexpr std::string_view css_style = R"EOF(
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-  }
-  .gd-mecab {
-    font-size: 2rem;
-    color: #1268c3;
-    font-weight: normal;
-  }
-  .gd-mecab a {
-    display: inline-block;
-    font-weight: normal;
-    color: royalblue;
-    text-decoration: none;
-  }
-  .gd-mecab a:not(:last-of-type)::after {
-    content: "";
-    display: inline-block;
-    background-color: #333;
-    margin: 4px;
-    width: 3px;
-    height: 3px;
-    border-radius: 100vmax;
-    vertical-align: middle;
-    cursor: text;
-    user-select: text;
-  }
-  .gd-mecab a b {
-    background-color: #ddeeff;
-    border-radius: 0.2rem;
-    font-weight: 500;
-  }
-</style>
-)EOF";
 
 static constexpr std::string_view help_text = R"EOF(usage: gd-mecab [OPTIONS]
 
