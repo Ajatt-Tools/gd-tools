@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-ROOT_DIR="$(dirname -- "$(readlink -f -- "$0")")/.."
+ROOT_DIR=$(  dirname -- "$(  readlink -f -- "$0"  )"  )
+ROOT_DIR=$(  dirname -- "$ROOT_DIR" )
 readonly ROOT_DIR
 cd -- "$ROOT_DIR" || exit 1
 
@@ -11,9 +12,11 @@ if ! command -v clang-format >/dev/null 2>&1; then
     exit 1
 fi
 
-# Restrict formatting to tracked files so generated and dependency sources remain untouched.
-mapfile -d '' -t source_files < <(git ls-files -z -- '*.c' '*.cc' '*.cpp' '*.cxx' '*.h' '*.hh' '*.hpp' '*.hxx')
-readonly source_files
+readarray -t source_files <<<"$(
+	find "$ROOT_DIR/tests" "$ROOT_DIR/src" -type f \
+	\( -iname '*.cpp' -o -iname '*.h' -o -iname '*.hpp' -o -iname '*.cc' \)
+)"
+readonly -a source_files
 
 if ((${#source_files[@]} > 0)); then
     clang-format --sort-includes -i -- "${source_files[@]}"
