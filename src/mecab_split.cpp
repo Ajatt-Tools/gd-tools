@@ -16,6 +16,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "mecab_split.h"
 #include "kana_conv.h"
 #include "precompiled.h"
 #include "split_html.h"
@@ -110,6 +111,16 @@ auto replace_all(std::string str, std::string_view const from, std::string_view 
   return str;
 }
 
+auto create_mecab_tagger(std::vector<std::string> arguments) -> std::unique_ptr<MeCab::Tagger>
+{
+  std::vector<char*> argv;
+  argv.reserve(arguments.size());
+  for (auto& argument: arguments) { argv.push_back(argument.data()); }
+  std::unique_ptr<MeCab::Tagger> tagger{ MeCab::createTagger(static_cast<int>(argv.size()), argv.data()) };
+  raise_if(tagger == nullptr, "Failed to initialize MeCab tagger.");
+  return tagger;
+}
+
 void lookup_words(mecab_params params)
 {
   validate_font_size(params.font_size);
@@ -127,9 +138,9 @@ void lookup_words(mecab_params params)
 
   auto dicdir = "--dicdir=" + params.dic_dir.string();
 
-  std::vector<char const*> args = {
+  std::vector<std::string> args = {
     "arg0", // unused
-    dicdir.c_str(), // dicdir
+    dicdir, // dicdir
     R"EOF(--node-format=<a href="bword:%f[6]" title="%f[6]">%m</a>)EOF", //
     R"EOF(--unk-format=<a href="bword:%m" title="%m">%m</a>)EOF", //
     "--eos-format=<br>",
@@ -139,16 +150,13 @@ void lookup_words(mecab_params params)
   if (std::filesystem::is_regular_file(params.user_dict)) {
     // user dict can be omitted from params.
     userdic = "--userdic=" + userdic;
-    args.push_back(userdic.c_str());
+    args.push_back(userdic);
   }
 
-  std::unique_ptr<MeCab::Tagger> tagger{ MeCab::createTagger((int)args.size(), (char**)(args.data())) };
-
-  if (tagger == nullptr) {
-    throw gd::runtime_error("Failed to initialize Mecab tagger.");
-  }
-
-  std::string result = tagger->parse(params.gd_sentence.c_str());
+  auto const tagger = create_mecab_tagger(args);
+  auto const* parsed = tagger->parse(params.gd_sentence.c_str());
+  raise_if(parsed == nullptr, "Failed to parse MeCab sentence.");
+  std::string result = parsed;
   result = replace_all(result, std::format(">{}<", params.gd_word), std::format("><b>{}</b><", params.gd_word));
   std::println(R"EOF(<div class="gd-mecab">{}</div>)EOF", result);
   std::println("{}", css_style);
