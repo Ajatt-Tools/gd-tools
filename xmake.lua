@@ -1,5 +1,5 @@
 local main_bin_name = "gd-tools"
-local bin_variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", "gd-translate", }
+local bin_variants = { "gd-ankisearch", "gd-echo", "gd-massif", "gd-images", "gd-marisa", "gd-mecab", "gd-mandarin", "gd-translate", }
 local package_version = os.getenv("GD_TOOLS_VERSION") or "0.0.0"
 local font_files = "res/*.ttf"
 local dictionary_files = "res/*.dic"
@@ -210,9 +210,7 @@ xpack(main_bin_name)
     add_installfiles(font_files, {prefixdir = fonts_prefix})
     add_installfiles(dictionary_files, {prefixdir = data_prefix})
     for _, shell_file in ipairs(os.files(shell_files)) do
-        if path.basename(shell_file) ~= "gd-mandarin" then
-            add_installfiles(shell_file, {prefixdir = "bin", filename = path.basename(shell_file)})
-        end
+        add_installfiles(shell_file, {prefixdir = "bin", filename = path.basename(shell_file)})
     end
     add_installfiles("LICENSE", {prefixdir = "share/licenses/gd-tools"})
     add_installfiles("README.md", {prefixdir = "share/doc/gd-tools", filename = "README"})
