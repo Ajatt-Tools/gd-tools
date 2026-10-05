@@ -18,3 +18,6 @@
 #pragma once
 
 #include "precompiled.h"
+
+/** Render segmented words with shared styles. The caller must validate the wrapper-local font size. */
+auto render_split_html(std::string_view words, std::string_view font_size) -> std::string;

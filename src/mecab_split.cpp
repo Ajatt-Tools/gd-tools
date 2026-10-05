@@ -121,7 +121,7 @@ auto create_mecab_tagger(std::vector<std::string> arguments) -> std::unique_ptr<
   return tagger;
 }
 
-void lookup_words(mecab_params params)
+auto lookup_words(mecab_params params) -> std::string
 {
   validate_font_size(params.font_size);
   half_to_full(params.gd_word);
@@ -158,22 +158,23 @@ void lookup_words(mecab_params params)
   raise_if(parsed == nullptr, "Failed to parse MeCab sentence.");
   std::string result = parsed;
   result = replace_all(result, std::format(">{}<", params.gd_word), std::format("><b>{}</b><", params.gd_word));
-  std::println(R"EOF(<div class="gd-mecab">{}</div>)EOF", result);
-  std::println("{}", css_style);
-
-  // debug info, not shown in GD.
   std::println(R"EOF(<div style="display: none;">)EOF");
   std::println("dicdir: {}", params.dic_dir.string());
   std::println("userdic: {}", params.user_dict.string());
-
   std::println("mecab args: [{}]", join_with(args, ", "));
   std::println(R"EOF(</div>)EOF");
+  // Debug info is not shown in GoldenDict.
+  auto html = render_split_html(result, params.font_size);
+  return html;
 }
+
+auto render_mecab(std::span<std::string_view const> const args) -> std::string
+{ return lookup_words(fill_args<mecab_params>(args)); }
 
 void mecab_split(std::span<std::string_view const> const args)
 {
   try {
-    lookup_words(fill_args<mecab_params>(args));
+    std::println("{}", render_mecab(args));
   } catch (gd::help_requested const& ex) {
     std::println(help_text);
   }
