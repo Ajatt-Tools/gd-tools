@@ -226,8 +226,7 @@ xpack_end()
 if has_config("tests") then
     -- system = false is required to pull the package from xrepo.
     -- without the main component build will fail with "undefined reference to 'main'."
-    --add_requires("catch2 3.x", { system = false })
-    add_requires("catch2 3.x")
+    add_requires("catch2 3.x", { system = false })
 
     -- Tests target
     target("tests")
