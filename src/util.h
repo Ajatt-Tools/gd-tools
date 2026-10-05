@@ -69,6 +69,9 @@ auto parse_number(std::string_view const s) -> std::optional<Integral>
 
 auto is_space(char const ch) noexcept -> bool;
 
+/** Validate a simple CSS length before interpolating it into a style declaration. */
+auto validate_font_size(std::string_view size) -> void;
+
 auto strtrim(std::string_view str) noexcept -> std::string;
 
 void str_replace(std::string& str, std::string_view from, std::string_view to) noexcept;

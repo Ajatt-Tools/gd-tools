@@ -29,6 +29,7 @@ OPTIONS
   --word %GDWORD%        required word
   --sentence %GDSEARCH%  required sentence
   --user-dict PATH       path to the user dictionary.
+  --font-size SIZE       simple CSS size, e.g. 30px or 2rem (default: 2rem).
 )EOF";
 
 auto find_file_recursive(
@@ -81,6 +82,7 @@ struct mecab_params
   std::string gd_sentence{};
   std::filesystem::path user_dict{ find_user_dict_file() };
   std::filesystem::path dic_dir{ find_dic_dir() };
+  std::string font_size{ "2rem" };
 
   auto assign(std::string_view const key, std::string_view const value) -> void
   {
@@ -90,6 +92,8 @@ struct mecab_params
       gd_sentence = value;
     } else if (key == "--user-dict") {
       user_dict = value;
+    } else if (key == "--font-size") {
+      font_size = value;
     } else {
       throw gd::runtime_error(std::string(std::format("Unknown argument name: {}", key)));
     }
@@ -108,6 +112,7 @@ auto replace_all(std::string str, std::string_view const from, std::string_view 
 
 void lookup_words(mecab_params params)
 {
+  validate_font_size(params.font_size);
   half_to_full(params.gd_word);
   std::erase_if(params.gd_word, is_space);
   std::erase_if(params.gd_sentence, is_space);

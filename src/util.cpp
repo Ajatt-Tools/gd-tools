@@ -56,6 +56,16 @@ auto determine_card_class(int64_t const card_queue, int64_t const card_type) noe
 auto is_space(char const ch) noexcept -> bool
 { return static_cast<bool>(std::isspace(static_cast<unsigned char>(ch))); }
 
+auto validate_font_size(std::string_view const size) -> void
+{
+  // Reject CSS/HTML delimiters. Intentionally accept only simple numeric dimensions, not expressions.
+  static std::regex const css_length(R"([0-9]+(\.[0-9]+)?(px|rem|em|%|pt|vw|vh))");
+  raise_if(
+    not std::regex_match(size.begin(), size.end(), css_length),
+    "Invalid font size. Use a CSS size such as 2rem or 30px."
+  );
+}
+
 auto strtrim(std::string_view str) noexcept -> std::string
 {
   auto v = std::views::all(str) //
