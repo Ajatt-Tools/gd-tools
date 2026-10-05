@@ -121,6 +121,18 @@ auto create_mecab_tagger(std::vector<std::string> arguments) -> std::unique_ptr<
   return tagger;
 }
 
+static auto format_mecab_debug_info(mecab_params const& params, std::vector<std::string> const& args) -> std::string
+{
+  static constexpr std::string_view debug_template = R"EOF(
+<div style="display: none;">
+dicdir: {}
+userdic: {}
+mecab args: [{}]
+</div>
+)EOF";
+  return std::format(debug_template, params.dic_dir.string(), params.user_dict.string(), join_with(args, ", "));
+}
+
 auto lookup_words(mecab_params params) -> std::string
 {
   validate_font_size(params.font_size);
@@ -154,18 +166,13 @@ auto lookup_words(mecab_params params) -> std::string
   }
 
   auto const tagger = create_mecab_tagger(args);
+  // parse() returns null on failure.
   auto const* parsed = tagger->parse(params.gd_sentence.c_str());
   raise_if(parsed == nullptr, "Failed to parse MeCab sentence.");
   std::string result = parsed;
   result = replace_all(result, std::format(">{}<", params.gd_word), std::format("><b>{}</b><", params.gd_word));
-  std::println(R"EOF(<div style="display: none;">)EOF");
-  std::println("dicdir: {}", params.dic_dir.string());
-  std::println("userdic: {}", params.user_dict.string());
-  std::println("mecab args: [{}]", join_with(args, ", "));
-  std::println(R"EOF(</div>)EOF");
   // Debug info is not shown in GoldenDict.
-  auto html = render_split_html(result, params.font_size);
-  return html;
+  return render_split_html(result, params.font_size) + format_mecab_debug_info(params, args);
 }
 
 auto render_mecab(std::span<std::string_view const> const args) -> std::string
