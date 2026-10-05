@@ -133,7 +133,8 @@ gd-mecab --word %GDWORD% --sentence %GDSEARCH%
 
 **Optional arguments**
 
-* `--font-size SIZE` the font size to be used, e.g. `30px`.
+* `--font-size SIZE` the font size to be used (default: `2rem`), e.g. `30px`.
+  Accepts nonnegative numbers with `px`, `rem`, `em`, `%`, `pt`, `vw`, or `vh` units.
 * `--user-dict FILE` full path to the user_dic.dic file. This is done automatically if you install via make.
 
 ## gd-images
@@ -245,10 +246,44 @@ pipx install --python /usr/bin/python3.9 argostranslate
 
 ## gd-mandarin
 
-This script passes a sentence through mecab in order to make every part of the sentence clickable.
-It also automatically converts the sentence to traditional characters.
+This command uses MeCab to make every part of a Mandarin sentence clickable.
+The Mandarin dictionary converts recognized words to traditional characters.
+It is compiled into `gd-tools`. `gd-mandarin` is an alias for `gd-tools mandarin`.
 
 ![image](https://github.com/KonstantinDjairo/gd-tools/assets/53496273/20921976-9221-416e-820a-b6bb22db906b)
 
-To use `gd-mandarin`,
-you need to install `gd-tools` by running `./scripts/quickinstall.sh --mandarin`.
+### Install the Mandarin dictionary
+
+The dictionary is optional and is not included in the Debian package.
+Without the Mandarin dictionary,
+the command displays installation instructions and does not parse the sentence.
+
+If you already installed `gd-tools` (for example, from a Debian package),
+download the source and install only the dictionary, without rebuilding the application:
+
+```sh
+git clone https://github.com/Ajatt-Tools/gd-tools.git
+cd gd-tools
+./scripts/mandarin_installer.sh
+```
+
+This copies the bundled dictionary files into `~/.local/gd-mandarin/` for the current user.
+Run the installer as the user who runs GoldenDict, not with `sudo`.
+To install both the application and dictionary from source instead, run
+`./scripts/quickinstall.sh --local --mandarin`.
+
+### GoldenDict configuration
+
+Add an HTML program under "Dictionaries" > "Programs":
+
+```sh
+gd-mandarin --word %GDWORD% --sentence %GDSEARCH%
+```
+
+Optional arguments:
+
+* `--dic-dir PATH`: Mandarin dictionary directory (default: `~/.local/gd-mandarin/`).
+* `--user-dict PATH`: user dictionary (default: `user.dic` in that directory).
+* `--font-size SIZE`: font size (default: `2rem`), with the same simple CSS sizes supported by `gd-mecab`.
+
+The command uses MeCab directly, without a shell pipeline or shared temporary sentence cache.
