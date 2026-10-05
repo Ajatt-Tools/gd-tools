@@ -19,6 +19,7 @@
 #include "anki_search.h"
 #include "echo.h"
 #include "images.h"
+#include "mandarin_split.h"
 #include "marisa_split.h"
 #include "massif.h"
 #include "mecab_split.h"
@@ -36,6 +37,7 @@ ACTIONS
   translate   Translate text using argostranslate.
   marisa      Split search string using MARISA.
   mecab       Split search string using Mecab.
+  mandarin    Split Mandarin into clickable traditional Chinese words.
   strokeorder Show stroke order of a word.
   handwritten Display the handwritten form of a word.
 
@@ -92,6 +94,8 @@ auto take_action(std::span<std::string_view const> const args) -> void
     return marisa_split(rest);
   case "gd-mecab"_h:
     return mecab_split(rest);
+  case "gd-mandarin"_h:
+    return mandarin_split(rest);
   }
 
   // Help requested explicitly.
@@ -116,6 +120,8 @@ auto take_action(std::span<std::string_view const> const args) -> void
     return marisa_split(rest);
   case "mecab"_h:
     return mecab_split(rest);
+  case "mandarin"_h:
+    return mandarin_split(rest);
   }
 
   // Couldn't determine command.
