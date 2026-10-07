@@ -17,6 +17,7 @@
  */
 
 #include "mandarin_split.h"
+#include "mecab_html.h"
 #include "mecab_split.h"
 #include "split_html.h"
 #include "util.h"
@@ -34,33 +35,7 @@ OPTIONS
   -h,--help             print this help screen
 )EOF";
 
-struct mandarin_params
-{
-  std::string gd_word{};
-  std::string gd_sentence{};
-  std::filesystem::path dic_dir{ user_home() / ".local/gd-mandarin" };
-  std::filesystem::path user_dict{};
-  std::string font_size{ "2rem" };
-
-  auto assign(std::string_view const key, std::string_view const value) -> void
-  {
-    if (key == "--word") {
-      gd_word = value;
-    } else if (key == "--sentence") {
-      gd_sentence = value;
-    } else if (key == "--dic-dir") {
-      dic_dir = value;
-    } else if (key == "--user-dict") {
-      user_dict = value;
-    } else if (key == "--font-size") {
-      font_size = value;
-    } else {
-      throw gd::runtime_error(std::format("Unknown argument name: {}", key));
-    }
-  }
-};
-
-auto verify_mecab_dictionary_installation(mandarin_params const& params) -> void
+auto verify_mecab_dictionary_installation(mecab_params const& params) -> void
 {
   for (std::string_view const file_name: { "dicrc", "sys.dic", "unk.dic", "char.bin", "matrix.bin" }) {
     raise_if(
@@ -72,7 +47,21 @@ auto verify_mecab_dictionary_installation(mandarin_params const& params) -> void
   }
 }
 
-static auto lookup_words(mandarin_params params) -> std::string
+static auto create_mecab_args(mecab_params params) -> std::vector<std::string>
+{
+  std::vector<std::string> args{
+    "arg0",
+    "--dicdir=" + params.dic_dir.string(),
+    "--userdic=" + params.user_dict.string(),
+  };
+
+  // Feature 5 contains the traditional Chinese form.
+  // Extract it through MeCab's formatter, then construct escaped HTML in C++.
+  args.append_range(mecab_output_arguments(mecab_dictionary_kind::mandarin));
+  return args;
+}
+
+static auto lookup_words(mecab_params params) -> std::string
 {
   raise_if(params.gd_word.empty(), "Not enough parameters: --word is required.");
   if (params.gd_sentence.empty()) {
@@ -87,24 +76,28 @@ static auto lookup_words(mandarin_params params) -> std::string
     "Provided user dictionary doesn't exist or isn't a file."
   );
   validate_font_size(params.font_size);
+
   std::erase_if(params.gd_word, is_space);
   std::erase_if(params.gd_sentence, is_space);
+  validate_mecab_input(params.gd_sentence);
 
-  auto const dicdir = "--dicdir=" + params.dic_dir.string();
-  auto const userdic = "--userdic=" + params.user_dict.string();
-  // Load the gdmandarin output rules from the dictionary's dicrc.
+  auto const args = create_mecab_args(params);
+
+  // Load the gd-mandarin output rules from the dictionary's dicrc.
   // These use feature 5, the traditional Chinese form, for link targets and displayed text.
-  auto const tagger = create_mecab_tagger({ "gd-mandarin", dicdir, userdic, "--output-format-type=gdmandarin" });
+  auto const tagger = create_mecab_tagger(args);
   auto const* parsed = tagger->parse(params.gd_sentence.c_str());
   raise_if(parsed == nullptr, "Failed to parse Mandarin sentence.");
-  auto const result =
-    replace_all(parsed, std::format(">{}<", params.gd_word), std::format("><b>{}</b><", params.gd_word));
-  return render_split_html(result, params.font_size);
+
+  auto const result = render_mecab_output(parsed, params.gd_word, mecab_dictionary_kind::mandarin);
+  return render_split_html(result, params.font_size) + format_mecab_debug_info(params, args);
 }
 
 auto render_mandarin(std::span<std::string_view const> const args) -> std::string
 {
-  return lookup_words(fill_args<mandarin_params>(args));
+  return lookup_words(
+    fill_args<mecab_params>(args, { .dic_dir = user_home() / ".local/gd-mandarin", .user_dict = {} })
+  );
 }
 
 auto mandarin_split(std::span<std::string_view const> const args) -> void

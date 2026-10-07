@@ -18,6 +18,7 @@
 
 #include "mecab_split.h"
 #include "kana_conv.h"
+#include "mecab_html.h"
 #include "precompiled.h"
 #include "split_html.h"
 #include "util.h"
@@ -79,8 +80,8 @@ auto find_dic_dir() -> std::filesystem::path
 
 struct mecab_params
 {
-  std::string gd_word{};
-  std::string gd_sentence{};
+  std::string gd_word;
+  std::string gd_sentence;
   std::filesystem::path user_dict{ find_user_dict_file() };
   std::filesystem::path dic_dir{ find_dic_dir() };
   std::string font_size{ "2rem" };
@@ -123,16 +124,37 @@ auto create_mecab_tagger(std::vector<std::string> arguments) -> std::unique_ptr<
   return tagger;
 }
 
-static auto format_mecab_debug_info(mecab_params const& params, std::vector<std::string> const& args) -> std::string
+auto format_mecab_debug_info(mecab_params const& params, std::vector<std::string> const& args) -> std::string
 {
   static constexpr std::string_view debug_template = R"EOF(
-<div style="display: none;">
+<!--
 dicdir: {}
 userdic: {}
 mecab args: [{}]
-</div>
+-->
 )EOF";
-  return std::format(debug_template, params.dic_dir.string(), params.user_dict.string(), join_with(args, ", "));
+  return std::format(
+    debug_template,
+    escape_html(params.dic_dir.string()),
+    escape_html(params.user_dict.string()),
+    escape_html(join_with(args, ", "))
+  );
+}
+
+static auto create_mecab_args(mecab_params params) -> std::vector<std::string>
+{
+  std::vector<std::string> args = {
+    "arg0", // unused
+    "--dicdir=" + params.dic_dir.string(), // dicdir
+  };
+
+  args.append_range(mecab_output_arguments(mecab_dictionary_kind::japanese));
+
+  if (std::filesystem::is_regular_file(params.user_dict)) {
+    // user dict can be omitted from params.
+    args.push_back("--userdic=" + params.user_dict.string());
+  }
+  return args;
 }
 
 auto lookup_words(mecab_params params) -> std::string
@@ -148,31 +170,17 @@ auto lookup_words(mecab_params params) -> std::string
     half_to_full(params.gd_sentence);
   }
 
+  validate_mecab_input(params.gd_sentence);
   raise_if((not std::filesystem::is_directory(params.dic_dir)), "Couldn't find dictionary directory.");
-
-  auto dicdir = "--dicdir=" + params.dic_dir.string();
-
-  std::vector<std::string> args = {
-    "arg0", // unused
-    dicdir, // dicdir
-    R"EOF(--node-format=<a href="bword:%f[6]" title="%f[6]">%m</a>)EOF", //
-    R"EOF(--unk-format=<a href="bword:%m" title="%m">%m</a>)EOF", //
-    "--eos-format=<br>",
-  };
-
-  auto userdic = params.user_dict.string();
-  if (std::filesystem::is_regular_file(params.user_dict)) {
-    // user dict can be omitted from params.
-    userdic = "--userdic=" + userdic;
-    args.push_back(userdic);
-  }
+  auto const args = create_mecab_args(params);
 
   auto const tagger = create_mecab_tagger(args);
   // parse() returns null on failure.
   auto const* parsed = tagger->parse(params.gd_sentence.c_str());
   raise_if(parsed == nullptr, "Failed to parse MeCab sentence.");
-  std::string result = parsed;
-  result = replace_all(result, std::format(">{}<", params.gd_word), std::format("><b>{}</b><", params.gd_word));
+
+  auto const result = render_mecab_output(parsed, params.gd_word, mecab_dictionary_kind::japanese);
+
   // Debug info is not shown in GoldenDict.
   return render_split_html(result, params.font_size) + format_mecab_debug_info(params, args);
 }

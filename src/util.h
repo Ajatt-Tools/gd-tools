@@ -1,6 +1,7 @@
 #pragma once
 
 #include "precompiled.h"
+#include <optional>
 
 namespace gd {
 class help_requested : public std::invalid_argument
@@ -33,9 +34,9 @@ concept PassedParamsStruct = requires(T params) {
 };
 
 template<PassedParamsStruct T>
-auto fill_args(std::span<std::string_view const> const args) -> T
+auto fill_args(std::span<std::string_view const> const args, std::optional<T> defaults = std::nullopt) -> T
 {
-  auto params = T{};
+  auto params = defaults.value_or(T{});
   for (auto it = std::begin(args); it != std::end(args);) {
     if (*it == "--help" or *it == "-h") {
       throw gd::help_requested();
