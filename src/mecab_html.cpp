@@ -56,6 +56,7 @@ auto validate_mecab_output(std::string_view output) -> std::string_view
   }
   raise_if(not output.ends_with(mecab_separators::node), "Missing MeCab node separator.");
   output.remove_suffix(mecab_separators::node.size());
+  raise_if(output.empty(), "Empty MeCab output node.");
   return output;
 }
 
