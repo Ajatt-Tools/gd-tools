@@ -47,7 +47,18 @@ auto verify_mecab_dictionary_installation(mecab_params const& params) -> void
   }
 }
 
+/** Resolve the mandatory Mandarin user dictionary independently of Japanese defaults. */
+static auto mandarin_user_dictionary(mecab_params const& params) -> std::filesystem::path
+{
+  auto const dictionary = params.user_dict.empty() ? params.dic_dir / "user.dic" : params.user_dict;
+  raise_if(
+    not std::filesystem::is_regular_file(dictionary),
+    "Provided user dictionary doesn't exist or isn't a file."
+  );
+  return dictionary;
+}
 
+/** Validate Mandarin dictionaries and normalized input before invoking the shared parsing pipeline. */
 static auto lookup_words(mecab_params params) -> std::string
 {
   raise_if(params.gd_word.empty(), "Not enough parameters: --word is required.");
@@ -55,13 +66,7 @@ static auto lookup_words(mecab_params params) -> std::string
     params.gd_sentence = params.gd_word;
   }
   verify_mecab_dictionary_installation(params);
-  if (params.user_dict.empty()) {
-    params.user_dict = params.dic_dir / "user.dic";
-  }
-  raise_if(
-    not std::filesystem::is_regular_file(params.user_dict),
-    "Provided user dictionary doesn't exist or isn't a file."
-  );
+  params.user_dict = mandarin_user_dictionary(params);
   validate_font_size(params.font_size);
 
   std::erase_if(params.gd_word, is_space);
