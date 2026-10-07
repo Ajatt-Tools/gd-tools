@@ -272,7 +272,9 @@ void print_table_header(search_params const& params)
   std::print("<tr>");
   std::print("<th>Card ID</th>");
   std::print("<th>Deck name</th>");
-  for (auto const& field: params.show_fields) { std::print("<th>{}</th>", field); }
+  for (auto const& field: params.show_fields) {
+    std::print("<th>{}</th>", field);
+  }
   std::print("<th>Tags</th>");
   std::println("</tr>");
 }

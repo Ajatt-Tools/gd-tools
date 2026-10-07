@@ -55,4 +55,6 @@ static constexpr std::string_view css_style = R"EOF(
 )EOF";
 
 auto render_split_html(std::string_view const words, std::string_view const font_size) -> std::string
-{ return std::format(R"({}<div class="gd-split" style="font-size: {}">{}</div>)", css_style, font_size, words); }
+{
+  return std::format(R"({}<div class="gd-split" style="font-size: {}">{}</div>)", css_style, font_size, words);
+}

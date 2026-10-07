@@ -51,13 +51,19 @@ gd-ankisearch --deck-name Mining %GDWORD%
 )EOF";
 
 auto get_help_str(std::string_view program_name) -> std::string
-{ return std::format(help_text, program_name); }
+{
+  return std::format(help_text, program_name);
+}
 
 auto print_help(std::string_view const program_name) -> void
-{ std::print("{}", get_help_str(program_name)); }
+{
+  std::print("{}", get_help_str(program_name));
+}
 
 auto base_name(auto file_path) -> std::string
-{ return std::filesystem::path(file_path).filename(); }
+{
+  return std::filesystem::path(file_path).filename();
+}
 
 template<std::integral Ret = uint64_t>
 constexpr auto djbx33a(std::string_view const s) -> Ret
@@ -66,12 +72,16 @@ constexpr auto djbx33a(std::string_view const s) -> Ret
   static constexpr Ret mul = 33;
 
   Ret acc = init;
-  for (auto const ch: s) { acc = (acc * mul) + static_cast<Ret>(ch); }
+  for (auto const ch: s) {
+    acc = (acc * mul) + static_cast<Ret>(ch);
+  }
   return acc;
 }
 
 constexpr auto operator""_h(char const* s, [[maybe_unused]] size_t const size)
-{ return djbx33a(std::string_view(s, size)); }
+{
+  return djbx33a(std::string_view(s, size));
+}
 
 auto take_action(std::span<std::string_view const> const args) -> void
 {

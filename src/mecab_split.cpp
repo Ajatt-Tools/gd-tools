@@ -115,7 +115,9 @@ auto create_mecab_tagger(std::vector<std::string> arguments) -> std::unique_ptr<
 {
   std::vector<char*> argv;
   argv.reserve(arguments.size());
-  for (auto& argument: arguments) { argv.push_back(argument.data()); }
+  for (auto& argument: arguments) {
+    argv.push_back(argument.data());
+  }
   std::unique_ptr<MeCab::Tagger> tagger{ MeCab::createTagger(static_cast<int>(argv.size()), argv.data()) };
   raise_if(tagger == nullptr, "Failed to initialize MeCab tagger.");
   return tagger;
@@ -176,7 +178,9 @@ auto lookup_words(mecab_params params) -> std::string
 }
 
 auto render_mecab(std::span<std::string_view const> const args) -> std::string
-{ return lookup_words(fill_args<mecab_params>(args)); }
+{
+  return lookup_words(fill_args<mecab_params>(args));
+}
 
 void mecab_split(std::span<std::string_view const> const args)
 {

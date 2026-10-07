@@ -98,7 +98,9 @@ static auto lookup_words(mandarin_params params) -> std::string
 }
 
 auto render_mandarin(std::span<std::string_view const> const args) -> std::string
-{ return lookup_words(fill_args<mandarin_params>(args)); }
+{
+  return lookup_words(fill_args<mandarin_params>(args));
+}
 
 auto mandarin_split(std::span<std::string_view const> const args) -> void
 {

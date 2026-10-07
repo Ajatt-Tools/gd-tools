@@ -54,7 +54,9 @@ auto determine_card_class(int64_t const card_queue, int64_t const card_type) noe
 }
 
 auto is_space(char const ch) noexcept -> bool
-{ return static_cast<bool>(std::isspace(static_cast<unsigned char>(ch))); }
+{
+  return static_cast<bool>(std::isspace(static_cast<unsigned char>(ch)));
+}
 
 auto validate_font_size(std::string_view const size) -> void
 {
