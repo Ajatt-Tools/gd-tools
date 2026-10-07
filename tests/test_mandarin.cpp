@@ -22,6 +22,7 @@
 #include "mandarin_split.h"
 #include "marisa_split.h"
 #include "massif.h"
+#include "mecab_html.h"
 #include "mecab_split.h"
 #include "split_html.h"
 #include "translate.h"
@@ -77,24 +78,30 @@ TEST_CASE("Mandarin renders traditional clickable words", "[mandarin]")
                                             sentence,    "--font-size",       "30px" };
   auto const result = render_mandarin(args);
   REQUIRE(result.find(R"(<div class="gd-split" style="font-size: 30px">)") != std::string::npos);
-  REQUIRE(result.find(R"(<a href="bword:你好"><b>你好</b></a>)") != std::string::npos);
-  REQUIRE(result.find(R"(<a href="bword:中國">中國</a>)") != std::string::npos);
+  REQUIRE(result.find(R"(<a href="bword:你好" title="你好"><b>你好</b></a>)") != std::string::npos);
+  REQUIRE(result.find(R"(<a href="bword:中國" title="中國">中國</a>)") != std::string::npos);
   REQUIRE(result.find("font-size: 30px") != std::string::npos);
 }
 
-TEST_CASE("Mandarin passes the original sentence directly to MeCab", "[mandarin]")
+TEST_CASE("Mandarin removes whitespace without removing Latin text", "[mandarin]")
 {
   auto const sentence = GENERATE("你 好 abc 中国", "你好\n中国", "你好 ABC123 中国");
   std::vector<std::string_view> const args{
     "--dic-dir", "res/mandarin_dict", "--word", "你好", "--sentence", sentence
   };
-  auto const tagger = create_mecab_tagger(
-    { "test", "--dicdir=res/mandarin_dict", "--userdic=res/mandarin_dict/user.dic", "--output-format-type=gdmandarin" }
-  );
-  auto const* parsed = tagger->parse(sentence);
-  REQUIRE(parsed != nullptr);
-  auto const expected = replace_all(parsed, ">你好<", "><b>你好</b><");
-  REQUIRE(render_mandarin(args) == render_split_html(expected, "2rem"));
+  std::string normalized_sentence = sentence;
+  std::erase_if(normalized_sentence, is_space);
+  std::vector<std::string_view> const normalized_args{ "--dic-dir", "res/mandarin_dict", "--word",
+                                                       "你好",      "--sentence",        normalized_sentence };
+  auto const result = render_mandarin(args);
+  REQUIRE(result == render_mandarin(normalized_args));
+  if (normalized_sentence.contains("abc")) {
+    REQUIRE(result.find(R"(<a href="bword:abc" title="abc">abc</a>)") != std::string::npos);
+  }
+  if (normalized_sentence.contains("ABC123")) {
+    REQUIRE(result.find(R"(<a href="bword:A" title="A">A</a>)") != std::string::npos);
+    REQUIRE(result.find(R"(<a href="bword:123" title="123">123</a>)") != std::string::npos);
+  }
 }
 
 TEST_CASE("Mandarin default font size", "[mandarin]")
@@ -112,10 +119,12 @@ TEST_CASE("Mandarin rejects invalid options without HTML output", "[mandarin]")
   REQUIRE_THROWS_AS(render_mandarin(args), gd::runtime_error);
 }
 
-TEST_CASE("Mandarin sentence is required", "[mandarin]")
+TEST_CASE("Mandarin uses the word when the sentence is omitted", "[mandarin]")
 {
-  std::vector<std::string_view> const args{ "--word", "你好" };
-  REQUIRE_THROWS_WITH(render_mandarin(args), Catch::Matchers::ContainsSubstring("Not enough parameters"));
+  std::vector<std::string_view> const args{ "--dic-dir", "res/mandarin_dict", "--word", "你好" };
+  std::vector<std::string_view> const explicit_args{ "--dic-dir", "res/mandarin_dict", "--word",
+                                                     "你好",      "--sentence",        "你好" };
+  REQUIRE(render_mandarin(args) == render_mandarin(explicit_args));
 }
 
 TEST_CASE("MeCab validates its configurable font size", "[mecab]")
@@ -147,7 +156,7 @@ TEST_CASE("MeCab renders default and overridden font sizes", "[mecab]")
   REQUIRE(
     result.find(std::format("font-size: {}", std::string_view(size).empty() ? "2rem" : size)) != std::string::npos
   );
-  REQUIRE(result.find("<div style=\"display: none;\">\ndicdir: ") != std::string::npos);
+  REQUIRE(result.find("<!--\ndicdir: ") != std::string::npos);
   REQUIRE(result.find("\nuserdic: ") != std::string::npos);
   REQUIRE(result.find("\nmecab args: [arg0, --dicdir=") != std::string::npos);
 }
@@ -181,10 +190,14 @@ TEST_CASE("Split HTML shares scoped CSS and keeps font sizes local", "[split-htm
 
 TEST_CASE("MeCab tagger helper owns mutable arguments", "[mecab]")
 {
-  auto const tagger = create_mecab_tagger({ "test", "--dicdir=res/mandarin_dict", "--output-format-type=gdmandarin" });
+  std::vector<std::string> args{ "test", "--dicdir=res/mandarin_dict" };
+  args.append_range(mecab_output_arguments(mecab_dictionary_kind::mandarin));
+  auto const tagger = create_mecab_tagger(std::move(args));
   REQUIRE(tagger != nullptr);
   auto const* parsed = tagger->parse("中国");
   REQUIRE(parsed != nullptr);
-  REQUIRE(std::string_view(parsed).find(R"(<a href="bword:中國">中國</a>)") != std::string_view::npos);
+  REQUIRE(
+    render_mecab_output(parsed, "", mecab_dictionary_kind::mandarin) == R"(<a href="bword:中國" title="中國">中國</a>)"
+  );
   REQUIRE_THROWS_AS(create_mecab_tagger({ "test", "--dicdir=res/no-such-dictionary" }), gd::runtime_error);
 }
