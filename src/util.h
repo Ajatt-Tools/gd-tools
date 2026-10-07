@@ -98,3 +98,6 @@ auto join_with(std::vector<Stored> const& seq, std::string_view const sep) -> st
   }
   return ss.str();
 }
+
+/** Escape text for HTML content and double-quoted attributes. */
+auto escape_html(std::string_view const text) -> std::string;

@@ -82,3 +82,33 @@ void str_replace(std::string& str, std::string_view from, std::string_view to) n
     str.replace(idx, from.length(), to);
   }
 }
+
+auto escape_html(std::string_view const text) -> std::string
+{
+  std::string result;
+  result.reserve(text.size());
+
+  for (char const ch: text) {
+    switch (ch) {
+    case '&':
+      result += "&amp;";
+      break;
+    case '<':
+      result += "&lt;";
+      break;
+    case '>':
+      result += "&gt;";
+      break;
+    case '"':
+      result += "&quot;";
+      break;
+    case '\'':
+      result += "&#39;";
+      break;
+    default:
+      result += ch;
+    }
+  }
+
+  return result;
+}
