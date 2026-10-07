@@ -87,6 +87,8 @@ static auto lookup_words(mandarin_params params) -> std::string
     "Provided user dictionary doesn't exist or isn't a file."
   );
   validate_font_size(params.font_size);
+  std::erase_if(params.gd_word, is_space);
+  std::erase_if(params.gd_sentence, is_space);
 
   auto const dicdir = "--dicdir=" + params.dic_dir.string();
   auto const userdic = "--userdic=" + params.user_dict.string();
