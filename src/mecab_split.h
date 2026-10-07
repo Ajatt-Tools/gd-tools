@@ -4,14 +4,16 @@
 #include "util.h"
 
 /** Shared options with dictionary defaults supplied by each command. */
-struct mecab_params {
+struct mecab_params
+{
   std::string gd_word{};
   std::string gd_sentence{};
   std::filesystem::path user_dict{};
   std::filesystem::path dic_dir{};
   std::string font_size{ "2rem" };
 
-  auto assign(std::string_view const key, std::string_view const value) -> void {
+  auto assign(std::string_view const key, std::string_view const value) -> void
+  {
     if (key == "--word") {
       gd_word = value;
     } else if (key == "--sentence") {
