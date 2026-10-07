@@ -74,7 +74,10 @@ auto verify_mecab_dictionary_installation(mandarin_params const& params) -> void
 
 static auto lookup_words(mandarin_params params) -> std::string
 {
-  raise_if(params.gd_sentence.empty(), "Not enough parameters: --word and --sentence are required.");
+  raise_if(params.gd_word.empty(), "Not enough parameters: --word is required.");
+  if (params.gd_sentence.empty()) {
+    params.gd_sentence = params.gd_word;
+  }
   verify_mecab_dictionary_installation(params);
   if (params.user_dict.empty()) {
     params.user_dict = params.dic_dir / "user.dic";
