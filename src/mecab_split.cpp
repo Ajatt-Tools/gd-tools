@@ -117,14 +117,14 @@ mecab args: [{}]
   );
 }
 
-static auto create_mecab_args(mecab_params params) -> std::vector<std::string>
+auto create_mecab_args(mecab_params const& params, mecab_dictionary_kind const kind) -> std::vector<std::string>
 {
   std::vector<std::string> args = {
     "arg0", // unused
     "--dicdir=" + params.dic_dir.string(), // dicdir
   };
 
-  args.append_range(mecab_output_arguments(mecab_dictionary_kind::japanese));
+  args.append_range(mecab_output_arguments(kind));
 
   if (std::filesystem::is_regular_file(params.user_dict)) {
     // user dict can be omitted from params.
@@ -133,7 +133,20 @@ static auto create_mecab_args(mecab_params params) -> std::vector<std::string>
   return args;
 }
 
-auto lookup_words(mecab_params params) -> std::string
+auto render_mecab_sentence(mecab_params const& params, mecab_dictionary_kind const kind) -> std::string
+{
+  auto const args = create_mecab_args(params, kind);
+  auto const tagger = create_mecab_tagger(args);
+  // parse() returns a borrowed buffer, or null on failure. Render it before the tagger is destroyed.
+  auto const* parsed = tagger->parse(params.gd_sentence.c_str());
+  raise_if(parsed == nullptr, "Failed to parse MeCab sentence.");
+  auto const result = render_mecab_output(parsed, params.gd_word, kind);
+  // Debug info is not shown in GoldenDict.
+  return render_split_html(result, params.font_size) + format_mecab_debug_info(params, args);
+}
+
+/** Normalize Japanese input and validate it before invoking the shared parsing pipeline. */
+static auto lookup_words(mecab_params params) -> std::string
 {
   validate_font_size(params.font_size);
   half_to_full(params.gd_word);
@@ -148,17 +161,7 @@ auto lookup_words(mecab_params params) -> std::string
 
   validate_mecab_input(params.gd_sentence);
   raise_if((not std::filesystem::is_directory(params.dic_dir)), "Couldn't find dictionary directory.");
-  auto const args = create_mecab_args(params);
-
-  auto const tagger = create_mecab_tagger(args);
-  // parse() returns null on failure.
-  auto const* parsed = tagger->parse(params.gd_sentence.c_str());
-  raise_if(parsed == nullptr, "Failed to parse MeCab sentence.");
-
-  auto const result = render_mecab_output(parsed, params.gd_word, mecab_dictionary_kind::japanese);
-
-  // Debug info is not shown in GoldenDict.
-  return render_split_html(result, params.font_size) + format_mecab_debug_info(params, args);
+  return render_mecab_sentence(params, mecab_dictionary_kind::japanese);
 }
 
 auto render_mecab(std::span<std::string_view const> const args) -> std::string

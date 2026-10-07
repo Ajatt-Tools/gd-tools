@@ -38,3 +38,7 @@ auto render_mecab(std::span<std::string_view const> args) -> std::string;
 auto create_mecab_tagger(std::vector<std::string> arguments) -> std::unique_ptr<MeCab::Tagger>;
 auto replace_all(std::string str, std::string_view const from, std::string_view const to) -> std::string;
 auto format_mecab_debug_info(mecab_params const& params, std::vector<std::string> const& args) -> std::string;
+/** Build owned dictionary arguments and explicit output formats for either command. */
+auto create_mecab_args(mecab_params const& params, mecab_dictionary_kind const kind) -> std::vector<std::string>;
+/** Parse prepared input and return shared HTML plus escaped debug information. */
+auto render_mecab_sentence(mecab_params const& params, mecab_dictionary_kind const kind) -> std::string;
