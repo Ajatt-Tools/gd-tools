@@ -1,8 +1,32 @@
 #pragma once
 
 #include "precompiled.h"
+#include "util.h"
 
-struct mecab_params;
+/** Shared options with dictionary defaults supplied by each command. */
+struct mecab_params {
+  std::string gd_word{};
+  std::string gd_sentence{};
+  std::filesystem::path user_dict{};
+  std::filesystem::path dic_dir{};
+  std::string font_size{ "2rem" };
+
+  auto assign(std::string_view const key, std::string_view const value) -> void {
+    if (key == "--word") {
+      gd_word = value;
+    } else if (key == "--sentence") {
+      gd_sentence = value;
+    } else if (key == "--user-dict") {
+      user_dict = value;
+    } else if (key == "--dic-dir") {
+      dic_dir = value;
+    } else if (key == "--font-size") {
+      font_size = value;
+    } else {
+      throw gd::runtime_error(std::format("Unknown argument name: {}", key));
+    }
+  }
+};
 auto mecab_split(std::span<std::string_view const> const args) -> void;
 /** Locate an installed Japanese MeCab dictionary directory. */
 auto find_dic_dir() -> std::filesystem::path;

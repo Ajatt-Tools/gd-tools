@@ -95,9 +95,7 @@ static auto lookup_words(mecab_params params) -> std::string
 
 auto render_mandarin(std::span<std::string_view const> const args) -> std::string
 {
-  return lookup_words(
-    fill_args<mecab_params>(args, { .dic_dir = user_home() / ".local/gd-mandarin", .user_dict = {} })
-  );
+  return lookup_words(fill_args<mecab_params>(args, { .dic_dir = user_home() / ".local/gd-mandarin" }));
 }
 
 auto mandarin_split(std::span<std::string_view const> const args) -> void

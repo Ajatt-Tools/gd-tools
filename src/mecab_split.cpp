@@ -78,30 +78,6 @@ auto find_dic_dir() -> std::filesystem::path
   return find_file_recursive(possible_dirs, "dicrc").parent_path();
 }
 
-struct mecab_params
-{
-  std::string gd_word;
-  std::string gd_sentence;
-  std::filesystem::path user_dict{ find_user_dict_file() };
-  std::filesystem::path dic_dir{ find_dic_dir() };
-  std::string font_size{ "2rem" };
-
-  auto assign(std::string_view const key, std::string_view const value) -> void
-  {
-    if (key == "--word") {
-      gd_word = value;
-    } else if (key == "--sentence") {
-      gd_sentence = value;
-    } else if (key == "--user-dict") {
-      user_dict = value;
-    } else if (key == "--font-size") {
-      font_size = value;
-    } else {
-      throw gd::runtime_error(std::string(std::format("Unknown argument name: {}", key)));
-    }
-  }
-};
-
 auto replace_all(std::string str, std::string_view const from, std::string_view const to) -> std::string
 {
   size_t start_pos = 0;
@@ -187,7 +163,7 @@ auto lookup_words(mecab_params params) -> std::string
 
 auto render_mecab(std::span<std::string_view const> const args) -> std::string
 {
-  return lookup_words(fill_args<mecab_params>(args));
+  return lookup_words(fill_args<mecab_params>(args, { .user_dict = find_user_dict_file(), .dic_dir = find_dic_dir() }));
 }
 
 void mecab_split(std::span<std::string_view const> const args)
