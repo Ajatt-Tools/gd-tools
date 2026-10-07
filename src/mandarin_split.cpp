@@ -28,7 +28,7 @@ Echo a Mandarin sentence as clickable traditional Chinese words.
 
 OPTIONS
   --word %GDWORD%        required word to highlight
-  --sentence %GDSEARCH%  required sentence
+  --sentence %GDSEARCH%  sentence (defaults to --word)
   --dic-dir PATH        Mandarin dictionary directory (default: ~/.local/gd-mandarin)
   --user-dict PATH      user dictionary (default: user.dic in the dictionary directory)
   --font-size SIZE      simple CSS size, e.g. 30px or 2rem (default: 2rem)
@@ -83,8 +83,6 @@ static auto lookup_words(mecab_params params) -> std::string
 
   auto const args = create_mecab_args(params);
 
-  // Load the gd-mandarin output rules from the dictionary's dicrc.
-  // These use feature 5, the traditional Chinese form, for link targets and displayed text.
   auto const tagger = create_mecab_tagger(args);
   auto const* parsed = tagger->parse(params.gd_sentence.c_str());
   raise_if(parsed == nullptr, "Failed to parse Mandarin sentence.");
