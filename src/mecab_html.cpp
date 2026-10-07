@@ -87,6 +87,17 @@ auto parse_mecab_word(std::string_view const text, mecab_dictionary_kind const k
   return ret;
 }
 
+/** Escape one parsed record and highlight its unescaped displayed word. */
+static auto render_mecab_word(mecab_word const& word, std::string_view const highlighted_word) -> std::string
+{
+  auto label = escape_html(word.word);
+  if (word.word == highlighted_word) {
+    label = std::format("<b>{}</b>", label);
+  }
+  auto const escaped_headword = escape_html(word.headword);
+  return std::format(R"(<a href="bword:{}" title="{}">{}</a>)", escaped_headword, escaped_headword, label);
+}
+
 auto render_mecab_output(
   std::string_view const output,
   std::string_view const highlighted_word,
@@ -102,15 +113,7 @@ auto render_mecab_output(
   for (std::string_view const text: nodes) {
     raise_if(text.empty(), "Empty MeCab output node.");
 
-    auto const m_word = parse_mecab_word(text, kind);
-
-    auto label = escape_html(m_word.word);
-    if (m_word.word == highlighted_word) {
-      label = std::format("<b>{}</b>", label);
-    }
-
-    auto const escaped_headword = escape_html(m_word.headword);
-    html += std::format(R"EOF(<a href="bword:{}" title="{}">{}</a>)EOF", escaped_headword, escaped_headword, label);
+    html += render_mecab_word(parse_mecab_word(text, kind), highlighted_word);
   }
 
   return html;
