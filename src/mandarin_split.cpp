@@ -47,19 +47,6 @@ auto verify_mecab_dictionary_installation(mecab_params const& params) -> void
   }
 }
 
-static auto create_mecab_args(mecab_params params) -> std::vector<std::string>
-{
-  std::vector<std::string> args{
-    "arg0",
-    "--dicdir=" + params.dic_dir.string(),
-    "--userdic=" + params.user_dict.string(),
-  };
-
-  // Feature 5 contains the traditional Chinese form.
-  // Extract it through MeCab's formatter, then construct escaped HTML in C++.
-  args.append_range(mecab_output_arguments(mecab_dictionary_kind::mandarin));
-  return args;
-}
 
 static auto lookup_words(mecab_params params) -> std::string
 {
@@ -81,14 +68,7 @@ static auto lookup_words(mecab_params params) -> std::string
   std::erase_if(params.gd_sentence, is_space);
   validate_mecab_input(params.gd_sentence);
 
-  auto const args = create_mecab_args(params);
-
-  auto const tagger = create_mecab_tagger(args);
-  auto const* parsed = tagger->parse(params.gd_sentence.c_str());
-  raise_if(parsed == nullptr, "Failed to parse Mandarin sentence.");
-
-  auto const result = render_mecab_output(parsed, params.gd_word, mecab_dictionary_kind::mandarin);
-  return render_split_html(result, params.font_size) + format_mecab_debug_info(params, args);
+  return render_mecab_sentence(params, mecab_dictionary_kind::mandarin);
 }
 
 auto render_mandarin(std::span<std::string_view const> const args) -> std::string
