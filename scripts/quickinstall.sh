@@ -9,6 +9,8 @@ set -xeuo pipefail
 
 ROOT_DIR="$(dirname -- "$(readlink -f -- "$0")")/.."
 readonly ROOT_DIR
+this_dir=$(dirname -- "$(readlink -f -- "$0")")
+readonly this_dir
 readonly target="gd-tools"
 
 # Build and install the application, optionally installing the current user's Mandarin dictionary.
@@ -28,16 +30,18 @@ main() {
 		esac
 		shift
 	done
+	# Freeze the selected options after parsing so repeated flags remain valid.
+	readonly local_install run_mandarin_script
 	xmake config -P "$ROOT_DIR" -y -m release --tests=n
 	xmake build -P "$ROOT_DIR" -vwy "$target"
-	local -a args=(xmake install -P "$ROOT_DIR" -v --all)
+	local -ar args=(xmake install -P "$ROOT_DIR" -v --all)
 	if $local_install; then
 		"${args[@]}" --installdir="$HOME/.local/" "$target"
 	else
 		"${args[@]}" --installdir=/usr --admin "$target"
 	fi
 	if $run_mandarin_script; then
-		"$ROOT_DIR/scripts/mandarin_installer.sh"
+		"$this_dir/mandarin_installer.sh"
 	fi
 }
 
