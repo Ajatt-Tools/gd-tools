@@ -31,6 +31,7 @@ OPTIONS
   --word %GDWORD%        required word
   --sentence %GDSEARCH%  required sentence
   --user-dict PATH       path to the user dictionary.
+  --dic-dir PATH         dictionary directory (default: automatic discovery).
   --font-size SIZE       simple CSS size, e.g. 30px or 2rem (default: 2rem).
 )EOF";
 
