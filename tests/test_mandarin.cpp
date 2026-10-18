@@ -18,6 +18,7 @@
 
 #include "anki_search.h"
 #include "echo.h"
+#include "helpers.h"
 #include "images.h"
 #include "mandarin_split.h"
 #include "marisa_split.h"
@@ -78,8 +79,10 @@ TEST_CASE("Mandarin renders traditional clickable words", "[mandarin]")
                                             sentence,    "--font-size",       "30px" };
   auto const result = render_mandarin(args);
   REQUIRE(result.find(R"(<div class="gd-split" style="font-size: 30px">)") != std::string::npos);
-  REQUIRE(result.find(R"(<a href="bword:你好" title="你好"><b>你好</b></a>)") != std::string::npos);
-  REQUIRE(result.find(R"(<a href="bword:中國" title="中國">中國</a>)") != std::string::npos);
+  REQUIRE(
+    split_html_words(result)
+    == R"(<a href="bword:你好" title="你好"><b>你好</b></a><a href="bword:中國" title="中國">中國</a>)"
+  );
   REQUIRE(result.find("font-size: 30px") != std::string::npos);
 }
 
@@ -200,4 +203,30 @@ TEST_CASE("MeCab tagger helper owns mutable arguments", "[mecab]")
     render_mecab_output(parsed, "", mecab_dictionary_kind::mandarin) == R"(<a href="bword:中國" title="中國">中國</a>)"
   );
   REQUIRE_THROWS_AS(create_mecab_tagger({ "test", "--dicdir=res/no-such-dictionary" }), gd::runtime_error);
+}
+
+TEST_CASE("Japanese inflected words link to their dictionary headword", "[mecab]")
+{
+  if (find_dic_dir().empty()) {
+    SKIP("Japanese dictionary is not installed.");
+  }
+  std::vector<std::string_view> const args{ "--word", "食べ", "--sentence", "食べた" };
+  auto const result = render_mecab(args);
+  REQUIRE(
+    split_html_words(result)
+    == R"(<a href="bword:食べる" title="食べる"><b>食べ</b></a><a href="bword:た" title="た">た</a>)"
+  );
+}
+
+TEST_CASE("Both commands escape real MeCab output before inserting HTML", "[mecab-html]")
+{
+  auto const render = GENERATE(&render_mecab, &render_mandarin);
+  auto const word = GENERATE("<", ">", "&", "\"", "'");
+  // Keep the fixture's system and user dictionaries compatible instead of discovering a Japanese user dictionary.
+  std::vector<std::string_view> const args{
+    "--dic-dir", "res/mandarin_dict", "--user-dict", "res/mandarin_dict/user.dic", "--word", word, "--sentence", word
+  };
+  auto const result = render(args);
+  auto const escaped = escape_html(word);
+  REQUIRE(split_html_words(result) == std::format(R"(<a href="bword:{0}" title="{0}"><b>{0}</b></a>)", escaped));
 }

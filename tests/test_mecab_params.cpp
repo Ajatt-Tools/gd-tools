@@ -20,6 +20,7 @@
 #include "util.h"
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 TEST_CASE("Shared MeCab parameters have no language-specific dictionary defaults", "[mecab-params]")
 {
@@ -59,4 +60,28 @@ TEST_CASE("Shared MeCab parameters reject unknown or incomplete options", "[meca
   auto const option = GENERATE("--unknown", "--dic-dir", "--word");
   std::vector<std::string_view> const args{ option };
   REQUIRE_THROWS_AS(fill_args<mecab_params>(args), gd::runtime_error);
+}
+
+TEST_CASE("Shared MeCab parameters reject unknown option names with values", "[mecab-params]")
+{
+  std::vector<std::string_view> const args{ "--word", "word", "--unknown", "value" };
+  REQUIRE_THROWS_WITH(fill_args<mecab_params>(args), "Unknown argument name: --unknown");
+}
+
+TEST_CASE("Shared MeCab arguments preserve language formats and optional user dictionaries", "[mecab-params]")
+{
+  auto const kind = GENERATE(mecab_dictionary_kind::japanese, mecab_dictionary_kind::mandarin);
+  auto const user_dict = GENERATE("", "res/mandarin_dict/user.dic");
+  mecab_params const params{ .user_dict = user_dict, .dic_dir = "res/mandarin_dict" };
+  std::vector<std::string> expected{ "arg0", "--dicdir=res/mandarin_dict", "--output-format-type=" };
+  auto const field = kind == mecab_dictionary_kind::mandarin ? "5" : "6";
+  expected.push_back(std::format("--node-format=%m<gd-tools-component>%f[{}]<gd-tools-node>", field));
+  expected.append_range(
+    std::vector<std::string>{ "--unk-format=%m<gd-tools-node>", "--bos-format=", "--eos-format=<gd-tools-footer>" }
+  );
+  if (std::string_view(user_dict) != "") {
+    expected.push_back("--userdic=" + std::string(user_dict));
+  }
+  REQUIRE(create_mecab_args(params, kind) == expected);
+  REQUIRE(params.user_dict == user_dict);
 }
