@@ -35,7 +35,7 @@ auto validate_mecab_input(std::string_view const sentence) -> void
 auto mecab_output_arguments(mecab_dictionary_kind const kind) -> std::vector<std::string>
 {
   // Japanese feature 6 is the base form. Mandarin feature 5 is the traditional Chinese form.
-  auto const* const headword = kind == mecab_dictionary_kind::mandarin ? "%f[5]" : "%f[6]";
+  std::string_view const headword = kind == mecab_dictionary_kind::mandarin ? "%f[5]" : "%f[6]";
 
   return {
     // Disable named output formats from dicrc.
