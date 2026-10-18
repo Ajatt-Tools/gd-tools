@@ -43,7 +43,7 @@ auto verify_mecab_dictionary_installation(mecab_params const& params) -> void
 {
   for (std::string_view const file_name: { "dicrc", "sys.dic", "unk.dic", "char.bin", "matrix.bin" }) {
     raise_if(
-      not std::filesystem::is_regular_file(params.dic_dir / file_name),
+      not gd::is_regular_file_or_throw(params.dic_dir / file_name),
       "Mandarin dictionary is not installed or is incomplete. Install it with ./scripts/mandarin_installer.sh "
       "from the gd-tools source directory, or use --dic-dir PATH. "
       "Instructions: https://github.com/Ajatt-Tools/gd-tools#gd-mandarin"
@@ -55,7 +55,10 @@ auto verify_mecab_dictionary_installation(mecab_params const& params) -> void
 auto mandarin_user_dictionary(mecab_params const& params) -> std::filesystem::path
 {
   auto const dictionary = params.user_dict.empty() ? params.dic_dir / "user.dic" : params.user_dict;
-  raise_if(not std::filesystem::is_regular_file(dictionary), "Provided user dictionary doesn't exist or isn't a file.");
+  raise_if(
+    not gd::is_regular_file_or_throw(dictionary),
+    "Provided user dictionary doesn't exist, isn't a file, or can't be accessed."
+  );
   return dictionary;
 }
 

@@ -68,6 +68,16 @@ auto validate_font_size(std::string_view const size) -> void
   );
 }
 
+auto gd::is_regular_file_or_throw(std::filesystem::path const& path) -> bool
+{
+  try {
+    return std::filesystem::is_regular_file(path);
+  } catch (std::filesystem::filesystem_error const& error) {
+    // Report status failures through the application's GoldenDict-compatible error handler.
+    throw gd::runtime_error(std::format("Couldn't inspect file: {}", error.code().message()));
+  }
+}
+
 auto strtrim(std::string_view str) noexcept -> std::string
 {
   auto v = std::views::all(str) //

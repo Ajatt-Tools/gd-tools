@@ -127,7 +127,7 @@ auto create_mecab_args(mecab_params const& params, mecab_dictionary_kind const k
 
   args.append_range(mecab_output_arguments(kind));
 
-  if (std::filesystem::is_regular_file(params.user_dict)) {
+  if (gd::is_regular_file_or_throw(params.user_dict)) {
     // user dict can be omitted from params.
     args.push_back("--userdic=" + params.user_dict.string());
   }

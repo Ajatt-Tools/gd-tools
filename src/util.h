@@ -19,6 +19,9 @@ public:
   {}
 };
 
+/** Return whether path is a regular file, translating filesystem failures into gd::runtime_error. */
+auto is_regular_file_or_throw(std::filesystem::path const& path) -> bool;
+
 } // namespace gd
 
 inline void raise_if(bool expr, std::string_view const message = "Invalid argument.")
@@ -34,6 +37,7 @@ concept PassedParamsStruct = requires(T params) {
   params.assign("a", "b");
 };
 
+/** Parse command arguments over a copy of the supplied defaults, overriding only explicitly assigned options. */
 template<PassedParamsStruct T>
 auto fill_args(std::span<std::string_view const> const args, T params = T{}) -> T
 {
