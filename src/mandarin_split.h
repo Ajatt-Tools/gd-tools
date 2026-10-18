@@ -19,6 +19,7 @@
 
 #include "precompiled.h"
 
+/** Print Mandarin segmentation HTML or command-specific help. */
 auto mandarin_split(std::span<std::string_view const> args) -> void;
 /** Return the Mandarin command's HTML without printing it. */
 auto render_mandarin(std::span<std::string_view const> args) -> std::string;

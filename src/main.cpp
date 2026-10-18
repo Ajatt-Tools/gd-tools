@@ -143,6 +143,7 @@ auto main(int const argc, char const* const* const argv) -> int
   try {
     take_action(std::vector<std::string_view>{ argv, std::next(argv, argc) });
   } catch (gd::runtime_error const& ex) {
+    // GoldenDict displays stdout. A nonzero exit status would add a second query-error warning.
     std::println("{}", ex.what());
   }
   return 0;

@@ -20,6 +20,7 @@
 
 #include "precompiled.h"
 
+/** Dictionary feature layout and displayed-word convention. */
 enum class mecab_dictionary_kind {
   japanese,
   mandarin,
@@ -40,4 +41,5 @@ auto mecab_output_arguments(mecab_dictionary_kind kind) -> std::vector<std::stri
 /** Convert structured MeCab output into escaped, highlighted links. */
 auto render_mecab_output(std::string_view output, std::string_view highlighted_word, mecab_dictionary_kind kind)
   -> std::string;
+/** Validate protocol framing and return a view borrowing output, with its final separators removed. */
 auto validate_mecab_output(std::string_view output) -> std::string_view;

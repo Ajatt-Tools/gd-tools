@@ -34,6 +34,7 @@ auto validate_mecab_input(std::string_view const sentence) -> void
 
 auto mecab_output_arguments(mecab_dictionary_kind const kind) -> std::vector<std::string>
 {
+  // Japanese feature 6 is the base form. Mandarin feature 5 is the traditional Chinese form.
   auto const* const headword = kind == mecab_dictionary_kind::mandarin ? "%f[5]" : "%f[6]";
 
   return {
@@ -60,12 +61,14 @@ auto validate_mecab_output(std::string_view output) -> std::string_view
   return output;
 }
 
+/** Word and headword views borrowing the validated MeCab output buffer. */
 struct mecab_word
 {
   std::string_view word;
   std::string_view headword;
 };
 
+/** Decode one record into borrowed views, using the word when the headword is unavailable. */
 auto parse_mecab_word(std::string_view const text, mecab_dictionary_kind const kind) -> mecab_word
 {
   auto ret = mecab_word{ .word = text, .headword = text };

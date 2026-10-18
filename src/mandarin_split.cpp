@@ -35,6 +35,7 @@ OPTIONS
   -h,--help             print this help screen
 )EOF";
 
+/** Require all Mandarin dictionary files before initializing the tagger. */
 auto verify_mecab_dictionary_installation(mecab_params const& params) -> void
 {
   for (std::string_view const file_name: { "dicrc", "sys.dic", "unk.dic", "char.bin", "matrix.bin" }) {
