@@ -21,3 +21,5 @@ jobs:
         uses: ludeeus/action-shellcheck@00b27aa7cb85167568cb48a3838b75f4265f2bca # master
         with:
           additional_files: 'gd-*.sh'
+          # Include scripts/lib.sh in the same invocation so shared sources can be resolved.
+          check_together: 'true'
