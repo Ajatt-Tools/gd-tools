@@ -55,10 +55,7 @@ auto verify_mecab_dictionary_installation(mecab_params const& params) -> void
 auto mandarin_user_dictionary(mecab_params const& params) -> std::filesystem::path
 {
   auto const dictionary = params.user_dict.empty() ? params.dic_dir / "user.dic" : params.user_dict;
-  raise_if(
-    not std::filesystem::is_regular_file(dictionary),
-    "Provided user dictionary doesn't exist or isn't a file."
-  );
+  raise_if(not std::filesystem::is_regular_file(dictionary), "Provided user dictionary doesn't exist or isn't a file.");
   return dictionary;
 }
 
