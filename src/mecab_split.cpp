@@ -125,7 +125,8 @@ auto create_mecab_args(mecab_params const& params, mecab_dictionary_kind const k
     "--dicdir=" + params.dic_dir.string(), // dicdir
   };
 
-  args.append_range(mecab_output_arguments(kind));
+  // GCC 14's standard library does not provide vector::append_range yet.
+  std::ranges::copy(mecab_output_arguments(kind), std::back_inserter(args));
 
   if (gd::is_regular_file_or_throw(params.user_dict)) {
     // user dict can be omitted from params.

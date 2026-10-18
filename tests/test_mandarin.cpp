@@ -194,7 +194,7 @@ TEST_CASE("Split HTML shares scoped CSS and keeps font sizes local", "[split-htm
 TEST_CASE("MeCab tagger helper owns mutable arguments", "[mecab]")
 {
   std::vector<std::string> args{ "test", "--dicdir=res/mandarin_dict" };
-  args.append_range(mecab_output_arguments(mecab_dictionary_kind::mandarin));
+  std::ranges::copy(mecab_output_arguments(mecab_dictionary_kind::mandarin), std::back_inserter(args));
   auto const tagger = create_mecab_tagger(std::move(args));
   REQUIRE(tagger != nullptr);
   auto const* parsed = tagger->parse("中国");
