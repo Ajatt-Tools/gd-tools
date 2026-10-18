@@ -46,6 +46,12 @@ jobs:
           output="$("$HOME/.local/bin/gd-mandarin" --sentence 你好 --word 你好 --font-size 30px)"
           grep -qF '<b>你好</b>' <<< "$output"
           grep -qF 'font-size: 30px' <<< "$output"
+
+          # An absent translator must retain its subprocess prefix and exit successfully for GoldenDict.
+          # /dev/null cannot contain executables, unlike an empty PATH which can search the current directory.
+          output="$(PATH=/dev/null "$HOME/.local/bin/gd-tools" translate --sentence 猫)"
+          grep -qF 'subprocess error.' <<< "$output"
+
           ./scripts/quickuninstall.sh --local
           test ! -e "$HOME/.local/bin/gd-tools"
           test ! -e "$HOME/.local/bin/gd-mecab"
