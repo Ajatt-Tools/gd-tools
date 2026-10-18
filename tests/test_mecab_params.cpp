@@ -82,7 +82,8 @@ TEST_CASE("Shared MeCab arguments preserve language formats and optional user di
   auto const field = kind == mecab_dictionary_kind::mandarin ? "5" : "6";
   expected.push_back(std::format("--node-format=%m<gd-tools-component>%f[{}]<gd-tools-node>", field));
   expected.insert(
-    expected.end(), { "--unk-format=%m<gd-tools-node>", "--bos-format=", "--eos-format=<gd-tools-footer>" }
+    expected.end(),
+    { "--unk-format=%m<gd-tools-node>", "--bos-format=", "--eos-format=<gd-tools-footer>" }
   );
   if (std::string_view(user_dict) == "res/mandarin_dict/user.dic") {
     expected.push_back("--userdic=" + std::string(user_dict));
