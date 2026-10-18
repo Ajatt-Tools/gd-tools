@@ -230,3 +230,16 @@ TEST_CASE("Both commands escape real MeCab output before inserting HTML", "[meca
   auto const escaped = escape_html(word);
   REQUIRE(split_html_words(result) == std::format(R"(<a href="bword:{0}" title="{0}"><b>{0}</b></a>)", escaped));
 }
+
+TEST_CASE("Dictionary status errors become application errors instead of aborting", "[mecab][mandarin]")
+{
+  auto const render = GENERATE(&render_mecab, &render_mandarin);
+  auto const option = GENERATE("--dic-dir", "--user-dict");
+  // Linux rejects a filename component longer than 255 bytes without creating any files.
+  std::string const invalid_path(256, 'x');
+  std::vector<std::string_view> const args{ "--dic-dir",   "res/mandarin_dict",
+                                            "--user-dict", "res/mandarin_dict/user.dic",
+                                            "--word",      "你好",
+                                            option,        invalid_path };
+  REQUIRE_THROWS_AS(render(args), gd::runtime_error);
+}
