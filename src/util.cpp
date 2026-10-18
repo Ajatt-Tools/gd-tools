@@ -78,6 +78,16 @@ auto gd::is_regular_file_or_throw(std::filesystem::path const& path) -> bool
   }
 }
 
+auto gd::is_directory_or_throw(std::filesystem::path const& path) -> bool
+{
+  try {
+    return std::filesystem::is_directory(path);
+  } catch (std::filesystem::filesystem_error const& error) {
+    // Keep directory validation on the same application-error path as regular-file validation.
+    throw gd::runtime_error(std::format("Couldn't inspect directory: {}", error.code().message()));
+  }
+}
+
 auto strtrim(std::string_view str) noexcept -> std::string
 {
   auto v = std::views::all(str) //

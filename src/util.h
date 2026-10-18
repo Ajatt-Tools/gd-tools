@@ -22,6 +22,9 @@ public:
 /** Return whether path is a regular file, translating filesystem failures into gd::runtime_error. */
 auto is_regular_file_or_throw(std::filesystem::path const& path) -> bool;
 
+/** Return whether path is a directory, translating filesystem failures into gd::runtime_error. */
+auto is_directory_or_throw(std::filesystem::path const& path) -> bool;
+
 } // namespace gd
 
 inline void raise_if(bool expr, std::string_view const message = "Invalid argument.")

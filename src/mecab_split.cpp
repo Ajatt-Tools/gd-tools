@@ -164,7 +164,7 @@ auto lookup_words(mecab_params params) -> std::string
   }
 
   validate_mecab_input(params.gd_sentence);
-  raise_if((not std::filesystem::is_directory(params.dic_dir)), "Couldn't find dictionary directory.");
+  raise_if(not gd::is_directory_or_throw(params.dic_dir), "Couldn't find dictionary directory.");
   return render_mecab_sentence(params, mecab_dictionary_kind::japanese);
 }
 
