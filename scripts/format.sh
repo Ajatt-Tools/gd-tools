@@ -17,6 +17,7 @@ main() {
 	mapfile -d '' -t source_files < <(
 		find src tests -type f \( -iname '*.cpp' -o -iname '*.h' -o -iname '*.hpp' -o -iname '*.cc' \) -print0
 	)
+	readonly -a source_files
 	if ((${#source_files[@]} > 0)); then
 		clang-format --sort-includes -i -- "${source_files[@]}"
 	fi
