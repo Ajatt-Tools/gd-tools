@@ -61,6 +61,9 @@ auto validate_mecab_output(std::string_view output) -> std::string_view
   return output;
 }
 
+// Keep record types and helpers private to this translation unit. Only the complete renderer is public.
+namespace {
+
 /** Word and headword views borrowing the validated MeCab output buffer. */
 struct mecab_word
 {
@@ -91,7 +94,7 @@ auto parse_mecab_word(std::string_view const text, mecab_dictionary_kind const k
 }
 
 /** Escape one parsed record and highlight its unescaped displayed word. */
-static auto render_mecab_word(mecab_word const& word, std::string_view const highlighted_word) -> std::string
+auto render_mecab_word(mecab_word const& word, std::string_view const highlighted_word) -> std::string
 {
   auto label = escape_html(word.word);
   if (word.word == highlighted_word) {
@@ -100,6 +103,8 @@ static auto render_mecab_word(mecab_word const& word, std::string_view const hig
   auto const escaped_headword = escape_html(word.headword);
   return std::format(R"(<a href="bword:{}" title="{}">{}</a>)", escaped_headword, escaped_headword, label);
 }
+
+} // namespace
 
 auto render_mecab_output(
   std::string_view const output,

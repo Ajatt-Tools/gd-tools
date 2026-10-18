@@ -145,8 +145,11 @@ auto render_mecab_sentence(mecab_params const& params, mecab_dictionary_kind con
   return render_split_html(result, params.font_size) + format_mecab_debug_info(params, args);
 }
 
+// Keep Japanese input preparation private while leaving tagger creation and rendering available to both commands.
+namespace {
+
 /** Normalize Japanese input and validate it before invoking the shared parsing pipeline. */
-static auto lookup_words(mecab_params params) -> std::string
+auto lookup_words(mecab_params params) -> std::string
 {
   validate_font_size(params.font_size);
   half_to_full(params.gd_word);
@@ -163,6 +166,8 @@ static auto lookup_words(mecab_params params) -> std::string
   raise_if((not std::filesystem::is_directory(params.dic_dir)), "Couldn't find dictionary directory.");
   return render_mecab_sentence(params, mecab_dictionary_kind::japanese);
 }
+
+} // namespace
 
 auto render_mecab(std::span<std::string_view const> const args) -> std::string
 {

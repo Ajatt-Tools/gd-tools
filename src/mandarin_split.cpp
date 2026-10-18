@@ -22,7 +22,10 @@
 #include "split_html.h"
 #include "util.h"
 
-static constexpr std::string_view help_text = R"EOF(usage: gd-mandarin [OPTIONS]
+// Keep Mandarin-specific validation and preparation separate from the shared MeCab API.
+namespace {
+
+constexpr std::string_view help_text = R"EOF(usage: gd-mandarin [OPTIONS]
 
 Echo a Mandarin sentence as clickable traditional Chinese words.
 
@@ -49,7 +52,7 @@ auto verify_mecab_dictionary_installation(mecab_params const& params) -> void
 }
 
 /** Resolve the mandatory Mandarin user dictionary independently of Japanese defaults. */
-static auto mandarin_user_dictionary(mecab_params const& params) -> std::filesystem::path
+auto mandarin_user_dictionary(mecab_params const& params) -> std::filesystem::path
 {
   auto const dictionary = params.user_dict.empty() ? params.dic_dir / "user.dic" : params.user_dict;
   raise_if(
@@ -60,7 +63,7 @@ static auto mandarin_user_dictionary(mecab_params const& params) -> std::filesys
 }
 
 /** Validate Mandarin dictionaries and normalized input before invoking the shared parsing pipeline. */
-static auto lookup_words(mecab_params params) -> std::string
+auto lookup_words(mecab_params params) -> std::string
 {
   raise_if(params.gd_word.empty(), "Not enough parameters: --word is required.");
   if (params.gd_sentence.empty()) {
@@ -76,6 +79,8 @@ static auto lookup_words(mecab_params params) -> std::string
 
   return render_mecab_sentence(params, mecab_dictionary_kind::mandarin);
 }
+
+} // namespace
 
 auto render_mandarin(std::span<std::string_view const> const args) -> std::string
 {
