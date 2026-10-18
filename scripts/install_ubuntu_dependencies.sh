@@ -2,7 +2,10 @@
 
 set -euo pipefail
 
-packages=(
+# shellcheck source=scripts/lib.sh
+. "$(dirname -- "$0")/lib.sh"
+
+readonly packages=(
 	build-essential
 	g++-14
 	libcurl4-openssl-dev
@@ -11,17 +14,22 @@ packages=(
 	mecab-utils
 )
 
-case ${1:-} in
---packaging)
-	packages+=(debhelper devscripts)
-	;;
-"")
-	;;
-*)
-	printf -- 'usage: %s [--packaging]\n' "$0" >&2
-	exit 1
-	;;
-esac
+# Install Ubuntu build dependencies, optionally including Debian packaging tools.
+main() {
+	case ${1:-} in
+	--packaging)
+		packages+=(debhelper devscripts)
+		;;
+	"")
+		;;
+	*)
+		die "usage: $0 [--packaging]"
+		;;
+	esac
+	is_installed sudo || die "sudo is required"
+	is_installed apt-get || die "apt-get is required"
+	sudo apt-get update
+	sudo apt-get install --yes "${packages[@]}"
+}
 
-sudo apt-get update
-sudo apt-get install --yes "${packages[@]}"
+main "$@"
