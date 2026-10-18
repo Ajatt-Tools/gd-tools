@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mecab_html.h"
 #include "precompiled.h"
 #include "util.h"
 
