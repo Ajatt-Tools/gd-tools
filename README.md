@@ -136,6 +136,7 @@ gd-mecab --word %GDWORD% --sentence %GDSEARCH%
 * `--font-size SIZE` the font size to be used (default: `2rem`), e.g. `30px`.
   Accepts nonnegative numbers with `px`, `rem`, `em`, `%`, `pt`, `vw`, or `vh` units.
 * `--user-dict FILE` full path to the user_dic.dic file. This is done automatically if you install via make.
+* `--dic-dir PATH` dictionary directory. By default, the command searches supported system and user dictionary paths.
 
 ## gd-images
 
@@ -287,3 +288,4 @@ Optional arguments:
 * `--font-size SIZE`: font size (default: `2rem`), with the same simple CSS sizes supported by `gd-mecab`.
 
 The command uses MeCab directly, without a shell pipeline or shared temporary sentence cache.
+Both MeCab commands remove whitespace before parsing.
