@@ -2,17 +2,20 @@
 
 set -euo pipefail
 
+# shellcheck source=scripts/lib.sh
+. "$(dirname -- "$0")/lib.sh"
+
 ROOT_DIR="$(dirname -- "$(readlink -f -- "$0")")/.."
 readonly ROOT_DIR
-cd -- "$ROOT_DIR" || exit 1
 
-# Define the path to the target directory
-target_dir="$HOME/.local/gd-mandarin/"
+# Copy the bundled Mandarin dictionary for the current user without requiring a rebuild or root privileges.
+main() {
+	cd -- "$ROOT_DIR" || die "can't enter project root"
+	# Define the path to the target directory
+	local -r target_dir="$HOME/.local/gd-mandarin/"
+	# Check if the target directory exists. If not, create it.
+	mkdir -p -- "$target_dir" || die "can't create Mandarin dictionary directory"
+	cp -- res/mandarin_dict/* "$target_dir" || die "can't install Mandarin dictionary files"
+}
 
-# Check if the target directory exists, if not, create it
-if [ ! -d "$target_dir" ]; then
-    mkdir -p "$target_dir"
-fi
-
-res_files="res/mandarin_dict"
-cp -- "$res_files"/* "$target_dir"
+main "$@"
